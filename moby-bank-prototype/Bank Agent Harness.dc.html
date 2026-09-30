@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moby Bank — Analyst Agent Harness</title>
+<!-- Vendored React so the harness runs fully offline (no unpkg CDN). support.js
+     skips its CDN loader when window.React / window.ReactDOM already exist. -->
+<script src="./_vendor/react.production.min.js"></script>
+<script src="./_vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/trident-design-system-official-cdc47559-f4b4-4abd-989d-5903e6aa2a39/fonts/fonts.css">
+  <link rel="stylesheet" href="_ds/trident-design-system-official-cdc47559-f4b4-4abd-989d-5903e6aa2a39/_ds_bundle.css">
+  <script src="_ds/trident-design-system-official-cdc47559-f4b4-4abd-989d-5903e6aa2a39/_ds_bundle.js"></script>
+  <style>html,body{margin:0;height:100%;} a{color:var(--tri-primary);text-decoration:none;} a:hover{text-decoration:underline;} textarea{font:inherit;} *{box-sizing:border-box;}</style>
+</helmet>
+<div class="{{ rootClass }}" style="display:flex; height:100vh; min-height:600px; background:var(--tri-background); color:var(--tri-foreground); font-family:var(--tri-font-family-sans); overflow:hidden;">
+
+  <aside style="width:264px; flex-shrink:0; display:flex; flex-direction:column; background:var(--tri-sidebar); color:var(--tri-sidebar-foreground); border-right:1px solid var(--tri-sidebar-border); min-height:0;">
+    <div style="display:flex; align-items:center; gap:10px; padding:16px 16px 12px;">
+      <div style="width:28px; height:28px; border-radius:var(--tri-radius-default); background:var(--tri-primary); color:var(--tri-primary-foreground); display:flex; align-items:center; justify-content:center; font-weight:680; font-size:12px; letter-spacing:0.02em;">MB</div>
+      <div style="display:flex; flex-direction:column; line-height:1.2;">
+        <span style="font-weight:680; font-size:14px;">Moby Bank</span>
+        <span style="font-size:12px; color:var(--tri-muted-foreground);">Analyst Agent</span>
+      </div>
+    </div>
+    <div style="padding:0 12px 12px;">
+      <x-import component-from-global-scope="Trident.Button" variant="outline" class-name="w-full justify-start" on-click="{{ newChat }}" hint-size="100%,32px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+        New conversation
+      </x-import>
+    </div>
+
+    <div style="flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:16px; padding:4px 8px 16px;">
+      <sc-if value="{{ isSidebarLayout }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 8px;">
+            <span style="font-size:11px; font-weight:520; text-transform:uppercase; letter-spacing:0.06em; color:var(--tri-muted-foreground);">OneDrive folders</span>
+            <x-import component-from-global-scope="Trident.Button" variant="ghost" size="icon-xs" on-click="{{ openConnect }}" aria-label="Connect folder" hint-size="24px,24px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            </x-import>
+          </div>
+          <sc-for list="{{ folders }}" as="f" hint-placeholder-count="3">
+            <div title="{{ f.path }}" style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:var(--tri-radius-default); font-size:13px;" style-hover="background:var(--tri-hover-overlay);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="flex-shrink:0; color:var(--tri-muted-foreground);"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+              <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.name }}</span>
+              <span style="font-size:12px; color:var(--tri-muted-foreground); font-variant-numeric:tabular-nums;">{{ f.count }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-for list="{{ historyGroups }}" as="g" hint-placeholder-count="2">
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <span style="padding:4px 8px; font-size:11px; font-weight:520; text-transform:uppercase; letter-spacing:0.06em; color:var(--tri-muted-foreground);">{{ g.label }}</span>
+          <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.select }}" style="{{ c.style }}" style-hover="background:var(--tri-hover-overlay);">
+              <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ c.title }}</span>
+              <sc-if value="{{ c.cloud }}" hint-placeholder-val="{{ false }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="flex-shrink:0; color:var(--tri-muted-foreground);"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path></svg>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; border-top:1px solid var(--tri-sidebar-border);">
+      <div style="width:28px; height:28px; border-radius:999px; background:var(--tri-muted); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:520;">HG</div>
+      <div style="flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.25;">
+        <span style="font-size:13px; font-weight:520;">Hermione Granger</span>
+        <span style="font-size:12px; color:var(--tri-muted-foreground);">Credit Research</span>
+      </div>
+      <x-import component-from-global-scope="Trident.Button" variant="ghost" size="icon-sm" on-click="{{ toggleTheme }}" aria-label="Toggle theme" hint-size="28px,28px">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        </sc-if>
+        <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+        </sc-if>
+      </x-import>
+    </div>
+  </aside>
+
+  <main style="flex:1; min-width:0; display:flex; flex-direction:column; min-height:0;">
+    <header style="display:flex; align-items:center; gap:12px; height:52px; padding:0 20px; border-bottom:1px solid var(--tri-border-subtle); flex-shrink:0;">
+      <span style="flex:1; min-width:0; font-weight:520; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ activeTitle }}</span>
+      <sc-if value="{{ isCloud }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--tri-muted-foreground);">
+          <span style="width:8px; height:8px; border-radius:999px; background:var(--tri-primary);"></span>
+          Cloud model · Moby Private Cloud
+        </div>
+        <x-import component-from-global-scope="Trident.Button" variant="outline" size="sm" disabled="{{ true }}" hint-size="140px,28px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path></svg>
+          Running in cloud
+        </x-import>
+      </sc-if>
+      <sc-if value="{{ isLocal }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--tri-muted-foreground);">
+          <span style="width:8px; height:8px; border-radius:999px; background:var(--tri-success);"></span>
+          Local model · on-prem
+        </div>
+        <x-import component-from-global-scope="Trident.Button" size="sm" loading="{{ moving }}" on-click="{{ moveToCloud }}" hint-size="130px,28px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path><path d="M12 16v-5M9.5 13.5L12 11l2.5 2.5"></path></svg>
+          Move to cloud
+        </x-import>
+      </sc-if>
+    </header>
+
+    <div ref="{{ scrollRef }}" style="flex:1; min-height:0; overflow-y:auto;">
+      <div style="max-width:760px; margin:0 auto; padding:32px 24px 24px; display:flex; flex-direction:column; gap:28px;">
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:8px; padding-top:18vh; text-align:center;">
+            <h1 style="margin:0; font-size:28px; font-weight:680; letter-spacing:-0.01em;">What should we analyze?</h1>
+            <p style="margin:0; font-size:14px; color:var(--tri-muted-foreground);">Attach filings or pull documents from a connected OneDrive folder.</p>
+          </div>
+        </sc-if>
+        <sc-for list="{{ messages }}" as="m" hint-placeholder-count="3">
+          <sc-if value="{{ m.isUser }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+              <sc-if value="{{ m.hasFiles }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px;">
+                  <sc-for list="{{ m.files }}" as="fl" hint-placeholder-count="1">
+                    <div style="display:flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid var(--tri-border); border-radius:var(--tri-radius-default); background:var(--tri-card); font-size:12px;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="color:var(--tri-muted-foreground);"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"></path></svg>
+                      {{ fl }}
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div style="max-width:80%; padding:10px 14px; border-radius:var(--tri-radius-lg); background:var(--tri-muted); font-size:14px; line-height:1.55; white-space:pre-wrap; text-wrap:pretty;">{{ m.text }}</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ m.isAgent }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-if value="{{ m.hasSteps }}" hint-placeholder-val="{{ false }}">
+                <div style="align-self:flex-start; border:1px solid var(--tri-border-subtle); border-radius:var(--tri-radius-default); min-width:280px; max-width:100%;">
+                  <button onClick="{{ m.toggleSteps }}" style="display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; background:transparent; border:none; color:var(--tri-muted-foreground); font:inherit; font-size:13px; cursor:pointer; text-align:left;" style-hover="color:var(--tri-foreground);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="{{ m.chevronStyle }}"><path d="M9 6l6 6-6 6"></path></svg>
+                    <span style="flex:1;">{{ m.stepSummary }}</span>
+                  </button>
+                  <sc-if value="{{ m.stepsOpen }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex; flex-direction:column; gap:6px; padding:4px 10px 10px 32px; border-top:1px solid var(--tri-border-subtle);">
+                      <sc-for list="{{ m.steps }}" as="s" hint-placeholder-count="3">
+                        <div style="display:flex; gap:10px; font-size:12px; padding-top:4px;">
+                          <span style="width:64px; flex-shrink:0; color:var(--tri-muted-foreground); font-family:var(--tri-font-family-mono);">{{ s.kind }}</span>
+                          <span style="font-family:var(--tri-font-family-mono); word-break:break-all;">{{ s.label }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-for list="{{ m.paras }}" as="p" hint-placeholder-count="2">
+                <p style="margin:0; font-size:14px; line-height:1.65; text-wrap:pretty;">{{ p }}</p>
+              </sc-for>
+              <sc-if value="{{ m.hasTable }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid var(--tri-border); border-radius:var(--tri-radius-default); overflow-x:auto;">
+                  <table style="width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums;">
+                    <thead>
+                      <tr style="background:var(--tri-muted);">
+                        <sc-for list="{{ m.cols }}" as="h" hint-placeholder-count="4">
+                          <th style="text-align:left; padding:8px 12px; font-weight:520; white-space:nowrap;">{{ h }}</th>
+                        </sc-for>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="4">
+                        <tr style="border-top:1px solid var(--tri-border-subtle);">
+                          <sc-for list="{{ r.cells }}" as="cell" hint-placeholder-count="4">
+                            <td style="padding:8px 12px; white-space:nowrap;">{{ cell }}</td>
+                          </sc-for>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </sc-for>
+        <sc-if value="{{ thinking }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--tri-muted-foreground);">
+            <x-import component-from-global-scope="Trident.Spinner" hint-size="16px,16px"></x-import>
+            {{ thinkingLabel }}
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 20px; flex-shrink:0;">
+      <div style="max-width:760px; margin:0 auto; border:1px solid var(--tri-border); border-radius:var(--tri-radius-lg); background:var(--tri-card); box-shadow:var(--tri-elevation-raised-shadow); display:flex; flex-direction:column;">
+        <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-wrap:wrap; gap:6px; padding:10px 10px 0;">
+            <sc-for list="{{ pending }}" as="pf" hint-placeholder-count="1">
+              <div style="display:flex; align-items:center; gap:6px; padding:4px 4px 4px 10px; border:1px solid var(--tri-border); border-radius:var(--tri-radius-default); background:var(--tri-background); font-size:12px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="color:var(--tri-muted-foreground);"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"></path></svg>
+                <span>{{ pf.name }}</span>
+                <span style="color:var(--tri-muted-foreground);">{{ pf.source }}</span>
+                <button onClick="{{ pf.remove }}" aria-label="Remove" style="display:flex; padding:2px; background:transparent; border:none; color:var(--tri-muted-foreground); cursor:pointer; border-radius:4px;" style-hover="background:var(--tri-hover-overlay);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <textarea value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" rows="2" placeholder="Ask about a filing, or tell the agent what to do…" style="border:none; outline:none; resize:none; background:transparent; color:var(--tri-foreground); padding:14px 14px 6px; font-size:14px; line-height:1.5; min-height:56px; max-height:200px;"></textarea>
+        <div style="display:flex; align-items:center; gap:4px; padding:6px 8px 8px;">
+          <input ref="{{ fileRef }}" type="file" multiple="{{ true }}" onChange="{{ onFiles }}" style="display:none;">
+          <x-import component-from-global-scope="Trident.Button" variant="ghost" size="sm" on-click="{{ pickLocal }}" hint-size="100px,28px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7-7l8.6-8.6a3.3 3.3 0 0 1 4.7 4.7l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l8-8"></path></svg>
+            Upload
+          </x-import>
+          <x-import component-from-global-scope="Trident.Button" variant="ghost" size="sm" on-click="{{ openAttach }}" hint-size="110px,28px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            From OneDrive
+          </x-import>
+          <div style="flex:1;"></div>
+          <x-import component-from-global-scope="Trident.Button" size="icon-sm" on-click="{{ send }}" disabled="{{ cantSend }}" aria-label="Send" hint-size="28px,28px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+          </x-import>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <sc-if value="{{ isPanelLayout }}" hint-placeholder-val="{{ false }}">
+    <aside style="width:300px; flex-shrink:0; border-left:1px solid var(--tri-border-subtle); display:flex; flex-direction:column; min-height:0; overflow-y:auto;">
+      <div style="display:flex; align-items:center; height:52px; padding:0 16px; border-bottom:1px solid var(--tri-border-subtle); font-weight:520; font-size:14px;">Sources</div>
+      <div style="display:flex; flex-direction:column; gap:20px; padding:16px;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:11px; font-weight:520; text-transform:uppercase; letter-spacing:0.06em; color:var(--tri-muted-foreground);">OneDrive folders</span>
+            <x-import component-from-global-scope="Trident.Button" variant="ghost" size="xs" on-click="{{ openConnect }}" hint-size="80px,24px">Connect</x-import>
+          </div>
+          <sc-for list="{{ folders }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex; align-items:flex-start; gap:10px; padding:10px; border:1px solid var(--tri-border-subtle); border-radius:var(--tri-radius-default); background:var(--tri-card);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px; color:var(--tri-muted-foreground);"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:13px; font-weight:520;">{{ f.name }}</span>
+                <span style="font-size:12px; color:var(--tri-muted-foreground); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.path }}</span>
+              </div>
+              <span style="font-size:12px; color:var(--tri-muted-foreground); font-variant-numeric:tabular-nums;">{{ f.count }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <span style="font-size:11px; font-weight:520; text-transform:uppercase; letter-spacing:0.06em; color:var(--tri-muted-foreground);">In this conversation</span>
+          <sc-if value="{{ noSessionFiles }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px; color:var(--tri-muted-foreground);">No files shared yet.</span>
+          </sc-if>
+          <sc-for list="{{ sessionFiles }}" as="sf" hint-placeholder-count="3">
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 0; font-size:13px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="flex-shrink:0; color:var(--tri-muted-foreground);"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"></path></svg>
+              <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ sf }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </aside>
+  </sc-if>
+
+  <x-import component-from-global-scope="Trident.Dialog" open="{{ pickerOpen }}" on-open-change="{{ onPickerOpenChange }}" hint-size="0px,0px">
+    <x-import component-from-global-scope="Trident.DialogContent" class-name="{{ dialogClass }}" hint-size="0px,0px">
+      <x-import component-from-global-scope="Trident.DialogHeader" hint-size="100%,48px">
+        <x-import component-from-global-scope="Trident.DialogTitle" hint-size="100%,20px">{{ pickerTitle }}</x-import>
+        <x-import component-from-global-scope="Trident.DialogDescription" hint-size="100%,20px">{{ pickerDesc }}</x-import>
+      </x-import>
+      <div style="display:flex; flex-direction:column; border:1px solid var(--tri-border); border-radius:var(--tri-radius-default); max-height:320px; overflow-y:auto;">
+        <sc-for list="{{ pickerItems }}" as="it" hint-placeholder-count="5">
+          <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--tri-border-subtle); cursor:pointer; font-size:13px;" style-hover="background:var(--tri-hover-overlay);">
+            <x-import component-from-global-scope="Trident.Checkbox" checked="{{ it.checked }}" disabled="{{ it.disabled }}" on-checked-change="{{ it.toggle }}" hint-size="16px,16px"></x-import>
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;">
+              <span style="font-weight:520;">{{ it.name }}</span>
+              <span style="font-size:12px; color:var(--tri-muted-foreground); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ it.meta }}</span>
+            </div>
+            <span style="font-size:12px; color:var(--tri-muted-foreground);">{{ it.note }}</span>
+          </label>
+        </sc-for>
+      </div>
+      <x-import component-from-global-scope="Trident.DialogFooter" hint-size="100%,36px">
+        <x-import component-from-global-scope="Trident.Button" variant="outline" on-click="{{ closePicker }}" hint-size="80px,32px">Cancel</x-import>
+        <x-import component-from-global-scope="Trident.Button" on-click="{{ confirmPicker }}" disabled="{{ pickerEmpty }}" hint-size="120px,32px">{{ pickerCta }}</x-import>
+      </x-import>
+    </x-import>
+  </x-import>
+
+  <x-import component-from-global-scope="Trident.Toaster" position="bottom-right" theme="{{ toastTheme }}" hint-size="0px,0px"></x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sidebar&quot;,&quot;panel&quot;],&quot;default&quot;:&quot;sidebar&quot;,&quot;tsType&quot;:&quot;'sidebar' | 'panel'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;}}">
+const FOLDER_LIB = [
+  { id: 'f1', name: 'Earnings 2026', path: 'Credit Research / Coverage / Earnings 2026', count: 24, files: ['Fathom_Q2_2026_10-Q.pdf', 'Fathom_Q2_2026_Call_Transcript.docx', 'Kestrel_Q2_2026_Earnings_Release.pdf'] },
+  { id: 'f2', name: 'Client Financials', path: 'Corporate Banking / Clients / Financials', count: 58, files: ['Harborline_Logistics_FY25_Audited.pdf', 'Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx'] },
+  { id: 'f3', name: 'Peer Comps', path: 'Credit Research / Models / Peer Comps', count: 12, files: ['Industrials_Peer_Comps_Q2.xlsx', 'Regional_Banks_NIM_Tracker.xlsx'] },
+  { id: 'f4', name: 'Covenant Models', path: 'Risk / Credit / Covenant Models', count: 9, files: ['Harborline_Covenant_Model_v3.xlsx'] },
+  { id: 'f5', name: 'ALM Reports', path: 'Treasury / ALM / Monthly', count: 31, files: ['ALM_Aug_2026.pdf'] },
+  { id: 'f6', name: 'Analyst Templates', path: 'Shared / Credit Research / Templates', count: 7, files: ['Earnings_Summary_Template.docx'] }
+];
+
+const SEED = [
+  { id: 'c1', title: 'Fathom Industrial — Q2 2026 earnings', group: 'Today', cloud: false, messages: [
+    { id: 'm1', role: 'user', text: 'Summarize Fathom’s Q2 results against consensus and flag anything that changes our credit view.', files: ['Fathom_Q2_2026_10-Q.pdf', 'Fathom_Q2_2026_Call_Transcript.docx', 'Industrials_Peer_Comps_Q2.xlsx'] },
+    { id: 'm2', role: 'assistant',
+      steps: [
+        { kind: 'read', label: 'OneDrive/Earnings 2026/Fathom_Q2_2026_10-Q.pdf' },
+        { kind: 'read', label: 'OneDrive/Earnings 2026/Fathom_Q2_2026_Call_Transcript.docx' },
+        { kind: 'read', label: 'OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx' },
+        { kind: 'compute', label: 'variance_vs_consensus(revenue, ebitda, eps)' },
+        { kind: 'compute', label: 'leverage(net_debt, ltm_ebitda)' }
+      ],
+      paras: [
+        'Fathom beat on revenue but missed on margin. Revenue of $4.12B was 2.1% above consensus, driven by aftermarket services. Adjusted EBITDA margin fell 80 bps year over year to 17.4% on input costs and a one-time restructuring charge in the Fluid Systems segment.',
+        'For credit, the main change is leverage. Net debt rose $310M after the Dunmore acquisition closed in May, taking net leverage to 2.9x from 2.4x. Management reiterated a 2.5x target by year-end 2027 on the call, but free cash flow guidance was cut by $120M.'
+      ],
+      table: { cols: ['Metric', 'Q2 2026', 'Consensus', 'Q2 2025'], rows: [
+        ['Revenue', '$4.12B', '$4.04B', '$3.87B'],
+        ['Adj. EBITDA margin', '17.4%', '18.0%', '18.2%'],
+        ['Adj. EPS', '$1.86', '$1.91', '$1.79'],
+        ['Net leverage', '2.9x', '—', '2.4x']
+      ] }
+    },
+    { id: 'm3', role: 'user', text: 'How does 2.9x compare with peers?' },
+    { id: 'm4', role: 'assistant',
+      steps: [{ kind: 'read', label: 'OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx' }, { kind: 'compute', label: 'rank(net_leverage, peer_set=7)' }],
+      paras: ['Fathom is now fifth of seven in the peer set on net leverage. The peer median is 2.3x, and only Ormond (3.4x) and Calder (3.1x) are higher. Before the acquisition Fathom ranked second.']
+    }
+  ] },
+  { id: 'c2', title: 'Kestrel Foods — earnings release review', group: 'Today', cloud: true, messages: [
+    { id: 'm1', role: 'user', text: 'Pull the key numbers from Kestrel’s Q2 release.', files: ['Kestrel_Q2_2026_Earnings_Release.pdf'] },
+    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Earnings 2026/Kestrel_Q2_2026_Earnings_Release.pdf' }], paras: ['Net sales of $1.38B were flat year over year; organic volume declined 1.2%, offset by price. Gross margin expanded 60 bps to 31.9%. Full-year EPS guidance was narrowed to $2.40–$2.48.'] }
+  ] },
+  { id: 'c3', title: 'Harborline Logistics — cash flow vs covenants', group: 'Previous 7 days', cloud: false, messages: [
+    { id: 'm1', role: 'user', text: 'Check Harborline’s Q2 management accounts against the fixed charge coverage covenant.', files: ['Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx', 'Harborline_Covenant_Model_v3.xlsx'] },
+    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Client Financials/Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx' }, { kind: 'read', label: 'OneDrive/Covenant Models/Harborline_Covenant_Model_v3.xlsx' }, { kind: 'compute', label: 'fccr(ltm)' }], paras: ['LTM fixed charge coverage is 1.34x against a 1.25x minimum, down from 1.48x last quarter. Headroom is about 7%. The decline comes mainly from higher lease costs on the two new depots.'] }
+  ] },
+  { id: 'c4', title: 'Regional banks — NIM trend comparison', group: 'Previous 7 days', cloud: true, messages: [
+    { id: 'm1', role: 'user', text: 'Compare net interest margin trends for our regional bank coverage over the last four quarters.', files: ['Regional_Banks_NIM_Tracker.xlsx'] },
+    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Peer Comps/Regional_Banks_NIM_Tracker.xlsx' }], paras: ['Median NIM compressed 14 bps over four quarters to 3.21%. Deposit repricing slowed in Q2, and three of nine banks reported sequential expansion.'] }
+  ] },
+  { id: 'c5', title: 'Segment revenue bridge FY25 → FY26', group: 'Earlier', cloud: false, messages: [
+    { id: 'm1', role: 'user', text: 'Build a segment revenue bridge for Fathom from FY25 to FY26 guidance.' },
+    { id: 'm2', role: 'assistant', paras: ['Share the FY25 10-K and the latest guidance deck and I’ll build the bridge by segment, separating organic growth, acquisitions and FX.'] }
+  ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    convos: SEED, activeId: 'c1', folderIds: ['f1', 'f2', 'f3'],
+    draft: '', pending: [], open: {}, thinking: false, thinkingLabel: '',
+    dark: (this.props.theme ?? 'light') === 'dark', moving: false,
+    pickerOpen: false, pickerMode: 'connect', pickerSel: []
+  };
+  scrollRef = React.createRef();
+  fileRef = React.createRef();
+  uid = 100;
+
+  componentDidMount() { this.scrollBottom(); }
+  componentDidUpdate(pp, ps) {
+    if (ps.activeId !== this.state.activeId || ps.convos !== this.state.convos || ps.thinking !== this.state.thinking) this.scrollBottom();
+    if (pp.theme !== this.props.theme && this.props.theme) this.setState({ dark: this.props.theme === 'dark' });
+  }
+  scrollBottom() { requestAnimationFrame(() => { const el = this.scrollRef.current; if (el) el.scrollTop = el.scrollHeight; }); }
+
+  active() { return this.state.convos.find(c => c.id === this.state.activeId); }
+  updateActive(fn) { this.setState(s => ({ convos: s.convos.map(c => c.id === s.activeId ? fn(c) : c) })); }
+
+  newChat = () => {
+    const id = 'c' + (++this.uid);
+    this.setState(s => ({ convos: [{ id, title: 'New conversation', group: 'Today', cloud: false, messages: [] }, ...s.convos], activeId: id, draft: '', pending: [] }));
+  };
+
+  moveToCloud = () => {
+    const c = this.active(); if (!c || c.cloud || this.state.moving) return;
+    const files = new Set(); c.messages.forEach(m => (m.files || []).forEach(f => files.add(f)));
+    const T = window.Trident && window.Trident.toast;
+    const desc = `${c.messages.length} messages · ${files.size} files`;
+    const id = T ? T.loading('Moving session to Moby Private Cloud…', { description: 'Packaging context · ' + desc }) : null;
+    this.setState({ moving: true });
+    setTimeout(() => { if (T) T.loading('Moving session to Moby Private Cloud…', { id, description: 'Transferring files over private link · ' + desc }); }, 1100);
+    setTimeout(() => {
+      this.setState(s => ({ moving: false, convos: s.convos.map(x => x.id === c.id ? { ...x, cloud: true } : x) }));
+      if (T) T.success('Session moved to cloud', { id, description: 'Context and files are now on the cloud model. Local copy retained.' });
+    }, 2600);
+  };
+
+  onDraft = e => this.setState({ draft: e.target.value });
+  onKey = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } };
+  pickLocal = () => this.fileRef.current && this.fileRef.current.click();
+  onFiles = e => {
+    const names = Array.from(e.target.files || []).map(f => ({ name: f.name, source: 'Upload' }));
+    e.target.value = '';
+    this.setState(s => ({ pending: [...s.pending, ...names] }));
+  };
+
+  send = () => {
+    const { draft, pending, thinking } = this.state;
+    const text = draft.trim(); if ((!text && !pending.length) || thinking) return;
+    const files = pending.map(p => p.name);
+    const msg = { id: 'u' + (++this.uid), role: 'user', text: text || 'Review the attached files.', files };
+    this.updateActive(c => ({ ...c, title: c.messages.length ? c.title : (text || files[0]).slice(0, 48), messages: [...c.messages, msg] }));
+    const where = this.active().cloud ? 'cloud model' : 'local model';
+    this.setState({ draft: '', pending: [], thinking: true, thinkingLabel: files.length ? `Reading ${files.length} file${files.length > 1 ? 's' : ''} on ${where}…` : `Working on ${where}…` });
+    setTimeout(() => {
+      const steps = files.map(f => ({ kind: 'read', label: f })).concat([{ kind: 'compute', label: 'extract_financials(income_statement, balance_sheet, cash_flow)' }]);
+      const reply = { id: 'a' + (++this.uid), role: 'assistant', steps,
+        paras: files.length
+          ? [`I read ${files.join(', ')} and extracted the income statement, balance sheet and cash flow figures. Revenue, margin and leverage are summarized below; I can compare them against consensus or the peer set next.`]
+          : ['I can work from the filings in your connected OneDrive folders. Tell me which company and period, or attach the documents directly.'] };
+      if (files.length) reply.table = { cols: ['Metric', 'Current', 'Prior year', 'Change'], rows: [['Revenue', '$2.46B', '$2.31B', '+6.5%'], ['EBITDA margin', '15.8%', '16.3%', '−50 bps'], ['Net leverage', '2.2x', '2.0x', '+0.2x']] };
+      this.updateActive(c => ({ ...c, messages: [...c.messages, reply] }));
+      this.setState({ thinking: false });
+    }, 1800);
+  };
+
+  openConnect = () => this.setState({ pickerOpen: true, pickerMode: 'connect', pickerSel: [] });
+  openAttach = () => this.setState({ pickerOpen: true, pickerMode: 'attach', pickerSel: [] });
+  closePicker = () => this.setState({ pickerOpen: false });
+  confirmPicker = () => {
+    const { pickerMode, pickerSel } = this.state;
+    if (pickerMode === 'connect') {
+      this.setState(s => ({ folderIds: [...s.folderIds, ...pickerSel], pickerOpen: false }));
+      const T = window.Trident && window.Trident.toast; if (T) T.success(`${pickerSel.length} folder${pickerSel.length > 1 ? 's' : ''} connected`);
+    } else {
+      this.setState(s => ({ pending: [...s.pending, ...pickerSel.map(n => ({ name: n, source: 'OneDrive' }))], pickerOpen: false }));
+    }
+  };
+  togglePick = key => this.setState(s => ({ pickerSel: s.pickerSel.includes(key) ? s.pickerSel.filter(k => k !== key) : [...s.pickerSel, key] }));
+
+  renderVals() {
+    const s = this.state;
+    const layout = this.props.layout ?? 'sidebar';
+    const c = this.active() || { messages: [], title: '', cloud: false };
+    const groups = ['Today', 'Previous 7 days', 'Earlier'].map(label => ({
+      label,
+      items: s.convos.filter(x => x.group === label).map(x => ({
+        title: x.title, cloud: x.cloud,
+        select: () => this.setState({ activeId: x.id, pending: [] }),
+        style: { display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '7px 8px', border: 'none', borderRadius: 'var(--tri-radius-default)', font: 'inherit', fontSize: 13, textAlign: 'left', cursor: 'pointer', color: 'var(--tri-sidebar-foreground)', background: x.id === s.activeId ? 'var(--tri-sidebar-accent)' : 'transparent', fontWeight: x.id === s.activeId ? 520 : 420 }
+      }))
+    })).filter(g => g.items.length);
+    const folders = FOLDER_LIB.filter(f => s.folderIds.includes(f.id));
+    const messages = c.messages.map(m => {
+      const open = !!s.open[c.id + m.id];
+      const reads = (m.steps || []).filter(x => x.kind === 'read').length;
+      const comps = (m.steps || []).length - reads;
+      const summary = [reads ? `Read ${reads} file${reads > 1 ? 's' : ''}` : null, comps ? `ran ${comps} calculation${comps > 1 ? 's' : ''}` : null].filter(Boolean).join(', ');
+      return {
+        ...m, isUser: m.role === 'user', isAgent: m.role === 'assistant',
+        hasFiles: !!(m.files && m.files.length), files: m.files || [],
+        hasSteps: !!(m.steps && m.steps.length), steps: m.steps || [], stepsOpen: open,
+        stepSummary: summary.charAt(0).toUpperCase() + summary.slice(1),
+        chevronStyle: { flexShrink: 0, transition: 'transform 150ms', transform: open ? 'rotate(90deg)' : 'none' },
+        toggleSteps: () => this.setState(st => ({ open: { ...st.open, [c.id + m.id]: !open } })),
+        paras: m.paras || [], hasTable: !!m.table, cols: m.table ? m.table.cols : [], rows: m.table ? m.table.rows.map(r => ({ cells: r })) : []
+      };
+    });
+    const sessionFiles = [...new Set(c.messages.flatMap(m => m.files || []))];
+    const connect = s.pickerMode === 'connect';
+    const pickerItems = connect
+      ? FOLDER_LIB.map(f => { const on = s.folderIds.includes(f.id); return { name: f.name, meta: f.path, note: on ? 'Connected' : `${f.count} files`, disabled: on, checked: on || s.pickerSel.includes(f.id), toggle: () => !on && this.togglePick(f.id) }; })
+      : folders.flatMap(f => f.files.map(n => ({ name: n, meta: f.path, note: '', disabled: false, checked: s.pickerSel.includes(n), toggle: () => this.togglePick(n) })));
+    return {
+      rootClass: 'product' + (s.dark ? ' dark' : ''),
+      isDark: s.dark, isLight: !s.dark, toastTheme: s.dark ? 'dark' : 'light',
+      dialogClass: 'product' + (s.dark ? ' dark' : '') + ' sm:max-w-lg',
+      toggleTheme: () => this.setState(st => ({ dark: !st.dark })),
+      isSidebarLayout: layout === 'sidebar', isPanelLayout: layout === 'panel',
+      newChat: this.newChat, historyGroups: groups, folders, openConnect: this.openConnect, openAttach: this.openAttach,
+      activeTitle: c.title, isCloud: c.cloud, isLocal: !c.cloud, moving: s.moving, moveToCloud: this.moveToCloud,
+      scrollRef: this.scrollRef, fileRef: this.fileRef, isEmpty: !c.messages.length, messages,
+      thinking: s.thinking, thinkingLabel: s.thinkingLabel,
+      hasPending: s.pending.length > 0,
+      pending: s.pending.map((p, i) => ({ ...p, remove: () => this.setState(st => ({ pending: st.pending.filter((_, j) => j !== i) })) })),
+      draft: s.draft, onDraft: this.onDraft, onKey: this.onKey, pickLocal: this.pickLocal, onFiles: this.onFiles,
+      send: this.send, cantSend: (!s.draft.trim() && !s.pending.length) || s.thinking,
+      sessionFiles, noSessionFiles: !sessionFiles.length,
+      pickerOpen: s.pickerOpen, onPickerOpenChange: o => this.setState({ pickerOpen: !!o }),
+      pickerTitle: connect ? 'Connect OneDrive folders' : 'Attach from OneDrive',
+      pickerDesc: connect ? 'The agent can read documents in connected folders. Access follows your Microsoft 365 permissions.' : 'Choose documents from your connected folders.',
+      pickerItems, pickerEmpty: !s.pickerSel.length, closePicker: this.closePicker, confirmPicker: this.confirmPicker,
+      pickerCta: connect ? `Connect${s.pickerSel.length ? ' ' + s.pickerSel.length : ''}` : `Attach${s.pickerSel.length ? ' ' + s.pickerSel.length : ''}`
+    };
+  }
+}
+</script>
+</body>
+</html>

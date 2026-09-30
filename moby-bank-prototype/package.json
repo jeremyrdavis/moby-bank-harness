@@ -1,0 +1,14 @@
+{
+  "name": "sbx-bank-agent-harness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Moby Bank — Analyst Agent Harness. A Docker/Trident design-system prototype for a bank credit-analyst agent UI.",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "dev": "node serve.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
