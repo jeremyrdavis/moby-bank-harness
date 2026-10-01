@@ -70,10 +70,10 @@
     </div>
 
     <div style="display:flex; align-items:center; gap:10px; padding:12px 16px; border-top:1px solid var(--tri-sidebar-border);">
-      <div style="width:28px; height:28px; border-radius:999px; background:var(--tri-muted); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:520;">HG</div>
+      <div style="width:28px; height:28px; border-radius:999px; background:var(--tri-muted); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:520;">{{ userInitials }}</div>
       <div style="flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.25;">
-        <span style="font-size:13px; font-weight:520;">Hermione Granger</span>
-        <span style="font-size:12px; color:var(--tri-muted-foreground);">Credit Research</span>
+        <span style="font-size:13px; font-weight:520;">{{ userName }}</span>
+        <span style="font-size:12px; color:var(--tri-muted-foreground);">{{ userRole }}</span>
       </div>
       <x-import component-from-global-scope="Trident.Button" variant="ghost" size="icon-sm" on-click="{{ toggleTheme }}" aria-label="Toggle theme" hint-size="28px,28px">
         <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
@@ -94,9 +94,9 @@
           <span style="width:8px; height:8px; border-radius:999px; background:var(--tri-primary);"></span>
           Cloud model · Moby Private Cloud
         </div>
-        <x-import component-from-global-scope="Trident.Button" variant="outline" size="sm" disabled="{{ true }}" hint-size="140px,28px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path></svg>
-          Running in cloud
+        <x-import component-from-global-scope="Trident.Button" variant="outline" size="sm" loading="{{ moving }}" on-click="{{ moveToLocal }}" hint-size="130px,28px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path><path d="M12 11v5M9.5 13.5L12 16l2.5-2.5"></path></svg>
+          Move to local
         </x-import>
       </sc-if>
       <sc-if value="{{ isLocal }}" hint-placeholder-val="{{ true }}">
@@ -110,6 +110,13 @@
         </x-import>
       </sc-if>
     </header>
+
+    <sc-if value="{{ hasApiError }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display:flex; align-items:center; gap:12px; padding:10px 20px; background:var(--tri-muted); border-bottom:1px solid var(--tri-border-subtle); font-size:13px;">
+        <span style="flex:1; min-width:0;">{{ apiError }}</span>
+        <x-import component-from-global-scope="Trident.Button" variant="outline" size="xs" on-click="{{ retry }}" hint-size="60px,24px">Retry</x-import>
+      </div>
+    </sc-if>
 
     <div ref="{{ scrollRef }}" style="flex:1; min-height:0; overflow-y:auto;">
       <div style="max-width:760px; margin:0 auto; padding:32px 24px 24px; display:flex; flex-direction:column; gap:28px;">
@@ -293,191 +300,383 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sidebar&quot;,&quot;panel&quot;],&quot;default&quot;:&quot;sidebar&quot;,&quot;tsType&quot;:&quot;'sidebar' | 'panel'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;}}">
-const FOLDER_LIB = [
-  { id: 'f1', name: 'Earnings 2026', path: 'Credit Research / Coverage / Earnings 2026', count: 24, files: ['Fathom_Q2_2026_10-Q.pdf', 'Fathom_Q2_2026_Call_Transcript.docx', 'Kestrel_Q2_2026_Earnings_Release.pdf'] },
-  { id: 'f2', name: 'Client Financials', path: 'Corporate Banking / Clients / Financials', count: 58, files: ['Harborline_Logistics_FY25_Audited.pdf', 'Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx'] },
-  { id: 'f3', name: 'Peer Comps', path: 'Credit Research / Models / Peer Comps', count: 12, files: ['Industrials_Peer_Comps_Q2.xlsx', 'Regional_Banks_NIM_Tracker.xlsx'] },
-  { id: 'f4', name: 'Covenant Models', path: 'Risk / Credit / Covenant Models', count: 9, files: ['Harborline_Covenant_Model_v3.xlsx'] },
-  { id: 'f5', name: 'ALM Reports', path: 'Treasury / ALM / Monthly', count: 31, files: ['ALM_Aug_2026.pdf'] },
-  { id: 'f6', name: 'Analyst Templates', path: 'Shared / Credit Research / Templates', count: 7, files: ['Earnings_Summary_Template.docx'] }
-];
-
-const SEED = [
-  { id: 'c1', title: 'Fathom Industrial — Q2 2026 earnings', group: 'Today', cloud: false, messages: [
-    { id: 'm1', role: 'user', text: 'Summarize Fathom’s Q2 results against consensus and flag anything that changes our credit view.', files: ['Fathom_Q2_2026_10-Q.pdf', 'Fathom_Q2_2026_Call_Transcript.docx', 'Industrials_Peer_Comps_Q2.xlsx'] },
-    { id: 'm2', role: 'assistant',
-      steps: [
-        { kind: 'read', label: 'OneDrive/Earnings 2026/Fathom_Q2_2026_10-Q.pdf' },
-        { kind: 'read', label: 'OneDrive/Earnings 2026/Fathom_Q2_2026_Call_Transcript.docx' },
-        { kind: 'read', label: 'OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx' },
-        { kind: 'compute', label: 'variance_vs_consensus(revenue, ebitda, eps)' },
-        { kind: 'compute', label: 'leverage(net_debt, ltm_ebitda)' }
-      ],
-      paras: [
-        'Fathom beat on revenue but missed on margin. Revenue of $4.12B was 2.1% above consensus, driven by aftermarket services. Adjusted EBITDA margin fell 80 bps year over year to 17.4% on input costs and a one-time restructuring charge in the Fluid Systems segment.',
-        'For credit, the main change is leverage. Net debt rose $310M after the Dunmore acquisition closed in May, taking net leverage to 2.9x from 2.4x. Management reiterated a 2.5x target by year-end 2027 on the call, but free cash flow guidance was cut by $120M.'
-      ],
-      table: { cols: ['Metric', 'Q2 2026', 'Consensus', 'Q2 2025'], rows: [
-        ['Revenue', '$4.12B', '$4.04B', '$3.87B'],
-        ['Adj. EBITDA margin', '17.4%', '18.0%', '18.2%'],
-        ['Adj. EPS', '$1.86', '$1.91', '$1.79'],
-        ['Net leverage', '2.9x', '—', '2.4x']
-      ] }
-    },
-    { id: 'm3', role: 'user', text: 'How does 2.9x compare with peers?' },
-    { id: 'm4', role: 'assistant',
-      steps: [{ kind: 'read', label: 'OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx' }, { kind: 'compute', label: 'rank(net_leverage, peer_set=7)' }],
-      paras: ['Fathom is now fifth of seven in the peer set on net leverage. The peer median is 2.3x, and only Ormond (3.4x) and Calder (3.1x) are higher. Before the acquisition Fathom ranked second.']
-    }
-  ] },
-  { id: 'c2', title: 'Kestrel Foods — earnings release review', group: 'Today', cloud: true, messages: [
-    { id: 'm1', role: 'user', text: 'Pull the key numbers from Kestrel’s Q2 release.', files: ['Kestrel_Q2_2026_Earnings_Release.pdf'] },
-    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Earnings 2026/Kestrel_Q2_2026_Earnings_Release.pdf' }], paras: ['Net sales of $1.38B were flat year over year; organic volume declined 1.2%, offset by price. Gross margin expanded 60 bps to 31.9%. Full-year EPS guidance was narrowed to $2.40–$2.48.'] }
-  ] },
-  { id: 'c3', title: 'Harborline Logistics — cash flow vs covenants', group: 'Previous 7 days', cloud: false, messages: [
-    { id: 'm1', role: 'user', text: 'Check Harborline’s Q2 management accounts against the fixed charge coverage covenant.', files: ['Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx', 'Harborline_Covenant_Model_v3.xlsx'] },
-    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Client Financials/Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx' }, { kind: 'read', label: 'OneDrive/Covenant Models/Harborline_Covenant_Model_v3.xlsx' }, { kind: 'compute', label: 'fccr(ltm)' }], paras: ['LTM fixed charge coverage is 1.34x against a 1.25x minimum, down from 1.48x last quarter. Headroom is about 7%. The decline comes mainly from higher lease costs on the two new depots.'] }
-  ] },
-  { id: 'c4', title: 'Regional banks — NIM trend comparison', group: 'Previous 7 days', cloud: true, messages: [
-    { id: 'm1', role: 'user', text: 'Compare net interest margin trends for our regional bank coverage over the last four quarters.', files: ['Regional_Banks_NIM_Tracker.xlsx'] },
-    { id: 'm2', role: 'assistant', steps: [{ kind: 'read', label: 'OneDrive/Peer Comps/Regional_Banks_NIM_Tracker.xlsx' }], paras: ['Median NIM compressed 14 bps over four quarters to 3.21%. Deposit repricing slowed in Q2, and three of nine banks reported sequential expansion.'] }
-  ] },
-  { id: 'c5', title: 'Segment revenue bridge FY25 → FY26', group: 'Earlier', cloud: false, messages: [
-    { id: 'm1', role: 'user', text: 'Build a segment revenue bridge for Fathom from FY25 to FY26 guidance.' },
-    { id: 'm2', role: 'assistant', paras: ['Share the FY25 10-K and the latest guidance deck and I’ll build the bridge by segment, separating organic growth, acquisitions and FX.'] }
-  ] }
-];
+// The UI talks to the harness backend (Quarkus or Python: they share one API contract, see openapi.yaml).
+// Where it lives: ?api=http://host:8080 in the page URL, or window.HARNESS_API, or this host on port 8080.
+const API_PORT = 8080;
+const STREAM_EVENTS = ['ready', 'thinking', 'step', 'message', 'move-progress', 'moved', 'move-failed'];
+const GROUPS = ['Today', 'Previous 7 days', 'Earlier'];
+const POLL_MS = 2000;
 
 class Component extends DCLogic {
   state = {
-    convos: SEED, activeId: 'c1', folderIds: ['f1', 'f2', 'f3'],
-    draft: '', pending: [], open: {}, thinking: false, thinkingLabel: '',
-    dark: (this.props.theme ?? 'light') === 'dark', moving: false,
+    convos: [],            // conversation history rows: GET /api/sessions
+    details: {},           // whole conversations by id: GET /api/sessions/{id}
+    activeId: null,
+    user: { name: '', role: '', initials: '' },
+    library: [],           // folder library: GET /api/folders
+    attachFiles: [],       // documents in connected folders, loaded when the attach dialog opens
+    loaded: false, apiError: '',
+    draft: '', pending: [], open: {},
+    working: {},           // session id -> { label, step } while the agent is working on it
+    moving: {},            // session id -> true while it is being moved
+    dark: (this.props.theme ?? 'light') === 'dark',
     pickerOpen: false, pickerMode: 'connect', pickerSel: []
   };
   scrollRef = React.createRef();
   fileRef = React.createRef();
-  uid = 100;
+  stream = null; streamId = null;
+  watching = {}; moveToasts = {}; moveTargets = {}; unmounted = false;
 
-  componentDidMount() { this.scrollBottom(); }
+  componentDidMount() { this.scrollBottom(); this.boot(); }
+  componentWillUnmount() { this.unmounted = true; this.closeStream(); }
   componentDidUpdate(pp, ps) {
-    if (ps.activeId !== this.state.activeId || ps.convos !== this.state.convos || ps.thinking !== this.state.thinking) this.scrollBottom();
+    if (ps.activeId !== this.state.activeId || ps.details !== this.state.details || ps.working !== this.state.working) this.scrollBottom();
     if (pp.theme !== this.props.theme && this.props.theme) this.setState({ dark: this.props.theme === 'dark' });
   }
   scrollBottom() { requestAnimationFrame(() => { const el = this.scrollRef.current; if (el) el.scrollTop = el.scrollHeight; }); }
 
-  active() { return this.state.convos.find(c => c.id === this.state.activeId); }
-  updateActive(fn) { this.setState(s => ({ convos: s.convos.map(c => c.id === s.activeId ? fn(c) : c) })); }
+  // ---- talking to the API --------------------------------------------------------------------------------------
 
-  newChat = () => {
-    const id = 'c' + (++this.uid);
-    this.setState(s => ({ convos: [{ id, title: 'New conversation', group: 'Today', cloud: false, messages: [] }, ...s.convos], activeId: id, draft: '', pending: [] }));
+  apiBase() {
+    const fromUrl = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('api') : null;
+    const fromWindow = typeof window !== 'undefined' ? window.HARNESS_API : null;
+    const host = typeof location !== 'undefined' && location.hostname ? location.hostname : 'localhost';
+    const proto = typeof location !== 'undefined' && /^https?:$/.test(location.protocol) ? location.protocol : 'http:';
+    return (fromUrl || fromWindow || `${proto}//${host}:${API_PORT}`).replace(/\/+$/, '');
+  }
+
+  api = async (path, { method = 'GET', body } = {}) => {
+    const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+    let res;
+    try {
+      res = await fetch(this.apiBase() + path, {
+        method,
+        headers: body && !isForm ? { 'Content-Type': 'application/json' } : undefined,
+        body: body ? (isForm ? body : JSON.stringify(body)) : undefined
+      });
+    } catch (e) {
+      throw new Error(`Cannot reach the harness API at ${this.apiBase()}. Is the backend running?`);
+    }
+    if (!res.ok) {
+      let message = res.statusText || `HTTP ${res.status}`;
+      try { const err = await res.json(); if (err && err.message) message = err.message; } catch (e) { /* no JSON body */ }
+      const error = new Error(message); error.status = res.status; throw error;
+    }
+    return res.status === 204 ? null : res.json();
   };
 
-  moveToCloud = () => {
-    const c = this.active(); if (!c || c.cloud || this.state.moving) return;
-    const files = new Set(); c.messages.forEach(m => (m.files || []).forEach(f => files.add(f)));
-    const T = window.Trident && window.Trident.toast;
-    const desc = `${c.messages.length} messages · ${files.size} files`;
-    const id = T ? T.loading('Moving session to Moby Private Cloud…', { description: 'Packaging context · ' + desc }) : null;
-    this.setState({ moving: true });
-    setTimeout(() => { if (T) T.loading('Moving session to Moby Private Cloud…', { id, description: 'Transferring files over private link · ' + desc }); }, 1100);
-    setTimeout(() => {
-      this.setState(s => ({ moving: false, convos: s.convos.map(x => x.id === c.id ? { ...x, cloud: true } : x) }));
-      if (T) T.success('Session moved to cloud', { id, description: 'Context and files are now on the cloud model. Local copy retained.' });
-    }, 2600);
+  toast() { return (typeof window !== 'undefined' && window.Trident && window.Trident.toast) || null; }
+  notify(kind, message, options) {
+    const T = this.toast();
+    if (T && T[kind]) return T[kind](message, options);
+    console[kind === 'error' ? 'error' : 'log'](message);
+    return null;
+  }
+
+  boot = async () => {
+    try {
+      const [user, convos, library] = await Promise.all([this.api('/api/me'), this.api('/api/sessions'), this.api('/api/folders')]);
+      this.setState({ user, convos, library, loaded: true, apiError: '' });
+      if (convos.length) await this.select(convos[0].id);
+    } catch (e) {
+      this.setState({ loaded: true, apiError: e.message });
+    }
+  };
+  retry = () => { this.setState({ apiError: '' }); this.boot(); };
+
+  /** Re-reads the history. The server names a conversation from its first message, so open ones take the new title. */
+  refreshList = async () => {
+    try {
+      const convos = await this.api('/api/sessions');
+      this.setState(s => {
+        const details = { ...s.details };
+        for (const row of convos) {
+          if (details[row.id] && details[row.id].title !== row.title) details[row.id] = { ...details[row.id], title: row.title };
+        }
+        return { convos, details };
+      });
+    } catch (e) { /* the next refresh will catch up */ }
+  };
+
+  /** Loads one conversation, keeps the working/moving flags in step with the server, and finishes a move toast. */
+  fetchSession = async id => {
+    const detail = await this.api(`/api/sessions/${id}`);
+    this.setState(s => ({ details: { ...s.details, [id]: detail } }));
+    this.applyStatus(detail);
+    return detail;
+  };
+
+  applyStatus(detail) {
+    this.setState(s => {
+      const working = { ...s.working }, moving = { ...s.moving };
+      if (detail.status === 'running') working[detail.id] = working[detail.id] || { label: 'Working…', step: '' }; else delete working[detail.id];
+      if (detail.status === 'moving') moving[detail.id] = true; else delete moving[detail.id];
+      return { working, moving };
+    });
+    if (detail.status === 'moving' && !this.moveActive(detail.id)) this.moveStart(detail.id, detail.moveTarget);
+    if (detail.status !== 'moving' && this.moveActive(detail.id)) {
+      if (detail.location === this.moveTargets[detail.id]) this.moveDone(detail.id, detail.location);
+      else this.moveFailed(detail.id, 'The session stayed where it was.');
+    }
+    if (detail.status !== 'idle') this.watch(detail.id);
+  }
+
+  /** A safety net for a dropped event stream: re-read the session until it is idle again. */
+  watch(id) {
+    if (this.watching[id]) return;
+    this.watching[id] = true;
+    const tick = async () => {
+      if (this.unmounted) return;
+      try {
+        const detail = await this.fetchSession(id);
+        if (detail.status === 'idle') { this.watching[id] = false; this.refreshList(); return; }
+      } catch (e) { /* keep trying */ }
+      setTimeout(tick, POLL_MS);
+    };
+    setTimeout(tick, POLL_MS);
+  }
+
+  // ---- the live event stream -----------------------------------------------------------------------------------
+
+  openStream(id) {
+    if (this.stream && this.streamId === id) return;
+    this.closeStream();
+    if (typeof EventSource === 'undefined') return;
+    const es = new EventSource(`${this.apiBase()}/api/sessions/${id}/events`);
+    STREAM_EVENTS.forEach(type => es.addEventListener(type, ev => {
+      try { this.handleEvent(type, JSON.parse(ev.data)); } catch (e) { console.error('Bad ' + type + ' event', e); }
+    }));
+    this.stream = es; this.streamId = id;
+  }
+  closeStream() {
+    if (this.stream) this.stream.close();
+    this.stream = null; this.streamId = null;
+  }
+
+  handleEvent = (type, data) => {
+    const id = data.sessionId;
+    switch (type) {
+      case 'ready': this.fetchSession(id).catch(() => {}); break;   // (re)connected: catch up on anything missed
+      case 'thinking': this.setWorking(id, { label: data.label, step: '' }); break;
+      case 'step': this.setWorking(id, { label: (this.state.working[id] || { label: 'Working…' }).label, step: data.step.kind + ' ' + data.step.label }); break;
+      case 'message':
+        this.addMessage(id, data.message);
+        if (data.message.role === 'assistant') { this.setWorking(id, null); this.refreshList(); }
+        break;
+      case 'move-progress': this.moveProgress(id, data.detail); break;
+      case 'moved': this.fetchSession(id).catch(() => {}); this.moveDone(id, data.location); this.refreshList(); break;
+      case 'move-failed': this.moveFailed(id, data.reason); this.fetchSession(id).catch(() => {}); break;
+    }
+  };
+
+  setWorking(id, value) {
+    this.setState(s => {
+      const working = { ...s.working };
+      if (value) working[id] = value; else delete working[id];
+      return { working };
+    });
+  }
+
+  addMessage(id, message) {
+    this.setState(s => {
+      const detail = s.details[id];
+      if (!detail || detail.messages.some(m => m.id === message.id)) return null;
+      return { details: { ...s.details, [id]: { ...detail, messages: [...detail.messages, message] } } };
+    });
+  }
+
+  // ---- conversations -------------------------------------------------------------------------------------------
+
+  activeDetail() { return this.state.details[this.state.activeId]; }
+  /** The distinct file names shared in a conversation, from its messages so it stays current as messages arrive. */
+  filesOf(detail) { return [...new Set((detail ? detail.messages : []).flatMap(m => (m.files || []).map(f => f.name)))]; }
+  isBusy() { const id = this.state.activeId; return !!(this.state.working[id] || this.state.moving[id]); }
+
+  select = async id => {
+    this.setState({ activeId: id, pending: [] });
+    this.openStream(id);
+    try { await this.fetchSession(id); } catch (e) { this.notify('error', e.message); }
+  };
+
+  createSession = async () => {
+    const created = await this.api('/api/sessions', { method: 'POST', body: { location: 'local' } });
+    this.setState(s => ({ details: { ...s.details, [created.id]: created }, activeId: created.id, pending: [] }));
+    this.openStream(created.id);
+    this.refreshList();
+    return created.id;
+  };
+
+  newChat = async () => {
+    try { await this.createSession(); this.setState({ draft: '' }); } catch (e) { this.notify('error', e.message); }
   };
 
   onDraft = e => this.setState({ draft: e.target.value });
   onKey = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } };
+
+  send = async () => {
+    const { draft, pending } = this.state;
+    const text = draft.trim();
+    if ((!text && !pending.length) || this.isBusy()) return;
+    this.setState({ draft: '', pending: [] });
+    try {
+      const id = this.state.activeId || await this.createSession();
+      const stored = await this.api(`/api/sessions/${id}/messages`, { method: 'POST', body: { text, files: pending.map(p => ({ name: p.name, source: p.sourceKey })) } });
+      this.addMessage(id, stored);
+      this.refreshList();
+      this.watch(id);
+    } catch (e) {
+      this.setState({ draft, pending });      // give the analyst their message back
+      this.notify('error', e.message);
+    }
+  };
+
+  // ---- attachments and folders ---------------------------------------------------------------------------------
+
   pickLocal = () => this.fileRef.current && this.fileRef.current.click();
-  onFiles = e => {
-    const names = Array.from(e.target.files || []).map(f => ({ name: f.name, source: 'Upload' }));
+  onFiles = async e => {
+    const files = Array.from(e.target.files || []);
     e.target.value = '';
-    this.setState(s => ({ pending: [...s.pending, ...names] }));
+    if (!files.length) return;
+    let id;
+    try { id = this.state.activeId || await this.createSession(); } catch (err) { this.notify('error', err.message); return; }
+    for (const file of files) {
+      try {
+        const form = new FormData();
+        form.append('file', file, file.name);
+        const ref = await this.api(`/api/sessions/${id}/uploads`, { method: 'POST', body: form });
+        this.setState(s => ({ pending: [...s.pending, { name: ref.name, sourceKey: 'upload', source: 'Upload' }] }));
+      } catch (err) { this.notify('error', `Couldn’t upload ${file.name}: ${err.message}`); }
+    }
   };
 
-  send = () => {
-    const { draft, pending, thinking } = this.state;
-    const text = draft.trim(); if ((!text && !pending.length) || thinking) return;
-    const files = pending.map(p => p.name);
-    const msg = { id: 'u' + (++this.uid), role: 'user', text: text || 'Review the attached files.', files };
-    this.updateActive(c => ({ ...c, title: c.messages.length ? c.title : (text || files[0]).slice(0, 48), messages: [...c.messages, msg] }));
-    const where = this.active().cloud ? 'cloud model' : 'local model';
-    this.setState({ draft: '', pending: [], thinking: true, thinkingLabel: files.length ? `Reading ${files.length} file${files.length > 1 ? 's' : ''} on ${where}…` : `Working on ${where}…` });
-    setTimeout(() => {
-      const steps = files.map(f => ({ kind: 'read', label: f })).concat([{ kind: 'compute', label: 'extract_financials(income_statement, balance_sheet, cash_flow)' }]);
-      const reply = { id: 'a' + (++this.uid), role: 'assistant', steps,
-        paras: files.length
-          ? [`I read ${files.join(', ')} and extracted the income statement, balance sheet and cash flow figures. Revenue, margin and leverage are summarized below; I can compare them against consensus or the peer set next.`]
-          : ['I can work from the filings in your connected OneDrive folders. Tell me which company and period, or attach the documents directly.'] };
-      if (files.length) reply.table = { cols: ['Metric', 'Current', 'Prior year', 'Change'], rows: [['Revenue', '$2.46B', '$2.31B', '+6.5%'], ['EBITDA margin', '15.8%', '16.3%', '−50 bps'], ['Net leverage', '2.2x', '2.0x', '+0.2x']] };
-      this.updateActive(c => ({ ...c, messages: [...c.messages, reply] }));
-      this.setState({ thinking: false });
-    }, 1800);
+  openConnect = async () => {
+    this.setState({ pickerOpen: true, pickerMode: 'connect', pickerSel: [] });
+    try { this.setState({ library: await this.api('/api/folders') }); } catch (e) { this.notify('error', e.message); }
   };
-
-  openConnect = () => this.setState({ pickerOpen: true, pickerMode: 'connect', pickerSel: [] });
-  openAttach = () => this.setState({ pickerOpen: true, pickerMode: 'attach', pickerSel: [] });
+  openAttach = async () => {
+    this.setState({ pickerOpen: true, pickerMode: 'attach', pickerSel: [], attachFiles: [] });
+    try { this.setState({ attachFiles: await this.api('/api/folders/connected/files') }); } catch (e) { this.notify('error', e.message); }
+  };
   closePicker = () => this.setState({ pickerOpen: false });
-  confirmPicker = () => {
+  confirmPicker = async () => {
     const { pickerMode, pickerSel } = this.state;
     if (pickerMode === 'connect') {
-      this.setState(s => ({ folderIds: [...s.folderIds, ...pickerSel], pickerOpen: false }));
-      const T = window.Trident && window.Trident.toast; if (T) T.success(`${pickerSel.length} folder${pickerSel.length > 1 ? 's' : ''} connected`);
+      try {
+        const library = await this.api('/api/folders/connect', { method: 'POST', body: { folderIds: pickerSel } });
+        this.setState({ library, pickerOpen: false });
+        this.notify('success', `${pickerSel.length} folder${pickerSel.length > 1 ? 's' : ''} connected`);
+      } catch (e) { this.notify('error', e.message); }
     } else {
-      this.setState(s => ({ pending: [...s.pending, ...pickerSel.map(n => ({ name: n, source: 'OneDrive' }))], pickerOpen: false }));
+      this.setState(s => ({ pending: [...s.pending, ...pickerSel.map(n => ({ name: n, sourceKey: 'onedrive', source: 'OneDrive' }))], pickerOpen: false }));
     }
   };
   togglePick = key => this.setState(s => ({ pickerSel: s.pickerSel.includes(key) ? s.pickerSel.filter(k => k !== key) : [...s.pickerSel, key] }));
 
+  // ---- moving a session between the local and the cloud model -------------------------------------------------
+
+  moveToCloud = () => this.moveTo('cloud');
+  moveToLocal = () => this.moveTo('local');
+
+  moveTo = async target => {
+    const id = this.state.activeId, c = this.activeDetail();
+    if (!c || this.isBusy() || c.location === target) return;
+    this.moveStart(id, target);
+    try {
+      const detail = await this.api(`/api/sessions/${id}/move`, { method: 'POST', body: { target } });
+      this.setState(s => ({ details: { ...s.details, [id]: detail } }));
+      this.watch(id);
+    } catch (e) { this.moveFailed(id, e.message); }
+  };
+
+  /** True from the moment a move starts until it finishes or fails (a toast id may be null without a Toaster). */
+  moveActive(id) { return Object.prototype.hasOwnProperty.call(this.moveToasts, id); }
+
+  moveTitle(target) { return target === 'cloud' ? 'Moving session to Moby Private Cloud…' : 'Moving session to the local model…'; }
+
+  moveStart(id, target) {
+    this.moveTargets[id] = target;
+    this.setState(s => ({ moving: { ...s.moving, [id]: true } }));
+    const c = this.state.details[id];
+    const desc = c ? `${c.messages.length} messages · ${this.filesOf(c).length} files` : '';
+    this.moveToasts[id] = this.notify('loading', this.moveTitle(target), { description: 'Preparing · ' + desc });
+  }
+  moveProgress(id, detail) {
+    const target = this.moveTargets[id];
+    if (target) this.notify('loading', this.moveTitle(target), { id: this.moveToasts[id], description: detail });
+  }
+  moveDone(id, location) {
+    if (!this.moveActive(id)) return;
+    const toastId = this.moveToasts[id];
+    delete this.moveToasts[id]; delete this.moveTargets[id];
+    this.setState(s => { const moving = { ...s.moving }; delete moving[id]; return { moving }; });
+    this.notify('success', location === 'cloud' ? 'Session moved to cloud' : 'Session moved to local', {
+      id: toastId,
+      description: location === 'cloud' ? 'Context and files are now on the cloud model. The local copy is kept.' : 'The session runs on the local model again. The cloud copy is kept.'
+    });
+  }
+  moveFailed(id, reason) {
+    const toastId = this.moveToasts[id];
+    delete this.moveToasts[id]; delete this.moveTargets[id];
+    this.setState(s => { const moving = { ...s.moving }; delete moving[id]; return { moving }; });
+    this.notify('error', 'Move failed', { id: toastId, description: reason });
+  }
+
+  // ---- what the template renders -------------------------------------------------------------------------------
+
   renderVals() {
     const s = this.state;
     const layout = this.props.layout ?? 'sidebar';
-    const c = this.active() || { messages: [], title: '', cloud: false };
-    const groups = ['Today', 'Previous 7 days', 'Earlier'].map(label => ({
+    const c = this.activeDetail() || { id: null, messages: [], title: '', location: 'local', status: 'idle', files: [] };
+    const cloud = c.location === 'cloud';
+    const work = s.working[c.id];
+    const moving = !!s.moving[c.id];
+    const groups = GROUPS.map(label => ({
       label,
       items: s.convos.filter(x => x.group === label).map(x => ({
-        title: x.title, cloud: x.cloud,
-        select: () => this.setState({ activeId: x.id, pending: [] }),
+        title: x.title, cloud: x.location === 'cloud',
+        select: () => this.select(x.id),
         style: { display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '7px 8px', border: 'none', borderRadius: 'var(--tri-radius-default)', font: 'inherit', fontSize: 13, textAlign: 'left', cursor: 'pointer', color: 'var(--tri-sidebar-foreground)', background: x.id === s.activeId ? 'var(--tri-sidebar-accent)' : 'transparent', fontWeight: x.id === s.activeId ? 520 : 420 }
       }))
     })).filter(g => g.items.length);
-    const folders = FOLDER_LIB.filter(f => s.folderIds.includes(f.id));
+    const folders = s.library.filter(f => f.connected).map(f => ({ id: f.id, name: f.name, path: f.path, count: f.fileCount }));
     const messages = c.messages.map(m => {
       const open = !!s.open[c.id + m.id];
-      const reads = (m.steps || []).filter(x => x.kind === 'read').length;
-      const comps = (m.steps || []).length - reads;
+      const steps = m.steps || [];
+      const reads = steps.filter(x => x.kind === 'read').length;
+      const comps = steps.length - reads;
       const summary = [reads ? `Read ${reads} file${reads > 1 ? 's' : ''}` : null, comps ? `ran ${comps} calculation${comps > 1 ? 's' : ''}` : null].filter(Boolean).join(', ');
+      const files = (m.files || []).map(f => f.name);
       return {
         ...m, isUser: m.role === 'user', isAgent: m.role === 'assistant',
-        hasFiles: !!(m.files && m.files.length), files: m.files || [],
-        hasSteps: !!(m.steps && m.steps.length), steps: m.steps || [], stepsOpen: open,
+        hasFiles: files.length > 0, files,
+        hasSteps: steps.length > 0, steps, stepsOpen: open,
         stepSummary: summary.charAt(0).toUpperCase() + summary.slice(1),
         chevronStyle: { flexShrink: 0, transition: 'transform 150ms', transform: open ? 'rotate(90deg)' : 'none' },
         toggleSteps: () => this.setState(st => ({ open: { ...st.open, [c.id + m.id]: !open } })),
-        paras: m.paras || [], hasTable: !!m.table, cols: m.table ? m.table.cols : [], rows: m.table ? m.table.rows.map(r => ({ cells: r })) : []
+        paras: m.paragraphs || [], hasTable: !!m.table, cols: m.table ? m.table.cols : [], rows: m.table ? m.table.rows.map(r => ({ cells: r })) : []
       };
     });
-    const sessionFiles = [...new Set(c.messages.flatMap(m => m.files || []))];
+    const sessionFiles = this.filesOf(c);
     const connect = s.pickerMode === 'connect';
     const pickerItems = connect
-      ? FOLDER_LIB.map(f => { const on = s.folderIds.includes(f.id); return { name: f.name, meta: f.path, note: on ? 'Connected' : `${f.count} files`, disabled: on, checked: on || s.pickerSel.includes(f.id), toggle: () => !on && this.togglePick(f.id) }; })
-      : folders.flatMap(f => f.files.map(n => ({ name: n, meta: f.path, note: '', disabled: false, checked: s.pickerSel.includes(n), toggle: () => this.togglePick(n) })));
+      ? s.library.map(f => ({ name: f.name, meta: f.path, note: f.connected ? 'Connected' : `${f.fileCount} files`, disabled: f.connected, checked: f.connected || s.pickerSel.includes(f.id), toggle: () => !f.connected && this.togglePick(f.id) }))
+      : s.attachFiles.map(f => ({ name: f.name, meta: f.folderPath, note: '', disabled: false, checked: s.pickerSel.includes(f.name), toggle: () => this.togglePick(f.name) }));
     return {
       rootClass: 'product' + (s.dark ? ' dark' : ''),
       isDark: s.dark, isLight: !s.dark, toastTheme: s.dark ? 'dark' : 'light',
       dialogClass: 'product' + (s.dark ? ' dark' : '') + ' sm:max-w-lg',
       toggleTheme: () => this.setState(st => ({ dark: !st.dark })),
       isSidebarLayout: layout === 'sidebar', isPanelLayout: layout === 'panel',
+      userName: s.user.name, userRole: s.user.role, userInitials: s.user.initials,
+      hasApiError: !!s.apiError, apiError: s.apiError, retry: this.retry,
       newChat: this.newChat, historyGroups: groups, folders, openConnect: this.openConnect, openAttach: this.openAttach,
-      activeTitle: c.title, isCloud: c.cloud, isLocal: !c.cloud, moving: s.moving, moveToCloud: this.moveToCloud,
-      scrollRef: this.scrollRef, fileRef: this.fileRef, isEmpty: !c.messages.length, messages,
-      thinking: s.thinking, thinkingLabel: s.thinkingLabel,
+      activeTitle: c.title, isCloud: cloud, isLocal: !cloud, moving, moveToCloud: this.moveToCloud, moveToLocal: this.moveToLocal,
+      scrollRef: this.scrollRef, fileRef: this.fileRef, isEmpty: s.loaded && !c.messages.length, messages,
+      thinking: !!work, thinkingLabel: work ? (work.step ? `${work.label} · ${work.step}` : work.label) : '',
       hasPending: s.pending.length > 0,
       pending: s.pending.map((p, i) => ({ ...p, remove: () => this.setState(st => ({ pending: st.pending.filter((_, j) => j !== i) })) })),
       draft: s.draft, onDraft: this.onDraft, onKey: this.onKey, pickLocal: this.pickLocal, onFiles: this.onFiles,
-      send: this.send, cantSend: (!s.draft.trim() && !s.pending.length) || s.thinking,
+      send: this.send, cantSend: (!s.draft.trim() && !s.pending.length) || !!work || moving,
       sessionFiles, noSessionFiles: !sessionFiles.length,
       pickerOpen: s.pickerOpen, onPickerOpenChange: o => this.setState({ pickerOpen: !!o }),
       pickerTitle: connect ? 'Connect OneDrive folders' : 'Attach from OneDrive',

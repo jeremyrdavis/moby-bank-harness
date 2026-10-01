@@ -1,6 +1,6 @@
 # moby-bank-quarkus
 
-Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the API the `moby-bank-prototype/` UI needs and drives an agent running in a Docker Sandbox, local or cloud. See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
+Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the API the `moby-bank-prototype/` UI uses and drives an agent running in a Docker Sandbox, local or cloud. Run the UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
 
 ## Requirements
 
@@ -15,7 +15,7 @@ Quarkus backend for the Moby Bank agent harness (implementation #1; a Python imp
 ./mvnw test                 # unit and @QuarkusTest tests
 ```
 
-Useful endpoints today: `/q/health`, `/q/openapi`, `/q/swagger-ui`.
+The API is described in `openapi.yaml` (written at build time; commit changes to it). Useful endpoints: `/api/sessions`, `/api/folders`, `/q/health`, `/q/openapi`, `/q/swagger-ui`. The `/events` stream per session is documented on that operation.
 
 ## Running against real Docker Sandboxes
 
