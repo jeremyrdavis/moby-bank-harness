@@ -2,6 +2,13 @@
 
 Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the API the `moby-bank-prototype/` UI uses and drives an agent running in a Docker Sandbox, local or cloud. Run the UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
 
+## Documentation
+
+Detailed documentation is in [`docs/`](docs/README.md): [onboarding for new developers](docs/ONBOARDING.md) (including a
+guided code review), [architecture](docs/architecture.md), the [domain model](docs/domain-model.md), the
+[API](docs/api.md), [configuration](docs/configuration.md), the [`sbx` and OneDrive integrations](docs/integrations.md),
+[testing](docs/testing.md), and the generated [Javadoc](docs/apidocs/index.html).
+
 ## Requirements
 
 - JDK 25

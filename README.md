@@ -6,6 +6,7 @@ A demo for engineering and platform teams of a **custom agent harness**: a chat 
 |---|---|
 | [`moby-bank-prototype/`](moby-bank-prototype/) | The chat UI, built on Docker's Trident design system. |
 | [`moby-bank-quarkus/`](moby-bank-quarkus/) | The backend in Java/Quarkus. A Python backend is planned; both implement `moby-bank-quarkus/openapi.yaml`. |
+| [`moby-bank-quarkus/docs/`](moby-bank-quarkus/docs/README.md) | Backend documentation: **[ONBOARDING.md](moby-bank-quarkus/docs/ONBOARDING.md)** for new developers, architecture, API, configuration, integrations, testing, and the Javadoc. |
 | [`agent-os/`](agent-os/) | Product docs (mission, roadmap, tech stack) and the spec for the Quarkus backend. |
 | [`SANDBOX-KIT.md`](SANDBOX-KIT.md) | How to build a Docker Sandbox kit with Java, Maven, the Quarkus CLI and JBang. |
 
@@ -36,7 +37,7 @@ To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.
 
 ## Status
 
-The UI, the API, the simulated mode and both move directions work and are tested (about 270 backend tests and 44 UI tests). The real `sbx` adapters, the real OneDrive adapter and the page in a browser have **not** been checked against the real thing; [`agent-os/product/roadmap.md`](agent-os/product/roadmap.md) lists what to verify.
+The UI, the API, the simulated mode and both move directions work and are tested (about 280 backend tests and 44 UI tests). The real `sbx` adapters, the real OneDrive adapter and the page in a browser have **not** been checked against the real thing; [`agent-os/product/roadmap.md`](agent-os/product/roadmap.md) lists what to verify.
 
 ## Working on it
 

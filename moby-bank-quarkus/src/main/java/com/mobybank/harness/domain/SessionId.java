@@ -3,6 +3,7 @@ package com.mobybank.harness.domain;
 import java.util.Objects;
 import java.util.UUID;
 
+/** Identifies a {@link Session}. Wrapping the UUID keeps it from being mixed up with a {@link MessageId}. */
 public record SessionId(UUID value) {
 
     public SessionId {

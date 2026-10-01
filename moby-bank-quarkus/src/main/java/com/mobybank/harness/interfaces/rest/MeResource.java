@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+/** Endpoint for the signed-in analyst shown in the sidebar. */
 @Path("/api/me")
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "User")

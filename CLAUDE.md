@@ -23,7 +23,7 @@ A demo for engineering/platform teams of a custom agent harness: a chat UI for a
 # Backend (Java 25, Maven wrapper; no database, state is in memory)
 cd moby-bank-quarkus
 ./mvnw quarkus:dev                      # http://localhost:8080, Dev UI at /q/dev
-./mvnw test                             # ~270 tests
+./mvnw test                             # ~280 tests
 ./mvnw test -Dtest=SessionTest          # one class (or -Dtest='SessionTest#methodName')
 
 # UI (Node 22; nothing to install)
@@ -39,6 +39,8 @@ HARNESS_API=http://localhost:8080 npm run test:live   # end to end against a run
 - The UI must be served over HTTP (the runtime uses `fetch`); `file://` fails. It finds the API at the page's host on port 8080, or `?api=…`, or `window.HARNESS_API`.
 
 ## Backend architecture (`moby-bank-quarkus`)
+
+Full documentation is in `moby-bank-quarkus/docs/` (start with `ONBOARDING.md`; it has the architecture, domain model, API, configuration, integrations and testing guides, plus generated Javadoc in `docs/apidocs/`). This section is the short version. `DocumentationTest` fails when those docs drift from the code (dead links, renamed classes or tests, settings and endpoints that don't match), so update them with the code. After changing public API or Javadoc, regenerate the Javadoc with `./mvnw javadoc:javadoc` and commit it.
 
 Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Dependencies point one way: `interfaces.rest → application → domain ← infrastructure`. Layering tests (`*LayeringTest`) fail the build if a layer imports something it shouldn't, so keep domain free of Jakarta/Quarkus and REST free of domain types (except `ApiExceptionMappers`, which names the domain's exception types).
 

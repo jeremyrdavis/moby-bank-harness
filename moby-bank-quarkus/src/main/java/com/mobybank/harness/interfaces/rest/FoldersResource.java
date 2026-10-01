@@ -18,6 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+/** Endpoints for the OneDrive folder library: browse it, connect folders, and list the documents of the connected ones. */
 @Path("/api/folders")
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Folders")

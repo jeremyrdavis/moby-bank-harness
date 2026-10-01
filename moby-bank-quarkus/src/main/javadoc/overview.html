@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>The Quarkus backend of the Moby Bank agent harness: the API a chat UI uses to talk to an agent that runs in a
+Docker Sandbox, locally or in the cloud, with sessions that can move between the two.</p>
+
+<h1>How the code is organised</h1>
+
+<p>Four layers, and dependencies point one way: <code>interfaces.rest</code> &rarr; <code>application</code> &rarr;
+<code>domain</code> &larr; <code>infrastructure</code>. The domain depends on nothing; infrastructure implements the
+domain's ports. Tests fail the build if a layer imports something it should not.</p>
+
+<table>
+<caption>Layers</caption>
+<tr><th>Package</th><th>Role</th></tr>
+<tr><td>{@link com.mobybank.harness.domain}</td><td>Aggregates, value objects, events, and the ports.</td></tr>
+<tr><td>{@link com.mobybank.harness.application}</td><td>The use cases, with commands and DTOs at the edge.</td></tr>
+<tr><td>{@link com.mobybank.harness.infrastructure}</td><td>In-memory state, the fakes, and the choice of adapters.</td></tr>
+<tr><td>{@link com.mobybank.harness.infrastructure.sbx}</td><td>Real sandboxes through the <code>sbx</code> CLI.</td></tr>
+<tr><td>{@link com.mobybank.harness.infrastructure.graph}</td><td>OneDrive through Microsoft Graph.</td></tr>
+<tr><td>{@link com.mobybank.harness.interfaces.rest}</td><td>The HTTP and server-sent-events API.</td></tr>
+</table>
+
+<h1>Where to start reading</h1>
+
+<p>{@link com.mobybank.harness.domain.Session} (the rules), then
+{@link com.mobybank.harness.application.SessionApplicationService} (how a use case is orchestrated), then
+{@link com.mobybank.harness.interfaces.rest.SessionsResource} (the endpoints). The written guides in the
+<code>docs</code> folder, starting with <code>ONBOARDING.md</code>, explain the rest.</p>
+</body>
+</html>

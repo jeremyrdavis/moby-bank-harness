@@ -168,6 +168,19 @@ class FakeAdaptersTest {
     }
 
     @Test
+    void theAdapterProducersAreCreatedAtStartupSoABadConfigurationStopsTheApp() {
+        List<String> producers = java.util.Arrays.stream(Adapters.class.getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(jakarta.enterprise.inject.Produces.class))
+                .filter(m -> m.getReturnType() != java.time.Clock.class)
+                .filter(m -> !m.isAnnotationPresent(io.quarkus.runtime.Startup.class))
+                .map(java.lang.reflect.Method::getName)
+                .toList();
+        assertTrue(producers.isEmpty(), "these producers are lazy, so a misconfiguration would only show on first use: " + producers);
+        assertEquals(3, java.util.Arrays.stream(Adapters.class.getDeclaredMethods())
+                .filter(m -> m.isAnnotationPresent(io.quarkus.runtime.Startup.class)).count());
+    }
+
+    @Test
     void theFakeCatalogServesPlaceholderContentForListedFilesOnly() {
         FakeDocumentCatalog catalog = new FakeDocumentCatalog();
         assertEquals("Demo content of Fathom_Q2_2026_10-Q.pdf\n",

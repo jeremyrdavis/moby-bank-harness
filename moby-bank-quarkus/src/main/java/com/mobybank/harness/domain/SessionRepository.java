@@ -3,6 +3,7 @@ package com.mobybank.harness.domain;
 import java.util.List;
 import java.util.Optional;
 
+/** Stores {@link Session}s. The in-memory implementation lives in the infrastructure layer; a database-backed one could replace it without touching the domain. */
 public interface SessionRepository {
 
     Optional<Session> findById(SessionId id);

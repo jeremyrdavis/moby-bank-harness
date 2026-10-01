@@ -39,6 +39,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+/** Endpoints for conversations: the history, starting one, opening one, sending a message, uploading a file, moving a session, and following a session live over server-sent events. */
 @Path("/api/sessions")
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Sessions")

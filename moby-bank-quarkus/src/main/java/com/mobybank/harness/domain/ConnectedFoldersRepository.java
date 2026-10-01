@@ -2,6 +2,7 @@ package com.mobybank.harness.domain;
 
 import java.util.Optional;
 
+/** Stores each user's {@link ConnectedFolders}. */
 public interface ConnectedFoldersRepository {
 
     Optional<ConnectedFolders> findByUser(UserId userId);

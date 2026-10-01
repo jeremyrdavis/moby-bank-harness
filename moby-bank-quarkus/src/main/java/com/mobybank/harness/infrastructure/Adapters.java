@@ -5,6 +5,7 @@ import com.mobybank.harness.domain.SandboxAgent;
 import com.mobybank.harness.domain.SandboxTransfer;
 import com.mobybank.harness.infrastructure.graph.GraphAdapters;
 import com.mobybank.harness.infrastructure.sbx.SbxAdapters;
+import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import java.time.Clock;
@@ -21,7 +22,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  *   <li>{@code harness.documents.mode}: {@code fake} or {@code graph} (document catalog)</li>
  * </ul>
  *
- * Other modes are added with their adapters and fail fast at startup until then.
+ * The adapter producers are {@code @Startup}: an application-scoped bean is otherwise created on first use, which would
+ * let a misspelt mode or missing credentials go unnoticed until the first request. Created at boot, a bad
+ * configuration stops the app with a message naming the property.
  */
 @ApplicationScoped
 public class Adapters {
@@ -34,6 +37,7 @@ public class Adapters {
 
     @Produces
     @ApplicationScoped
+    @Startup
     SandboxAgent sandboxAgent(
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
             @ConfigProperty(name = "harness.fake.agent-delay-ms", defaultValue = "1800") long agentDelayMs,
@@ -43,6 +47,7 @@ public class Adapters {
 
     @Produces
     @ApplicationScoped
+    @Startup
     SandboxTransfer sandboxTransfer(
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
             @ConfigProperty(name = "harness.fake.move-packaging-ms", defaultValue = "1100") long packagingMs,
@@ -53,6 +58,7 @@ public class Adapters {
 
     @Produces
     @ApplicationScoped
+    @Startup
     DocumentCatalog documentCatalog(
             @ConfigProperty(name = "harness.documents.mode", defaultValue = "fake") String mode,
             GraphAdapters graph) {
