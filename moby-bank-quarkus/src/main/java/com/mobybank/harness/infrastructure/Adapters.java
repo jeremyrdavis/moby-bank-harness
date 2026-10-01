@@ -3,10 +3,12 @@ package com.mobybank.harness.infrastructure;
 import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.SandboxAgent;
 import com.mobybank.harness.domain.SandboxTransfer;
+import com.mobybank.harness.infrastructure.sbx.SbxAdapters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.function.Supplier;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
@@ -14,7 +16,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * real sandboxes:
  *
  * <ul>
- *   <li>{@code harness.sandbox.mode}: {@code fake} (agent and transfer)</li>
+ *   <li>{@code harness.sandbox.mode}: {@code fake} or {@code sbx} (agent and transfer)</li>
  *   <li>{@code harness.documents.mode}: {@code fake} (document catalog)</li>
  * </ul>
  *
@@ -33,8 +35,9 @@ public class Adapters {
     @ApplicationScoped
     SandboxAgent sandboxAgent(
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
-            @ConfigProperty(name = "harness.fake.agent-delay-ms", defaultValue = "1800") long agentDelayMs) {
-        return selectAgent(mode, Duration.ofMillis(agentDelayMs));
+            @ConfigProperty(name = "harness.fake.agent-delay-ms", defaultValue = "1800") long agentDelayMs,
+            SbxAdapters sbx) {
+        return selectAgent(mode, Duration.ofMillis(agentDelayMs), sbx::agent);
     }
 
     @Produces
@@ -42,8 +45,9 @@ public class Adapters {
     SandboxTransfer sandboxTransfer(
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
             @ConfigProperty(name = "harness.fake.move-packaging-ms", defaultValue = "1100") long packagingMs,
-            @ConfigProperty(name = "harness.fake.move-transfer-ms", defaultValue = "1500") long transferMs) {
-        return selectTransfer(mode, Duration.ofMillis(packagingMs), Duration.ofMillis(transferMs));
+            @ConfigProperty(name = "harness.fake.move-transfer-ms", defaultValue = "1500") long transferMs,
+            SbxAdapters sbx) {
+        return selectTransfer(mode, Duration.ofMillis(packagingMs), Duration.ofMillis(transferMs), sbx::transfer);
     }
 
     @Produces
@@ -53,28 +57,31 @@ public class Adapters {
         return selectCatalog(mode);
     }
 
-    static SandboxAgent selectAgent(String mode, Duration fakeDelay) {
+    static SandboxAgent selectAgent(String mode, Duration fakeDelay, Supplier<SandboxAgent> sbx) {
         return switch (mode) {
             case "fake" -> new FakeSandboxAgent(fakeDelay);
-            default -> throw unsupported("harness.sandbox.mode", mode);
+            case "sbx" -> sbx.get();
+            default -> throw unsupported("harness.sandbox.mode", mode, "fake, sbx");
         };
     }
 
-    static SandboxTransfer selectTransfer(String mode, Duration fakePackaging, Duration fakeTransferring) {
+    static SandboxTransfer selectTransfer(String mode, Duration fakePackaging, Duration fakeTransferring,
+                                          Supplier<SandboxTransfer> sbx) {
         return switch (mode) {
             case "fake" -> new FakeSandboxTransfer(fakePackaging, fakeTransferring);
-            default -> throw unsupported("harness.sandbox.mode", mode);
+            case "sbx" -> sbx.get();
+            default -> throw unsupported("harness.sandbox.mode", mode, "fake, sbx");
         };
     }
 
     static DocumentCatalog selectCatalog(String mode) {
         return switch (mode) {
             case "fake" -> new FakeDocumentCatalog();
-            default -> throw unsupported("harness.documents.mode", mode);
+            default -> throw unsupported("harness.documents.mode", mode, "fake");
         };
     }
 
-    private static IllegalStateException unsupported(String property, String mode) {
-        return new IllegalStateException("Unsupported " + property + "=" + mode + " (supported: fake)");
+    private static IllegalStateException unsupported(String property, String mode, String supported) {
+        return new IllegalStateException("Unsupported " + property + "=" + mode + " (supported: " + supported + ")");
     }
 }

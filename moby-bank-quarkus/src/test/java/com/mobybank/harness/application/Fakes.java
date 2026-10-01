@@ -116,6 +116,11 @@ final class Fakes {
             }
             return List.of();
         }
+
+        @Override
+        public Optional<byte[]> fetch(String fileName) {
+            return Optional.empty();
+        }
     }
 
     /** Returns a scripted reply (or throws a scripted failure) and remembers every turn it was given. */

@@ -21,7 +21,7 @@ class InfrastructureLayeringTest {
     @Test
     void infrastructureDoesNotDependOnTheRestLayer() throws IOException {
         List<Path> sources;
-        try (Stream<Path> files = Files.list(SOURCES)) {
+        try (Stream<Path> files = Files.walk(SOURCES)) {
             sources = files.filter(p -> p.toString().endsWith(".java")).toList();
         }
         assertFalse(sources.isEmpty(), "no infrastructure sources found; is the working directory the module root?");

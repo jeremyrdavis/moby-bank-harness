@@ -559,5 +559,7 @@ info:
   description: "HTTP and server-sent-events API used by the harness UI. Every backend\
     \ implementation (Quarkus, Python) must match this contract."
 servers:
-- url: http://127.0.0.1:8080
+- url: http://localhost:8080
+  description: Auto generated value
+- url: http://0.0.0.0:8080
   description: Auto generated value

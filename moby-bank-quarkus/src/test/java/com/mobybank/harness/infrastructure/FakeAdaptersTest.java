@@ -2,6 +2,7 @@ package com.mobybank.harness.infrastructure;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,6 +17,8 @@ import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.MoveProgress;
 import com.mobybank.harness.domain.MoveRequest;
 import com.mobybank.harness.domain.MoveStage;
+import com.mobybank.harness.domain.SandboxAgent;
+import com.mobybank.harness.domain.SandboxTransfer;
 import com.mobybank.harness.domain.Session;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.Step;
@@ -121,20 +124,43 @@ class FakeAdaptersTest {
 
     // --- adapter selection -------------------------------------------------------------------------------------
 
+    private static final SandboxAgent SBX_AGENT = (turn, onStep) -> null;
+    private static final SandboxTransfer SBX_TRANSFER = (request, onProgress) -> { };
+
     @Test
-    void fakeModeSelectsTheFakes() {
-        assertInstanceOf(FakeSandboxAgent.class, Adapters.selectAgent("fake", Duration.ZERO));
-        assertInstanceOf(FakeSandboxTransfer.class, Adapters.selectTransfer("fake", Duration.ZERO, Duration.ZERO));
+    void fakeModeSelectsTheFakesAndNeverBuildsTheSbxAdapters() {
+        assertInstanceOf(FakeSandboxAgent.class, Adapters.selectAgent("fake", Duration.ZERO, () -> {
+            throw new AssertionError("the sbx agent must not be built in fake mode");
+        }));
+        assertInstanceOf(FakeSandboxTransfer.class, Adapters.selectTransfer("fake", Duration.ZERO, Duration.ZERO, () -> {
+            throw new AssertionError("the sbx transfer must not be built in fake mode");
+        }));
         assertInstanceOf(FakeDocumentCatalog.class, Adapters.selectCatalog("fake"));
+    }
+
+    @Test
+    void sbxModeSelectsTheSbxAdapters() {
+        assertSame(SBX_AGENT, Adapters.selectAgent("sbx", Duration.ZERO, () -> SBX_AGENT));
+        assertSame(SBX_TRANSFER, Adapters.selectTransfer("sbx", Duration.ZERO, Duration.ZERO, () -> SBX_TRANSFER));
     }
 
     @Test
     void anUnsupportedModeFailsFastAndNamesTheProperty() {
         IllegalStateException agent = assertThrows(IllegalStateException.class,
-                () -> Adapters.selectAgent("sbx", Duration.ZERO));
-        assertTrue(agent.getMessage().contains("harness.sandbox.mode=sbx"));
-        assertThrows(IllegalStateException.class, () -> Adapters.selectTransfer("nope", Duration.ZERO, Duration.ZERO));
+                () -> Adapters.selectAgent("docker", Duration.ZERO, () -> SBX_AGENT));
+        assertTrue(agent.getMessage().contains("harness.sandbox.mode=docker"), agent.getMessage());
+        assertTrue(agent.getMessage().contains("fake, sbx"), agent.getMessage());
+        assertThrows(IllegalStateException.class,
+                () -> Adapters.selectTransfer("nope", Duration.ZERO, Duration.ZERO, () -> SBX_TRANSFER));
         IllegalStateException catalog = assertThrows(IllegalStateException.class, () -> Adapters.selectCatalog("graph"));
         assertTrue(catalog.getMessage().contains("harness.documents.mode=graph"));
+    }
+
+    @Test
+    void theFakeCatalogServesPlaceholderContentForListedFilesOnly() {
+        FakeDocumentCatalog catalog = new FakeDocumentCatalog();
+        assertEquals("Demo content of Fathom_Q2_2026_10-Q.pdf\n",
+                new String(catalog.fetch("Fathom_Q2_2026_10-Q.pdf").orElseThrow()));
+        assertTrue(catalog.fetch("not-in-the-library.pdf").isEmpty());
     }
 }
