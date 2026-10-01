@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.mobybank.harness.domain.AgentReply;
 import com.mobybank.harness.domain.AgentTurn;
 import com.mobybank.harness.domain.CatalogFile;
+import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.FileRef;
 import com.mobybank.harness.domain.FileSource;
 import com.mobybank.harness.domain.Folder;
@@ -135,7 +136,15 @@ class FakeAdaptersTest {
         assertInstanceOf(FakeSandboxTransfer.class, Adapters.selectTransfer("fake", Duration.ZERO, Duration.ZERO, () -> {
             throw new AssertionError("the sbx transfer must not be built in fake mode");
         }));
-        assertInstanceOf(FakeDocumentCatalog.class, Adapters.selectCatalog("fake"));
+        assertInstanceOf(FakeDocumentCatalog.class, Adapters.selectCatalog("fake", () -> {
+            throw new AssertionError("the Graph catalog must not be built in fake mode");
+        }));
+    }
+
+    @Test
+    void graphModeSelectsTheGraphCatalog() {
+        DocumentCatalog graph = new FakeDocumentCatalog();
+        assertSame(graph, Adapters.selectCatalog("graph", () -> graph));
     }
 
     @Test
@@ -152,8 +161,10 @@ class FakeAdaptersTest {
         assertTrue(agent.getMessage().contains("fake, sbx"), agent.getMessage());
         assertThrows(IllegalStateException.class,
                 () -> Adapters.selectTransfer("nope", Duration.ZERO, Duration.ZERO, () -> SBX_TRANSFER));
-        IllegalStateException catalog = assertThrows(IllegalStateException.class, () -> Adapters.selectCatalog("graph"));
-        assertTrue(catalog.getMessage().contains("harness.documents.mode=graph"));
+        IllegalStateException catalog = assertThrows(IllegalStateException.class,
+                () -> Adapters.selectCatalog("sharepoint", FakeDocumentCatalog::new));
+        assertTrue(catalog.getMessage().contains("harness.documents.mode=sharepoint"), catalog.getMessage());
+        assertTrue(catalog.getMessage().contains("fake, graph"), catalog.getMessage());
     }
 
     @Test

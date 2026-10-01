@@ -28,7 +28,7 @@ class DemoDataTest {
     void theSeededHistoryMatchesThePrototype() {
         InMemorySessionRepository sessions = new InMemorySessionRepository();
         InMemoryConnectedFoldersRepository folders = new InMemoryConnectedFoldersRepository();
-        new DemoDataSeeder(sessions, folders, clockAt("2026-09-30T12:00:00Z"), true).seed();
+        new DemoDataSeeder(sessions, folders, clockAt("2026-09-30T12:00:00Z"), true, "fake").seed();
 
         List<Session> history = sessions.findAllByMostRecentlyUpdated();
         assertEquals(List.of(
@@ -51,7 +51,7 @@ class DemoDataTest {
         for (String now : List.of("2026-09-30T12:00:00Z", "2026-09-30T00:10:00Z", "2026-09-30T23:55:00Z")) {
             Clock clock = clockAt(now);
             InMemorySessionRepository sessions = new InMemorySessionRepository();
-            new DemoDataSeeder(sessions, new InMemoryConnectedFoldersRepository(), clock, true).seed();
+            new DemoDataSeeder(sessions, new InMemoryConnectedFoldersRepository(), clock, true, "fake").seed();
 
             List<RecencyGroup> groups = sessions.findAllByMostRecentlyUpdated().stream()
                     .map(s -> RecencyGroup.of(s.updatedAt(), clock.instant(), ZONE))
@@ -65,7 +65,7 @@ class DemoDataTest {
     @Test
     void messagesAreDatedWithTheirSession() {
         InMemorySessionRepository sessions = new InMemorySessionRepository();
-        new DemoDataSeeder(sessions, new InMemoryConnectedFoldersRepository(), clockAt("2026-09-30T12:00:00Z"), true)
+        new DemoDataSeeder(sessions, new InMemoryConnectedFoldersRepository(), clockAt("2026-09-30T12:00:00Z"), true, "fake")
                 .seed();
         Session first = sessions.findAllByMostRecentlyUpdated().get(0);
         assertTrue(first.messages().stream().allMatch(m -> m.createdAt().equals(first.updatedAt())));
@@ -74,18 +74,28 @@ class DemoDataTest {
     @Test
     void theFirstThreeFoldersStartConnected() {
         InMemoryConnectedFoldersRepository folders = new InMemoryConnectedFoldersRepository();
-        new DemoDataSeeder(new InMemorySessionRepository(), folders, clockAt("2026-09-30T12:00:00Z"), true).seed();
+        new DemoDataSeeder(new InMemorySessionRepository(), folders, clockAt("2026-09-30T12:00:00Z"), true, "fake").seed();
 
         ConnectedFolders connected = folders.findByUser(UserId.DEMO).orElseThrow();
         assertEquals(List.of(new FolderId("f1"), new FolderId("f2"), new FolderId("f3")), connected.folderIds());
     }
 
     @Test
+    void withARealDocumentSourceNoDemoFoldersAreConnected() {
+        InMemorySessionRepository sessions = new InMemorySessionRepository();
+        InMemoryConnectedFoldersRepository folders = new InMemoryConnectedFoldersRepository();
+        new DemoDataSeeder(sessions, folders, clockAt("2026-09-30T12:00:00Z"), true, "graph").seed();
+
+        assertEquals(5, sessions.findAllByMostRecentlyUpdated().size());
+        assertTrue(folders.findByUser(UserId.DEMO).isEmpty());
+    }
+
+    @Test
     void idsAreTheSameOnEveryStart() {
         InMemorySessionRepository one = new InMemorySessionRepository();
         InMemorySessionRepository two = new InMemorySessionRepository();
-        new DemoDataSeeder(one, new InMemoryConnectedFoldersRepository(), clockAt("2026-09-30T12:00:00Z"), true).seed();
-        new DemoDataSeeder(two, new InMemoryConnectedFoldersRepository(), clockAt("2026-10-05T08:00:00Z"), true).seed();
+        new DemoDataSeeder(one, new InMemoryConnectedFoldersRepository(), clockAt("2026-09-30T12:00:00Z"), true, "fake").seed();
+        new DemoDataSeeder(two, new InMemoryConnectedFoldersRepository(), clockAt("2026-10-05T08:00:00Z"), true, "fake").seed();
 
         assertEquals(one.findAllByMostRecentlyUpdated().stream().map(Session::id).toList(),
                 two.findAllByMostRecentlyUpdated().stream().map(Session::id).toList());

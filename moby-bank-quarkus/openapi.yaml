@@ -8,7 +8,8 @@ components:
       properties:
         error:
           type: string
-          description: "Stable error code: bad_request, not_found, conflict or sandbox_failure"
+          description: "Stable error code: bad_request, not_found, conflict, sandbox_failure\
+            \ or document_source_failure"
         message:
           type: string
           description: Human-readable explanation

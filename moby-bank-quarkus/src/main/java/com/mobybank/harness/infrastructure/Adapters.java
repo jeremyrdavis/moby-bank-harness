@@ -3,6 +3,7 @@ package com.mobybank.harness.infrastructure;
 import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.SandboxAgent;
 import com.mobybank.harness.domain.SandboxTransfer;
+import com.mobybank.harness.infrastructure.graph.GraphAdapters;
 import com.mobybank.harness.infrastructure.sbx.SbxAdapters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -17,7 +18,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  *
  * <ul>
  *   <li>{@code harness.sandbox.mode}: {@code fake} or {@code sbx} (agent and transfer)</li>
- *   <li>{@code harness.documents.mode}: {@code fake} (document catalog)</li>
+ *   <li>{@code harness.documents.mode}: {@code fake} or {@code graph} (document catalog)</li>
  * </ul>
  *
  * Other modes are added with their adapters and fail fast at startup until then.
@@ -53,8 +54,9 @@ public class Adapters {
     @Produces
     @ApplicationScoped
     DocumentCatalog documentCatalog(
-            @ConfigProperty(name = "harness.documents.mode", defaultValue = "fake") String mode) {
-        return selectCatalog(mode);
+            @ConfigProperty(name = "harness.documents.mode", defaultValue = "fake") String mode,
+            GraphAdapters graph) {
+        return selectCatalog(mode, graph::catalog);
     }
 
     static SandboxAgent selectAgent(String mode, Duration fakeDelay, Supplier<SandboxAgent> sbx) {
@@ -74,10 +76,11 @@ public class Adapters {
         };
     }
 
-    static DocumentCatalog selectCatalog(String mode) {
+    static DocumentCatalog selectCatalog(String mode, Supplier<DocumentCatalog> graph) {
         return switch (mode) {
             case "fake" -> new FakeDocumentCatalog();
-            default -> throw unsupported("harness.documents.mode", mode, "fake");
+            case "graph" -> graph.get();
+            default -> throw unsupported("harness.documents.mode", mode, "fake, graph");
         };
     }
 

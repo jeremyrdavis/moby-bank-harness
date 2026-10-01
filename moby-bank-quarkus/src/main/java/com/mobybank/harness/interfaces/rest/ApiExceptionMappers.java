@@ -1,6 +1,7 @@
 package com.mobybank.harness.interfaces.rest;
 
 import com.mobybank.harness.application.ResourceNotFoundException;
+import com.mobybank.harness.domain.DocumentSourceException;
 import com.mobybank.harness.domain.DomainException;
 import com.mobybank.harness.domain.InvalidMoveException;
 import com.mobybank.harness.domain.SandboxFailureException;
@@ -13,7 +14,7 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 /**
  * Turns application and domain failures into HTTP errors with an {@link ApiError} body:
  * 400 bad input, 404 unknown session or folder, 409 a rule says not now (busy, invalid move, stale update),
- * 502 the sandbox failed.
+ * 502 the sandbox or the document source failed.
  */
 public class ApiExceptionMappers {
 
@@ -48,6 +49,12 @@ public class ApiExceptionMappers {
     public RestResponse<ApiError> sandboxFailure(SandboxFailureException e) {
         LOG.warn("Sandbox failure reached the API", e);
         return RestResponse.status(RestResponse.Status.BAD_GATEWAY, new ApiError("sandbox_failure", e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ApiError> documentSourceFailure(DocumentSourceException e) {
+        LOG.warn("Document source failure reached the API", e);
+        return RestResponse.status(RestResponse.Status.BAD_GATEWAY, new ApiError("document_source_failure", e.getMessage()));
     }
 
     @ServerExceptionMapper

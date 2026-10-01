@@ -47,6 +47,30 @@ cover is the real CLI, so check these on a machine with `sbx` installed: the age
 format, that `sbx ls -q` lists cloud sandboxes as `agent/name` (the adapters accept either form), and that
 `sbx move --force` runs without a prompt.
 
+## Reading documents from OneDrive
+
+By default the folder library is the prototype's demo data (`harness.documents.mode=fake`). To read a real OneDrive
+through Microsoft Graph, start with `-Dharness.documents.mode=graph` and configure **one** of:
+
+- **A ready-made token** (quickest for a demo): set `harness.graph.access-token`. A token from Graph Explorer with
+  the `Files.Read.All` permission works, and expires in about an hour.
+- **An Entra app registration** (client credentials): register an app, grant it the **application** permission
+  `Files.Read.All` with admin consent, and set `harness.graph.tenant-id`, `harness.graph.client-id` and
+  `harness.graph.client-secret` (from the environment: `HARNESS_GRAPH_CLIENT_SECRET`, never a committed file). An
+  app-only token has no signed-in user, so also set `harness.graph.drive` to `users/<upn>/drive` or `drives/<id>`.
+
+`harness.graph.folders-root` limits the library to one folder's sub-folders. Per-user sign-in (the delegated
+authorization-code flow) is not built: every analyst sees the one configured drive.
+
+How it behaves: the library is the drive's (or `folders-root`'s) sub-folders; a folder's documents are its files;
+an attached OneDrive file is found by exact name and downloaded through the short-lived link Graph returns, which is
+requested without the bearer token. The token is only ever sent to the configured Graph host, and a paging link that
+points elsewhere is refused. Files over `harness.graph.max-download-bytes` are refused. Failures reach the UI as
+502 `document_source_failure`. In this mode the demo conversations still load, but no demo folders are pre-connected.
+
+The tests run the real HTTP code against an in-process stand-in for Graph, the token endpoint and the download host.
+They cannot confirm your tenant's permissions, so try it once against your own drive.
+
 ## Layout
 
 Packages follow the `ddd-foundations` layering under `com.mobybank.harness`: `domain`, `application`, `infrastructure`, `interfaces.rest`.
