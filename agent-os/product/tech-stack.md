@@ -9,21 +9,23 @@
 
 ## Backend
 
-Two implementations, built sequentially:
+Two implementations, built sequentially, behind one HTTP + server-sent-events API (`moby-bank-quarkus/openapi.yaml` is the contract):
 
-1. Java / Quarkus
-2. Python
+1. **Java / Quarkus: done** (`moby-bank-quarkus/`). Quarkus 3.40.1, Java 25, Maven (wrapper). Extensions: `rest-jackson`, `smallrye-openapi`, `smallrye-health`. Layered as `domain` / `application` / `infrastructure` / `interfaces.rest` per the `ddd-foundations` skill. Drives sandboxes by running the `sbx` CLI, and reads OneDrive with the JDK `HttpClient` and Jackson (no REST-client extension).
+2. **Python: to do.** To be scaffolded with the `python-app` skill and to match the same API.
 
-Both run or drive agents in Docker Sandboxes (local and cloud). Framework and structure within each implementation are to be defined, guided by the skills listed below.
+Both run or drive agents in Docker Sandboxes (local and cloud).
 
 ## Database
 
-To be defined
+None. The Quarkus backend keeps sessions and connected folders in memory behind repository interfaces (with an optimistic version check), so state is lost on restart. Adding persistence means a new repository implementation; the domain does not change.
 
 ## Other
 
-- Docker Sandboxes: local and cloud agent runtimes
-- Microsoft OneDrive integration for document sources
+- Docker Sandboxes: local and cloud agent runtimes, driven by the `sbx` CLI (`sbx --cloud` for cloud; `sbx move` to move a session); the agent inside is the Claude Code CLI, run headless
+- Microsoft OneDrive integration for document sources, through Microsoft Graph (access token or Entra client credentials)
+- Testing: JUnit 5 and RestAssured for the backend (with in-process stand-ins for Graph and `sbx`); `node:test` for the UI
+- A Sandbox kit for the JDK, Maven, Quarkus CLI and JBang: `SANDBOX-KIT.md`
 - Build skills and references:
   - https://github.com/jeremyrdavis/agentic-skills-for-python
   - https://github.com/jeremyrdavis/agentic-skills-for-quarkus
