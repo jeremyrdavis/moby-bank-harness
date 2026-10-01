@@ -1,0 +1,563 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    ApiError:
+      description: Error response
+      type: object
+      properties:
+        error:
+          type: string
+          description: "Stable error code: bad_request, not_found, conflict or sandbox_failure"
+        message:
+          type: string
+          description: Human-readable explanation
+    CatalogFileDTO:
+      type: object
+      properties:
+        folderId:
+          type: string
+        folderName:
+          type: string
+        folderPath:
+          type: string
+        name:
+          type: string
+    ConnectFoldersRequest:
+      type: object
+      required:
+      - folderIds
+      properties:
+        folderIds:
+          type: array
+          items:
+            type: string
+          description: Ids of the folders to connect
+    CreateSessionRequest:
+      type: object
+      properties:
+        location:
+          type: string
+          description: Where the session starts
+          default: local
+          enum:
+          - local
+          - cloud
+    FileRefDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "File name, without any path"
+        source:
+          type: string
+          description: Where the file came from
+          enum:
+          - upload
+          - onedrive
+    FolderDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        path:
+          type: string
+        fileCount:
+          type: integer
+          format: int32
+        connected:
+          type: boolean
+    Instant:
+      type: string
+      format: date-time
+      examples:
+      - 2022-03-10T16:15:50Z
+    MessageDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+        text:
+          type: string
+          description: The analyst's text; empty for assistant messages
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileRefDTO"
+          description: Attached files; empty for assistant messages
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/StepDTO"
+          description: The agent's trace; empty for user messages
+        paragraphs:
+          type: array
+          items:
+            type: string
+          description: "The agent's prose, one entry per paragraph; empty for user\
+            \ messages"
+        table:
+          description: "A financial table, or null when the agent returned none"
+          type:
+          - object
+          - "null"
+          anyOf:
+          - $ref: "#/components/schemas/TableDTO"
+          - type: "null"
+        createdAt:
+          $ref: "#/components/schemas/Instant"
+    MoveSessionRequest:
+      type: object
+      required:
+      - target
+      properties:
+        target:
+          type: string
+          description: Where to move the session; must differ from where it runs now
+          enum:
+          - local
+          - cloud
+    SendMessageRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The analyst's message; may be empty when files are attached
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileRefDTO"
+          description: "Files to attach: uploaded earlier, or chosen from OneDrive"
+    SessionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        location:
+          type: string
+          description: Where the session's agent runs
+          enum:
+          - local
+          - cloud
+        status:
+          type: string
+          description: "idle: ready; running: the agent is working; moving: being\
+            \ moved between locations"
+          enum:
+          - idle
+          - running
+          - moving
+        moveTarget:
+          type:
+          - string
+          - "null"
+          description: Where the session is moving to; null unless status is moving
+          enum:
+          - local
+          - cloud
+        group:
+          type: string
+          description: The recency label shown in the sidebar
+          enum:
+          - Today
+          - Previous 7 days
+          - Earlier
+        createdAt:
+          $ref: "#/components/schemas/Instant"
+        updatedAt:
+          $ref: "#/components/schemas/Instant"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageDTO"
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileRefDTO"
+          description: "Distinct files shared anywhere in the conversation, in the\
+            \ order they first appeared"
+    SessionSummaryDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        location:
+          type: string
+          description: Where the session's agent runs
+          enum:
+          - local
+          - cloud
+        status:
+          type: string
+          description: "idle: ready; running: the agent is working; moving: being\
+            \ moved between locations"
+          enum:
+          - idle
+          - running
+          - moving
+        group:
+          type: string
+          description: The recency label shown in the sidebar
+          enum:
+          - Today
+          - Previous 7 days
+          - Earlier
+        updatedAt:
+          $ref: "#/components/schemas/Instant"
+    StepDTO:
+      type: object
+      properties:
+        kind:
+          type: string
+          description: "A file read, or a calculation run"
+          enum:
+          - read
+          - compute
+        label:
+          type: string
+          description: "The file path, or the calculation, as the agent reported it"
+    TableDTO:
+      type: object
+      properties:
+        cols:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        initials:
+          type: string
+tags:
+- name: Folders
+- name: Sessions
+- name: User
+paths:
+  /api/folders:
+    get:
+      summary: The folder library
+      description: "Every folder that can be connected, each flagged with whether\
+        \ it already is. Filter on `connected` for the sidebar list."
+      tags:
+      - Folders
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FolderDTO"
+  /api/folders/connect:
+    post:
+      summary: Connect folders
+      description: Connects the chosen folders; ones already connected are ignored.
+        Returns the updated library.
+      tags:
+      - Folders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectFoldersRequest"
+        required: true
+      responses:
+        "400":
+          description: No folders chosen
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: One of the folders does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/folders/connected/files:
+    get:
+      summary: Documents in the connected folders
+      description: "What the attach dialog offers: each document with its folder's\
+        \ name and path."
+      tags:
+      - Folders
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CatalogFileDTO"
+  /api/me:
+    get:
+      summary: The signed-in analyst
+      description: "Name, role and initials for the sidebar card."
+      tags:
+      - User
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+  /api/sessions:
+    get:
+      summary: List the conversation history
+      description: Most recently updated first. Each entry carries the recency group
+        shown in the sidebar.
+      tags:
+      - Sessions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionSummaryDTO"
+    post:
+      summary: Start a new conversation
+      tags:
+      - Sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequest"
+        required: true
+      responses:
+        "201":
+          description: "The new, empty session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionDTO"
+        "400":
+          description: Unknown location
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/sessions/{id}:
+    get:
+      summary: Open a conversation
+      description: The session with all its messages and shared files.
+      tags:
+      - Sessions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: No such session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/sessions/{id}/events:
+    get:
+      summary: Follow a session live (server-sent events)
+      description: |-
+        Streams what happens to the session. The first event, `ready`, confirms the subscription is active, so open the stream before sending a message or starting a move. Only events published after subscribing are delivered; read the session to catch up. Each event's name is the SSE `event:` field and its `data:` is JSON:
+
+        | event | data |
+        |---|---|
+        | `ready` | `{"sessionId"}` |
+        | `thinking` | `{"sessionId", "label"}`: the agent started; label is e.g. "Reading 2 files on local model…" |
+        | `step` | `{"sessionId", "step": {"kind", "label"}}`: a file read or calculation, as it happens |
+        | `message` | `{"sessionId", "message": <Message>}`: a message joined the conversation (the user's, then the agent's) |
+        | `move-progress` | `{"sessionId", "stage", "detail"}`: stage is `packaging` or `transferring` |
+        | `moved` | `{"sessionId", "location"}`: the move finished; the session now runs at location |
+        | `move-failed` | `{"sessionId", "reason"}`: the move failed and the session stayed where it was |
+
+        A comment line (`: keep-alive`) is sent every 20 seconds to keep the connection open.
+      tags:
+      - Sessions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: An event stream
+          content:
+            text/event-stream: {}
+        "404":
+          description: No such session
+          content:
+            text/event-stream:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/sessions/{id}/messages:
+    post:
+      summary: Send a message
+      description: Stores the message and starts the agent on it. Returns immediately
+        with the stored message; follow the agent's steps and reply on the session's
+        event stream.
+      tags:
+      - Sessions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageRequest"
+        required: true
+      responses:
+        "202":
+          description: The stored user message; the agent is working
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageDTO"
+        "400":
+          description: "No text and no files, or an invalid attachment"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No such session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: The session is busy (the agent is working or it is moving)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/sessions/{id}/move:
+    post:
+      summary: Move the session to the other location
+      description: "Starts moving the session between the local and the cloud sandbox,\
+        \ in either direction. Returns at once with the session in the moving state;\
+        \ progress and the outcome arrive on the event stream."
+      tags:
+      - Sessions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoveSessionRequest"
+        required: true
+      responses:
+        "202":
+          description: "The session, now moving"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionDTO"
+        "400":
+          description: Missing or unknown target
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No such session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: "The session is busy, or already runs at the target location"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/sessions/{id}/uploads:
+    post:
+      summary: Upload a file from the analyst's machine
+      description: "Stores the file for this session. Attach it to a message by sending\
+        \ {\"name\": <returned name>, \"source\": \"upload\"} in the message's files."
+      tags:
+      - Sessions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "201":
+          description: The stored file reference
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileRefDTO"
+        "400":
+          description: "No file, or an invalid file name"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No such session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+info:
+  title: Moby Bank agent harness API
+  version: 1.0.0
+  description: "HTTP and server-sent-events API used by the harness UI. Every backend\
+    \ implementation (Quarkus, Python) must match this contract."
+servers:
+- url: http://127.0.0.1:8080
+  description: Auto generated value

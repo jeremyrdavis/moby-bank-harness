@@ -362,4 +362,37 @@ class SessionApplicationServiceTest {
                 () -> service.attachUpload(new AttachUploadCommand(created.id(), "a.txt", null)));
         assertTrue(uploads.files.isEmpty());
     }
+
+    @Test
+    void anUploadKeepsOnlyTheFileNameSoPathsCannotEscape() {
+        SessionDTO created = service.create(new CreateSessionCommand(null));
+        List<String> stored = new java.util.ArrayList<>();
+        for (String hostile : List.of("../../etc/passwd", "C:\\Users\\me\\..\\secret.txt", "/abs/path/notes.docx")) {
+            stored.add(service.attachUpload(new AttachUploadCommand(created.id(), hostile, new byte[] {1})).name());
+        }
+        assertEquals(List.of("passwd", "secret.txt", "notes.docx"), stored);
+        assertEquals(3, uploads.files.size());
+        assertTrue(uploads.find(SessionId.parse(created.id()), "passwd").isPresent());
+    }
+
+    @Test
+    void namesThatAreNotFilesAreRejected() {
+        SessionDTO created = service.create(new CreateSessionCommand(null));
+        for (String bad : List.of("..", ".", "dir/", "dir\\", "a/..")) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> service.attachUpload(new AttachUploadCommand(created.id(), bad, new byte[0])), bad);
+        }
+        assertTrue(uploads.files.isEmpty());
+    }
+
+    @Test
+    void attachedFilesNeedANameAndASourceNotJustAnything() {
+        SessionDTO created = service.create(new CreateSessionCommand(null));
+        for (FileRefDTO bad : java.util.Arrays.asList(new FileRefDTO(null, "upload"), new FileRefDTO(" ", "upload"),
+                new FileRefDTO("a.pdf", null), null)) {
+            assertThrows(IllegalArgumentException.class, () -> service.sendMessage(
+                    new SendMessageCommand(created.id(), "hi", java.util.Arrays.asList(bad))));
+        }
+        assertEquals("idle", service.get(created.id()).status());
+    }
 }

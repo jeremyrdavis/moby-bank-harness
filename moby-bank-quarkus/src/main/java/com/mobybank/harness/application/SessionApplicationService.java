@@ -107,9 +107,21 @@ public class SessionApplicationService {
         if (command.content() == null) {
             throw new IllegalArgumentException("file content required");
         }
-        FileRef ref = new FileRef(command.fileName(), FileSource.UPLOAD);
+        FileRef ref = new FileRef(baseName(command.fileName()), FileSource.UPLOAD);
         uploads.store(id, ref.name(), command.content());
         return Dtos.file(ref);
+    }
+
+    /** Keeps only the file name, so a client-supplied path can never point outside the session's upload area. */
+    private static String baseName(String fileName) {
+        if (fileName == null || fileName.isBlank()) {
+            throw new IllegalArgumentException("file name required");
+        }
+        String name = fileName.substring(Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\')) + 1).strip();
+        if (name.isEmpty() || name.equals(".") || name.equals("..")) {
+            throw new IllegalArgumentException("invalid file name: " + fileName);
+        }
+        return name;
     }
 
     /**

@@ -1,5 +1,9 @@
 package com.mobybank.harness.application;
 
-/** A file attached to a message. {@code source} is {@code upload} or {@code onedrive}. */
-public record FileRefDTO(String name, String source) {
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+/** A file attached to a message. */
+public record FileRefDTO(
+        @Schema(description = "File name, without any path") String name,
+        @Schema(description = "Where the file came from", enumeration = {"upload", "onedrive"}) String source) {
 }

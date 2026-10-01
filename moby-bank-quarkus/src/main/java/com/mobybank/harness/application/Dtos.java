@@ -10,7 +10,6 @@ import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.Step;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Translates between domain types and API types. The API speaks lower-case strings ({@code "local"},
@@ -109,13 +108,15 @@ final class Dtos {
     }
 
     private static FileRef fileRef(FileRefDTO dto) {
-        Objects.requireNonNull(dto, "file required");
+        if (dto == null || dto.name() == null || dto.name().isBlank()) {
+            throw new IllegalArgumentException("every attached file needs a name");
+        }
+        if (dto.source() == null) {
+            throw new IllegalArgumentException("every attached file needs a source (upload or onedrive)");
+        }
         try {
-            return new FileRef(dto.name(), FileSource.valueOf(String.valueOf(dto.source()).toUpperCase(Locale.ROOT)));
+            return new FileRef(dto.name(), FileSource.valueOf(dto.source().strip().toUpperCase(Locale.ROOT)));
         } catch (IllegalArgumentException e) {
-            if (dto.name() == null || dto.name().isBlank()) {
-                throw e;
-            }
             throw new IllegalArgumentException("unknown file source: " + dto.source() + " (expected upload or onedrive)");
         }
     }
