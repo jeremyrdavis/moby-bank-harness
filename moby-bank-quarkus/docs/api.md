@@ -5,6 +5,9 @@ The HTTP and server-sent-events API the chat UI uses. The machine-readable contr
 (the planned Python one) must match it**. This page explains the behaviour around it, with real responses captured
 from the running app. Live documentation is also served at `/q/swagger-ui` and `/q/openapi`.
 
+(The htmx page `index.html` has its own HTML endpoints under `/ui`; they are not part of this contract. See
+[ui-fragments.md](ui-fragments.md).)
+
 Base URL in development: `http://localhost:8080`. Bodies are JSON (`Content-Type: application/json`) unless noted.
 All values the API speaks are lower-case strings: `"local"`, `"assistant"`, `"idle"`.
 

@@ -60,7 +60,7 @@ cd moby-bank-quarkus
 ./mvnw test
 ```
 
-Expect `BUILD SUCCESS` and roughly 280 tests in about half a minute. The first run downloads dependencies. If tests
+Expect `BUILD SUCCESS` and roughly 320 tests in about half a minute. The first run downloads dependencies. If tests
 fail on a clean checkout, **stop and ask**: that is a setup problem, not something to work around.
 
 ### Run the backend and the UI

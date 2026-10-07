@@ -32,6 +32,7 @@ Any other value stops the app at startup with a message naming the property and 
 |---|---|---|
 | `harness.user.name` | `Hermione Granger` | The analyst's name in the sidebar |
 | `harness.user.role` | `Credit Research` | Their role |
+| `harness.ui.wait-timeout` | `180s` | How long a request from the htmx page (send a message, move a session) waits for the agent or the move before giving up with a toast. The work carries on. See [ui-fragments.md](ui-fragments.md) |
 | `harness.seed-demo-data` | `true` | Load the five demo conversations at startup. Also connects the first three demo folders, but only when `harness.documents.mode` is `fake` |
 
 ## The fakes' timing

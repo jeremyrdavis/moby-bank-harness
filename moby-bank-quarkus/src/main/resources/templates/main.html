@@ -1,0 +1,48 @@
+{@com.mobybank.harness.application.SessionDTO session}
+<header class="topbar">
+  <h1 id="conversation-title" class="trunc">{session.title}</h1>
+  {#if session.location == 'cloud'}
+  <div class="status"><span class="dot cloud"></span>Cloud model · Moby Private Cloud</div>
+  <button class="btn btn-primary btn-sm" disabled>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg>
+    Running in cloud
+  </button>
+  {#else}
+  <div class="status"><span class="dot"></span>Local model · on-prem</div>
+  <button class="btn btn-primary btn-sm" data-move-cloud hx-post="/api/conversations/{session.id}/move?to=cloud" hx-target="#main" hx-swap="innerHTML"{#if session.status != 'idle'} disabled{/if}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/><path d="M12 16v-5M9.5 13.5L12 11l2.5 2.5"/></svg>
+    Move to cloud
+  </button>
+  {/if}
+</header>
+<div class="thread" id="thread">
+  <div class="thread-inner" id="messages">
+    {#if session.messages}
+    {#include messages messages=session.messages /}
+    {#else}
+    <div class="empty" id="empty-state"><h2>What should we analyze?</h2><p>Attach filings or pull documents from a connected OneDrive folder.</p></div>
+    {/if}
+  </div>
+  <div class="thinking" id="thinking" style="max-width:760px;margin:0 auto;padding:0 24px 24px;width:100%{#if session.status != 'idle'};display:flex{/if}"><span class="spinner"></span>{#if session.status == 'moving'}Moving the session…{#else}The agent is working…{/if}</div>
+</div>
+<div class="composer-wrap">
+  <form class="composer" id="composer" hx-post="/api/conversations/{session.id}/messages" hx-target="#messages" hx-swap="beforeend" hx-encoding="multipart/form-data" hx-indicator="#thinking" hx-disabled-elt="find button[type=submit]">
+    <div id="pending"></div>
+    <textarea name="text" rows="2" placeholder="Ask about a filing, or tell the agent what to do…"></textarea>
+    <div class="composer-bar">
+      <input type="file" name="files" multiple hidden id="file-input">
+      <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('file-input').click()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7-7l8.6-8.6a3.3 3.3 0 0 1 4.7 4.7l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l8-8"/></svg>
+        Upload
+      </button>
+      <button type="button" class="btn btn-ghost btn-sm" hx-get="/api/onedrive/picker?mode=attach" hx-target="#dialog" hx-swap="innerHTML">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        From OneDrive
+      </button>
+      <span class="grow"></span>
+      <button type="submit" class="btn btn-primary btn-sm btn-icon" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </div>
+  </form>
+</div>

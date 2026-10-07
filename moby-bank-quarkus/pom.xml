@@ -7,6 +7,8 @@
     <packaging>quarkus</packaging>
 
     <properties>
+        <htmx.version>2.0.11</htmx.version>
+        <manrope.version>5.3.0</manrope.version>
         <compiler-plugin.version>3.15.0</compiler-plugin.version>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,6 +39,10 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-qute</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
         <dependency>
@@ -46,6 +52,17 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
+        </dependency>
+        <!-- Browser assets for index.html, served from the classpath at /webjars/... and /_static/... -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>htmx.org</artifactId>
+            <version>${htmx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mvnpm.at.fontsource</groupId>
+            <artifactId>manrope</artifactId>
+            <version>${manrope.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -61,6 +78,33 @@
 
     <build>
         <plugins>
+            <plugin>
+                <!-- The htmx page lives once, at the repository root; copy just that file to where Quarkus serves it
+                     at /. (Do not list the parent directory as a <resource>: Quarkus dev mode and tests copy the whole
+                     directory, ignoring <includes>, which copies the repository, .git included, into target/classes.) -->
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-index-page</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/..</directory>
+                                    <includes>
+                                        <include>index.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>

@@ -1,0 +1,19 @@
+{@java.util.List<com.mobybank.harness.application.FolderDTO> folders}
+<form class="dlg" hx-post="/api/onedrive/connect" hx-swap="none">
+  <div>
+    <h3>Connect OneDrive folders</h3>
+    <p>Choose the folders the agent may read from.</p>
+  </div>
+  <div class="pick-list">
+    {#for f in folders}
+    <label class="pick">
+      <input type="checkbox" name="folder" value="{f.id}"{#if f.connected} checked disabled{/if}>
+      <div><strong>{f.name}</strong><small>{f.path} · {f.fileCount} files</small></div>
+    </label>
+    {/for}
+  </div>
+  <div class="dlg-foot">
+    <button type="button" class="btn btn-outline" onclick="this.closest('dialog').close()">Cancel</button>
+    <button type="submit" class="btn btn-primary">Connect</button>
+  </div>
+</form>

@@ -1,0 +1,14 @@
+{@java.util.List<com.mobybank.harness.application.FolderDTO> folders}
+<div class="side-head">
+  <span class="eyebrow">OneDrive folders</span>
+  <button type="button" class="btn btn-ghost btn-xs" aria-label="Connect folders" hx-get="/api/onedrive/picker?mode=connect" hx-target="#dialog" hx-swap="innerHTML">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</div>
+{#for f in folders}
+<div class="row">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="color:var(--muted-fg)"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <span class="trunc" style="flex:1">{f.name}</span>
+  <span class="count">{f.fileCount}</span>
+</div>
+{/for}
