@@ -1,3 +1,4 @@
 .idea/
 .claude/settings.local.json
 .quarkus/
+.DS_Store

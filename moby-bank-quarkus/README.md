@@ -1,6 +1,6 @@
 # moby-bank-quarkus
 
-Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the API the `moby-bank-prototype/` UI uses and drives an agent running in a Docker Sandbox, local or cloud. Run the UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
+Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the JSON API the `moby-bank-prototype/` UI uses, and also the htmx page `index.html` (repository root) at `/` with the HTML endpoints behind it, and drives an agent running in a Docker Sandbox, local or cloud. Run the prototype UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
 
 ## Documentation
 
@@ -21,6 +21,8 @@ guided code review), [architecture](docs/architecture.md), the [domain model](do
 ./mvnw quarkus:dev          # http://localhost:8080 , Dev UI at /q/dev
 ./mvnw test                 # unit and @QuarkusTest tests
 ```
+
+Open <http://localhost:8080/> for the htmx page (see [`docs/ui-fragments.md`](docs/ui-fragments.md)); it needs nothing else running. After editing `index.html` in dev mode, run `./mvnw resources:copy-resources@copy-index-page` to refresh the served copy.
 
 The API is described in `openapi.yaml` (written at build time; commit changes to it). Useful endpoints: `/api/sessions`, `/api/folders`, `/q/health`, `/q/openapi`, `/q/swagger-ui`. The `/events` stream per session is documented on that operation.
 
@@ -80,9 +82,9 @@ They cannot confirm your tenant's permissions, so try it once against your own d
 
 ## Layout
 
-Packages follow the `ddd-foundations` layering under `com.mobybank.harness`: `domain`, `application`, `infrastructure`, `interfaces.rest`.
+Packages follow the `ddd-foundations` layering under `com.mobybank.harness`: `domain`, `application`, `infrastructure`, `interfaces.rest` (JSON) and `interfaces.web` (HTML for `index.html`, using Qute templates).
 
 ## Notes
 
-- Generated with the Quarkus CLI 3.40.1 (`--no-code`), extensions: `rest-jackson`, `rest-client-jackson`, `smallrye-openapi`, `smallrye-health`.
+- Generated with the Quarkus CLI 3.40.1 (`--no-code`), extensions: `rest-jackson`, `rest-qute`, `rest-client-jackson`, `smallrye-openapi`, `smallrye-health`.
 - There is no database. State is held in memory.

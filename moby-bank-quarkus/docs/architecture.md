@@ -25,8 +25,10 @@ real OneDrive are switched on by configuration ([configuration.md](configuration
 ```mermaid
 flowchart LR
     UI["Chat UI<br/>(moby-bank-prototype)"]
+    PAGE["htmx page<br/>(index.html)"]
     subgraph Backend["moby-bank-quarkus"]
         REST["interfaces.rest<br/>resources, SSE,<br/>error mapping"]
+        WEB["interfaces.web<br/>Qute HTML fragments"]
         APP["application<br/>use cases, DTOs,<br/>event stream"]
         DOM["domain<br/>aggregates, rules,<br/>ports"]
         INF["infrastructure<br/>adapters"]
@@ -35,20 +37,24 @@ flowchart LR
     GRAPH["Microsoft Graph<br/>OneDrive"]
 
     UI -- "HTTP + server-sent events" --> REST
+    PAGE -- "HTML fragments (htmx)" --> WEB
     REST --> APP
+    WEB --> APP
     APP --> DOM
     INF -. "implements the ports" .-> DOM
     INF --> SBX
     INF --> GRAPH
 ```
 
-## The four layers
+## The layers
 
 Dependencies point one way. The domain depends on nothing; infrastructure depends on the domain because it implements
 the domain's interfaces.
 
 ```
-interfaces.rest ──▶ application ──▶ domain ◀── infrastructure
+interfaces.rest ──┐
+                  ├──▶ application ──▶ domain ◀── infrastructure
+interfaces.web  ──┘
 ```
 
 | Layer (package under `com.mobybank.harness`) | What it holds | May import |
@@ -57,9 +63,10 @@ interfaces.rest ──▶ application ──▶ domain ◀── infrastructure
 | `application` | `*ApplicationService` use cases, `*Command` and `*DTO` types, three small ports of its own | `domain`, CDI, config, logging |
 | `infrastructure` (and `.sbx`, `.graph`) | In-memory state, the fakes, the real `sbx` and Graph adapters, and `Adapters`, which chooses between them | `domain`, `application`, frameworks |
 | `interfaces.rest` | JAX-RS resources, request bodies, exception mappers | `application` (the mapper also names domain exceptions) |
+| `interfaces.web` | The HTML endpoints and Qute templates behind `index.html` ([ui-fragments.md](ui-fragments.md)) | `application` only; not `interfaces.rest` |
 
 **These rules are enforced by tests**, not by convention: `DomainLayeringTest`, `ApplicationLayeringTest`,
-`InfrastructureLayeringTest` and `RestLayeringTest` read the source files and fail if an import crosses a boundary.
+`InfrastructureLayeringTest`, `RestLayeringTest` and `WebLayeringTest` read the source files and fail if an import crosses a boundary.
 A change that adds `jakarta.persistence` to the domain, or a domain type to a resource, fails the build.
 
 Two naming rules go with them: a service is always an `*ApplicationService` (in `application`) or a
@@ -81,6 +88,7 @@ implementation lives in infrastructure.
 | The rules of a conversation | `domain/Session.java` |
 | How a use case is orchestrated | `application/SessionApplicationService.java` |
 | The endpoints | `interfaces/rest/SessionsResource.java`, `FoldersResource.java`, `MeResource.java` |
+| The htmx page's endpoints and templates | `interfaces/web/ConversationsResource.java`, `OneDriveResource.java`, `src/main/resources/templates/` ([ui-fragments.md](ui-fragments.md)) |
 | Turning failures into HTTP errors | `interfaces/rest/ApiExceptionMappers.java` |
 | Choosing real vs fake | `infrastructure/Adapters.java` |
 | Saved state | `infrastructure/InMemorySessionRepository.java` |

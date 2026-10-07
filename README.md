@@ -4,7 +4,8 @@ A demo for engineering and platform teams of a **custom agent harness**: a chat 
 
 | Folder | What it is |
 |---|---|
-| [`moby-bank-prototype/`](moby-bank-prototype/) | The chat UI, built on Docker's Trident design system. |
+| [`index.html`](index.html) | A single-file htmx chat page. The Quarkus backend serves it at `/` and answers it with HTML fragments. |
+| [`moby-bank-prototype/`](moby-bank-prototype/) | The chat UI, built on Docker's Trident design system. It uses the JSON API, as the Python backend's UI will. |
 | [`moby-bank-quarkus/`](moby-bank-quarkus/) | The backend in Java/Quarkus. A Python backend is planned; both implement `moby-bank-quarkus/openapi.yaml`. |
 | [`moby-bank-quarkus/docs/`](moby-bank-quarkus/docs/README.md) | Backend documentation: **[ONBOARDING.md](moby-bank-quarkus/docs/ONBOARDING.md)** for new developers, architecture, API, configuration, integrations, testing, and the Javadoc. |
 | [`agent-os/`](agent-os/) | Product docs (mission, roadmap, tech stack) and the spec for the Quarkus backend. |
@@ -15,20 +16,22 @@ A demo for engineering and platform teams of a **custom agent harness**: a chat 
 Everything is simulated by default (the agent, the sandboxes and OneDrive), so nothing needs installing beyond Java 25 and Node 22.
 
 ```bash
-# terminal 1: the backend, on http://localhost:8080
+# terminal 1: the backend, on http://localhost:8080 (it also serves index.html)
 cd moby-bank-quarkus && ./mvnw quarkus:dev
 
-# terminal 2: the UI, on http://localhost:4173
+# terminal 2, optional: the prototype UI, on http://localhost:4173
 cd moby-bank-prototype && npm start
 ```
 
-Open <http://localhost:4173>. Pick a conversation, send a message with an attached file, and use **Move to cloud** / **Move to local** in the header.
+Open <http://localhost:8080> for the htmx page, or <http://localhost:4173> for the prototype. Pick a conversation, send a message with an attached file, and use **Move to cloud** in the header (the htmx page offers that direction; the prototype also has **Move to local**).
 
 To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.md`](moby-bank-quarkus/README.md): `-Dharness.sandbox.mode=sbx` and `-Dharness.documents.mode=graph`.
 
 ## How it fits together
 
 ```
+ index.html (htmx) ─── HTML fragments ──────────────┐
+                                                    ▼
  UI (Trident, React) ── HTTP + server-sent events ──▶  backend ──▶ SandboxAgent ──▶ sbx exec claude …   (local or --cloud)
                                                           │    ├─▶ SandboxTransfer ─▶ sbx move --to cloud|local
                                                           │    └─▶ DocumentCatalog ─▶ Microsoft Graph (OneDrive)
@@ -37,7 +40,7 @@ To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.
 
 ## Status
 
-The UI, the API, the simulated mode and both move directions work and are tested (about 280 backend tests and 44 UI tests). The real `sbx` adapters, the real OneDrive adapter and the page in a browser have **not** been checked against the real thing; [`agent-os/product/roadmap.md`](agent-os/product/roadmap.md) lists what to verify.
+The UI, the API, the simulated mode and both move directions work and are tested (about 320 backend tests and 44 UI tests). The real `sbx` adapters, the real OneDrive adapter and the page in a browser have **not** been checked against the real thing; [`agent-os/product/roadmap.md`](agent-os/product/roadmap.md) lists what to verify.
 
 ## Working on it
 

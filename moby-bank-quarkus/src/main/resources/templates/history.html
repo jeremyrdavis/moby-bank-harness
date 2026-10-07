@@ -1,0 +1,12 @@
+{@java.util.List<com.mobybank.harness.interfaces.web.HistoryGroup> groups}
+{#for g in groups}
+<div class="side-group">
+  <span class="eyebrow">{g.label}</span>
+  {#for r in g.rows}
+  <button type="button" class="row" hx-get="/api/conversations/{r.id}" hx-target="#main" hx-swap="innerHTML" aria-current="{r.current}">
+    <span class="trunc" style="flex:1">{r.title}</span>
+    {#if r.cloud}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="color:var(--muted-fg)"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg>{/if}
+  </button>
+  {/for}
+</div>
+{/for}

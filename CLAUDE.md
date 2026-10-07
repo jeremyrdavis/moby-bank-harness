@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Folder | What it is |
 |---|---|
-| `moby-bank-prototype/` | The chat UI: a Claude Design "dc" component served by a tiny Node server. Front end only. |
+| `index.html` | A single-file htmx chat page. The Quarkus app serves it at `/` and answers it with HTML fragments (Qute). |
+| `moby-bank-prototype/` | The chat UI: a Claude Design "dc" component served by a tiny Node server. Front end only; it uses the JSON API (as the Python backend's UI will). |
 | `moby-bank-quarkus/` | Backend implementation #1 (Java/Quarkus). A Python implementation is planned and must match the same API. |
 | `agent-os/` | Product docs (`product/`: mission, roadmap, tech stack) and the spec for the Quarkus backend (`specs/`). |
 | `.claude/` | Claude tooling: agent-os commands and the Python, Quarkus and DDD skills used to build the backends. |
@@ -22,8 +23,9 @@ A demo for engineering/platform teams of a custom agent harness: a chat UI for a
 ```bash
 # Backend (Java 25, Maven wrapper; no database, state is in memory)
 cd moby-bank-quarkus
-./mvnw quarkus:dev                      # http://localhost:8080, Dev UI at /q/dev
-./mvnw test                             # ~280 tests
+./mvnw quarkus:dev                      # http://localhost:8080 (the htmx page), Dev UI at /q/dev
+./mvnw resources:copy-resources@copy-index-page   # after editing ../index.html in dev mode
+./mvnw test                             # ~320 tests
 ./mvnw test -Dtest=SessionTest          # one class (or -Dtest='SessionTest#methodName')
 
 # UI (Node 22; nothing to install)
@@ -42,11 +44,12 @@ HARNESS_API=http://localhost:8080 npm run test:live   # end to end against a run
 
 Full documentation is in `moby-bank-quarkus/docs/` (start with `ONBOARDING.md`; it has the architecture, domain model, API, configuration, integrations and testing guides, plus generated Javadoc in `docs/apidocs/`). This section is the short version. `DocumentationTest` fails when those docs drift from the code (dead links, renamed classes or tests, settings and endpoints that don't match), so update them with the code. After changing public API or Javadoc, regenerate the Javadoc with `./mvnw javadoc:javadoc` and commit it.
 
-Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Dependencies point one way: `interfaces.rest → application → domain ← infrastructure`. Layering tests (`*LayeringTest`) fail the build if a layer imports something it shouldn't, so keep domain free of Jakarta/Quarkus and REST free of domain types (except `ApiExceptionMappers`, which names the domain's exception types).
+Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Dependencies point one way: `interfaces.rest` and `interfaces.web` `→ application → domain ← infrastructure`. Layering tests (`*LayeringTest`) fail the build if a layer imports something it shouldn't, so keep domain free of Jakarta/Quarkus and REST free of domain types (except `ApiExceptionMappers`, which names the domain's exception types).
 
 - **`domain`** (flat package, plain Java): `Session` aggregate (owns `Message`s; a status machine IDLE/RUNNING/MOVING; moves to the *other* location, so both directions work), `ConnectedFolders` aggregate, value-object records, events, and the **ports**: `SessionRepository`, `ConnectedFoldersRepository`, `SandboxAgent`, `SandboxTransfer`, `DocumentCatalog`. Aggregates have private constructors, a factory, and `rehydrate()` for the persistence side; they carry a plain `long version`.
 - **`application`**: `*ApplicationService` classes plus DTOs/commands (API types only: lower-case strings like `"local"`, `"assistant"`). Agent turns and moves run in the background (`BackgroundRunner`) and report through `SessionEventStream`; `SessionEvent` is the list of events the UI receives.
 - **`infrastructure`**: in-memory repositories (copy on read, optimistic version check → `StaleAggregateException`), the fakes, the demo-data seeder, and two real adapter families: `sbx/` (Docker Sandboxes via the `sbx` CLI) and `graph/` (OneDrive via Microsoft Graph). `Adapters` picks each port's implementation from `harness.sandbox.mode` (`fake|sbx`) and `harness.documents.mode` (`fake|graph`) and fails fast on anything else.
+- **`interfaces.web`**: the HTML endpoints and Qute templates behind `index.html` (see "The htmx page" below). Depends on `application` only (`WebLayeringTest`).
 - **`interfaces.rest`**: resources, `ApiExceptionMappers` (400 bad input, 404, 409 busy/invalid move/stale, 502 sandbox or document source), and an SSE stream per session.
 
 ### Things that aren't obvious
@@ -59,6 +62,17 @@ Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Depend
 - **Graph token hygiene:** the bearer token goes only to the configured Graph host (a paging link to another host is refused), and downloads use the pre-authenticated URL without it.
 - **Tests that need a server** use embedded stand-ins: `FakeGraphServer` (Graph, the token endpoint, downloads) and `FakeRunner` (for `sbx`). Slow fakes (`SlowFakesProfile`) make a session observably busy for the 409 tests.
 - Reading the skills: `ddd-foundations`, `ddd-value-objects`, `ddd-aggregates` and `ddd-services` in `.claude/skills/` govern new domain and application code. Their companion skills (`ddd-repositories`, `quarkus-rest`, …) are not installed. The `quarkus-ddd` layout is deliberately **not** used (it conflicts with `ddd-foundations`).
+
+## The htmx page (`index.html`)
+
+`index.html` at the repo root calls HTML-fragment endpoints and swaps the answers into itself. Full contract in `moby-bank-quarkus/docs/ui-fragments.md`.
+
+- **Served from the root, once.** A `maven-resources-plugin` execution (`copy-index-page`) in `moby-bank-quarkus/pom.xml` copies `../index.html` to `target/classes/META-INF/resources` at build time. The source stays single. **Never list `..` as a `<build><resources>` directory:** Quarkus dev mode and tests copy that whole directory ignoring `<includes>`, which copies the repository (`.git` too) into `target/classes`, nested without end, until the path is too long (`BuildLayoutTest` guards this).
+- **`/ui` is the page's API prefix.** The page writes `/api/...` and a script rewrites it to the `api-base` meta (`/ui`), so HTML endpoints stay out of the JSON `/api` and out of `openapi.yaml` (`mp.openapi.scan.exclude.packages`). Fragments the server renders also write `/api/...` paths.
+- **Requests wait.** The page has no SSE, so `POST …/messages` and `POST …/move` block (`SessionWaiter`) until the reply or the move ends, up to `harness.ui.wait-timeout` (180s). Steps and reply therefore appear together.
+- **Templates are type-checked** (`@CheckedTemplate`): a typo fails the build. They live in `src/main/resources/templates/`; HTML is auto-escaped, so never use `.raw` on user or agent text.
+- **No server-side page state.** The open conversation is the `moby-current` cookie; attached files are chips with hidden inputs.
+- htmx and the Manrope font come from jars (`org.webjars.npm:htmx.org`, `org.mvnpm.at.fontsource:manrope`), not CDNs. The page offers Move to cloud only for now.
 
 ## UI architecture (`moby-bank-prototype`)
 

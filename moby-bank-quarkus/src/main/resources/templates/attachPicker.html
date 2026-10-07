@@ -1,0 +1,23 @@
+{@java.util.List<com.mobybank.harness.application.CatalogFileDTO> files}
+<form class="dlg" hx-post="/api/onedrive/attach" hx-target="#pending" hx-swap="beforeend">
+  <div>
+    <h3>Attach from OneDrive</h3>
+    <p>Files in your connected folders.</p>
+  </div>
+  {#if files}
+  <div class="pick-list">
+    {#for f in files}
+    <label class="pick">
+      <input type="checkbox" name="file" value="{f.name}">
+      <div><strong>{f.name}</strong><small>{f.folderName}</small></div>
+    </label>
+    {/for}
+  </div>
+  {#else}
+  <p class="muted">No folders are connected yet. Connect one from the sidebar first.</p>
+  {/if}
+  <div class="dlg-foot">
+    <button type="button" class="btn btn-outline" onclick="this.closest('dialog').close()">Cancel</button>
+    <button type="submit" class="btn btn-primary">Attach</button>
+  </div>
+</form>

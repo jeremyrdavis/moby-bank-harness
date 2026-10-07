@@ -9,6 +9,7 @@ it. **New here? Start with [ONBOARDING.md](ONBOARDING.md).**
 | [architecture.md](architecture.md) | The layers, the three main flows (send a message, move a session, follow events), consistency and concurrency, design decisions |
 | [domain-model.md](domain-model.md) | The aggregates, the session state machine, every invariant and the test that proves it, value objects, events, ports |
 | [api.md](api.md) | Every endpoint and the event stream, with real captured responses, and how to change the API |
+| [ui-fragments.md](ui-fragments.md) | The htmx page `index.html` and the HTML endpoints behind it: how it is served, the fragment contract, how requests wait for the agent |
 | [configuration.md](configuration.md) | Every `harness.*` property, what real vs fake means, and how to override settings |
 | [integrations.md](integrations.md) | How the real Docker Sandboxes (`sbx`) and OneDrive (Microsoft Graph) adapters work, and what to verify on a real system |
 | [ONEDRIVE_INTEGRATION.md](ONEDRIVE_INTEGRATION.md) | **A plan** (not built yet) for taking OneDrive from the stand-in to a real tenant with per-user access: decisions, target architecture, Microsoft setup, phases, API changes, security, tests, rollout and a backlog |
