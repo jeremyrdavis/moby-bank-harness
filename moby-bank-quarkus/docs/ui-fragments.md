@@ -35,6 +35,14 @@ work through the application service, and waits for the agent's reply, or for `m
 `harness.ui.wait-timeout` (default `180s`, see [configuration.md](configuration.md)). The JSON API is unaffected: it
 still answers `202` and streams the events.
 
+A wait can last minutes, so `ConversationsResource` runs its handlers on virtual threads (`@RunOnVirtualThread`) and
+never holds one of the shared worker threads while it waits.
+
+The application persists the idle state before it publishes the outcome, so the previous operation's outcome can arrive
+while the next request is already waiting. `SessionWaiter` takes only an outcome that is this request's own: an agent
+message that was not in the conversation before the send, a move that ends at the location it was asked to move to,
+and a move failure only once the session is no longer moving.
+
 If the wait runs out, the page gets what it can (the user's own message) and a toast saying the agent is still working.
 The work carries on; opening the conversation again later shows the reply.
 
@@ -50,7 +58,7 @@ Paths are as the page writes them. Served under `/ui`.
 | `GET /api/conversations/{id}` | `#main` | That conversation's pane. Sets the cookie; raises `conversations-changed` |
 | `POST /api/conversations` | `#main` | A new empty conversation (always a new session). Raises `conversations-changed` |
 | `GET /api/conversations` (on load, `conversations-changed`) | `#history` | The history grouped Today, Previous 7 days, Earlier; the open one has `aria-current="true"` |
-| `POST /api/conversations/{id}/messages` (multipart: `text`, `files`, `onedrive`) | `#messages`, beforeend | The user's message and the agent's reply; removes `#empty-state` out of band; raises `conversations-changed` |
+| `POST /api/conversations/{id}/messages` (multipart: `text`, `files`, `onedrive`) | `#messages`, beforeend | The user's message and the agent's reply; removes `#empty-state` and replaces the `#conversation-title` heading out of band (the first message sets the title); raises `conversations-changed` |
 | `POST /api/conversations/{id}/move?to=cloud` | `#main` | The pane at the new location, and a success toast replacing the page's loading toast `move-cloud` |
 | `GET /api/onedrive/folders` (on load, `folders-changed`) | `#folders` | The connected folders with their file counts |
 | `GET /api/onedrive/picker?mode=connect` or `mode=attach` | `#dialog` | A dialog: every folder, or the files in the connected folders |

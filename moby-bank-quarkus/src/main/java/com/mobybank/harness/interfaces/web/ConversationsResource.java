@@ -10,7 +10,7 @@ import com.mobybank.harness.application.SendMessageCommand;
 import com.mobybank.harness.application.SessionApplicationService;
 import com.mobybank.harness.application.SessionDTO;
 import com.mobybank.harness.application.SessionSummaryDTO;
-import io.smallrye.common.annotation.Blocking;
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.CookieParam;
@@ -38,13 +38,14 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 /**
  * The conversation fragments for {@code index.html}: the history list, the main pane for one conversation, sending a
  * message and moving the session. Requests that start background work wait for its outcome (see
- * {@link SessionWaiter}), because the page has no live channel.
+ * {@link SessionWaiter}), because the page has no live channel. Those waits can last minutes, so every handler runs on
+ * a virtual thread instead of holding one of the shared worker threads.
  *
  * <p>The server keeps no page state. Which conversation is open is a cookie, so a reload comes back to it.
  */
 @Path("/ui/conversations")
 @Produces(MediaType.TEXT_HTML)
-@Blocking
+@RunOnVirtualThread
 public class ConversationsResource {
 
     private static final Logger LOG = Logger.getLogger(ConversationsResource.class);
@@ -137,7 +138,7 @@ public class ConversationsResource {
             triggers.toast(null, null, "The agent is still working",
                     "It is taking longer than expected. Open the conversation again in a moment to see the reply.");
         }
-        return triggers.on(Hx.html(Templates.sent(messages))).build();
+        return triggers.on(Hx.html(Templates.sent(sessions.get(id), messages))).build();
     }
 
     /**
@@ -149,7 +150,7 @@ public class ConversationsResource {
     public Response move(@PathParam("id") String id, @QueryParam("to") @DefaultValue("cloud") String to) {
         Optional<SessionWaiter.MoveOutcome> outcome;
         try {
-            outcome = waiter.awaitMove(id, () -> sessions.move(new MoveSessionCommand(id, to)));
+            outcome = waiter.awaitMove(id, to, () -> sessions.move(new MoveSessionCommand(id, to)));
         } catch (RuntimeException e) {
             LOG.warnf("Could not start moving session %s to %s: %s", id, to, e.getMessage());
             return moveToast("Could not move the session", e.getMessage());

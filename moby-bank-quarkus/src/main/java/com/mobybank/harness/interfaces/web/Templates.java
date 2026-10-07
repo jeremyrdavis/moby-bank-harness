@@ -28,8 +28,11 @@ final class Templates {
     /** Messages to append to the thread. */
     static native TemplateInstance messages(List<MessageDTO> messages);
 
-    /** The reply to sending a message: the new messages, and removal of the empty-thread prompt. */
-    static native TemplateInstance sent(List<MessageDTO> messages);
+    /**
+     * The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
+     * heading (the first message gives it its title).
+     */
+    static native TemplateInstance sent(SessionDTO session, List<MessageDTO> messages);
 
     /** The sidebar's connected OneDrive folders. */
     static native TemplateInstance folders(List<FolderDTO> folders);

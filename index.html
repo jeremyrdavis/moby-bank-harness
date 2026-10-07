@@ -158,7 +158,7 @@
      The markup below is the reference shape the server should return (empty conversation). -->
 <main id="main" hx-get="/api/conversations/current" hx-trigger="load" hx-swap="innerHTML">
   <header class="topbar">
-    <h1 class="trunc">New conversation</h1>
+    <h1 id="conversation-title" class="trunc">New conversation</h1>
     <div class="status"><span class="dot"></span>Local model · on-prem</div>
     <button class="btn btn-primary btn-sm" disabled>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/><path d="M12 16v-5M9.5 13.5L12 11l2.5 2.5"/></svg>
@@ -235,6 +235,8 @@
   document.body.addEventListener('change',function(e){
     if(e.target.id!=='file-input') return;
     var pending=document.getElementById('pending');
+    // The picker replaces the input's FileList, so the local chips are rebuilt from it (OneDrive chips stay).
+    pending.querySelectorAll('.chip[data-local]').forEach(function(c){c.remove()});
     Array.from(e.target.files).forEach(function(f){
       var c=document.createElement('span');c.className='chip';c.dataset.local=f.name;
       c.innerHTML='<span></span><span class="muted">Upload</span><button type="button" aria-label="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
@@ -252,12 +254,13 @@
   document.body.addEventListener('keydown',function(e){
     if(e.target.matches('#composer textarea')&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();e.target.form.requestSubmit();}
   });
+  // Only the composer form's own request is validated and reset; its buttons (From OneDrive) also fire htmx requests.
   document.body.addEventListener('htmx:beforeRequest',function(e){
-    var f=e.target.closest&&e.target.closest('#composer'); if(!f) return;
+    var f=e.target; if(!f||f.id!=='composer') return;
     if(!f.text.value.trim()&&!document.getElementById('pending').children.length) e.preventDefault();
   });
   document.body.addEventListener('htmx:afterRequest',function(e){
-    var f=e.target.closest&&e.target.closest('#composer'); if(!f||!e.detail.successful) return;
+    var f=e.target; if(!f||f.id!=='composer'||!e.detail.successful) return;
     f.text.value=''; document.getElementById('pending').innerHTML=''; document.getElementById('file-input').value='';
   });
   document.body.addEventListener('htmx:afterSettle',function(e){

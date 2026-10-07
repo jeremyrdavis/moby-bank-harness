@@ -21,7 +21,7 @@ Tests run in the `test` profile, where the fakes have no delays (`%test.harness.
 | **Adapter tests** | `infrastructure/` and its `sbx/`, `graph/` | no | Each adapter in isolation: commands issued, parsing, HTTP behaviour, security limits |
 | **Wiring tests** | `WiringTest`, `SbxModeTest`, `GraphModeTest` | yes | The real beans together under CDI with configuration-selected adapters |
 | **API tests** | `interfaces/rest/ApiTest`, `BusyApiTest` | yes | Every endpoint over real HTTP, real server-sent events, CORS, 409 paths |
-| **Web tests** | `interfaces/web/WebTest`, `WebWaitTest`, `HxTest` | yes (not `HxTest`) | The HTML endpoints behind `index.html`: fragments carry the ids and attributes the page relies on, text is escaped, requests wait for the reply or move, the wait times out cleanly, the JSON API is unaffected |
+| **Web tests** | `interfaces/web/WebTest`, `WebWaitTest`, `SessionWaiterTest`, `HxTest` | yes (not `HxTest`) | The HTML endpoints behind `index.html`: fragments carry the ids and attributes the page relies on, text is escaped, requests wait for the reply or move, the wait times out cleanly, the JSON API is unaffected |
 | **Contract tests** | `OpenApiContractTest` | yes | The endpoints and allowed values the other backend must match |
 | **Build layout test** | `BuildLayoutTest` | no | `pom.xml` does not use the repository root as a resource directory (which broke dev mode) |
 | **Layering tests** | `*LayeringTest` | no | No layer imports something it should not |
@@ -41,7 +41,7 @@ Quarkus tests then prove the pieces are wired and the HTTP surface behaves.
 | `sbx` adapter | `SbxSandboxAgentTest` (16), `SbxCliTest` (11), `SbxSandboxTransferTest` (7), `ClaudeStreamParserTest` (8), `ReplyFormatterTest` (8), `ProcessCommandRunnerTest` (8), `SandboxRegistryTest` (4) |
 | Graph adapter | `GraphDocumentCatalogTest` (23), `GraphTokenProviderTest` (6) |
 | Documentation | `DocumentationTest` (8) |
-| Web | `WebTest` (34), `WebWaitTest` (3), `HxTest` (3), `WebLayeringTest` (2) |
+| Web | `WebTest` (35), `WebWaitTest` (4), `SessionWaiterTest` (2), `HxTest` (3), `WebLayeringTest` (2) |
 | REST and wiring | `ApiTest` (31), `GraphModeTest` (5), `SbxModeTest` (3), `WiringTest` (5), `OpenApiContractTest` (4), `BusyApiTest` (2), `RestLayeringTest` (2), `HealthTest` (2) |
 
 ## Test doubles you will meet

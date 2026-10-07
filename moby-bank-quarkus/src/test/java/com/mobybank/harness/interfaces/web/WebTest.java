@@ -157,6 +157,14 @@ class WebTest {
     }
 
     @Test
+    void sendingAlsoUpdatesTheConversationHeadingWithTheNewTitle() {
+        String body = send(createSession(), "Summarise the Q2 filing").asString();
+
+        assertTrue(body.contains("<h1 id=\"conversation-title\" class=\"trunc\" hx-swap-oob=\"true\">Summarise the Q2 filing</h1>"),
+                body);
+    }
+
+    @Test
     void textIsEscapedSoAMessageCannotInjectMarkup() {
         String body = send(createSession(), "<script>alert(1)</script>").asString();
 
