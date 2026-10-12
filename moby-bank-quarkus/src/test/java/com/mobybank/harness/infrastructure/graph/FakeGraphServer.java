@@ -169,15 +169,32 @@ public final class FakeGraphServer implements AutoCloseable {
         } + "]}";
     }
 
-    private void item(HttpExchange exchange, String id) throws IOException {
-        String downloadUrl = "\"@microsoft.graph.downloadUrl\":\"" + origin() + "/download/" + id + "\"";
-        switch (id) {
-            case "i-huge" -> json(exchange, 200, "{\"id\":\"i-huge\",\"name\":\"huge.bin\",\"size\":999999999999," + downloadUrl + "}");
+    /** Item metadata. Like the real {@code $select} answer, it carries no {@code @microsoft.graph.downloadUrl}. */
+    private void item(HttpExchange exchange, String idAndSuffix) throws IOException {
+        if (idAndSuffix.endsWith("/content")) {
+            content(exchange, idAndSuffix.substring(0, idAndSuffix.length() - "/content".length()));
+            return;
+        }
+        switch (idAndSuffix) {
+            case "i-huge" -> json(exchange, 200, "{\"id\":\"i-huge\",\"name\":\"huge.bin\",\"size\":999999999999}");
             case "i-nolink" -> json(exchange, 200, "{\"id\":\"i-nolink\",\"name\":\"nolink.pdf\",\"size\":10}");
             case "i-10q", "i-notes", "i-notes-other", "i-harbor", "i-kestrel" ->
-                    json(exchange, 200, "{\"id\":\"" + id + "\",\"name\":\"x\",\"size\":20," + downloadUrl + "}");
+                    json(exchange, 200, "{\"id\":\"" + idAndSuffix + "\",\"name\":\"x\",\"size\":20}");
             default -> json(exchange, 404, "{\"error\":{\"code\":\"itemNotFound\",\"message\":\"not found\"}}");
         }
+    }
+
+    /** {@code items/<id>/content}: a 302 to the pre-authenticated download URL, as Graph answers it. */
+    private void content(HttpExchange exchange, String id) throws IOException {
+        switch (id) {
+            case "i-nolink" -> exchange.sendResponseHeaders(302, -1);
+            case "i-10q", "i-notes", "i-notes-other", "i-harbor", "i-kestrel" -> {
+                exchange.getResponseHeaders().add("Location", origin() + "/download/" + id);
+                exchange.sendResponseHeaders(302, -1);
+            }
+            default -> json(exchange, 404, "{\"error\":{\"code\":\"itemNotFound\",\"message\":\"not found\"}}");
+        }
+        exchange.close();
     }
 
     // --- JSON and HTTP helpers ---------------------------------------------------------------------------------

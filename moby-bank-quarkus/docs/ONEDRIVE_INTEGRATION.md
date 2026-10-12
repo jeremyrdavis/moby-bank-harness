@@ -88,7 +88,7 @@ What exists today, verified against the code. Anything not listed here does not 
 
 Requests (each is `GET`, bearer token on all but the last): the drive's `root/children` (or `root:/<folders-root>:/children`)
 for folders; `items/{id}/children` for a folder's files; `root/search(q='<name>')` to find a document; `items/{id}` with
-`$select=…,@microsoft.graph.downloadUrl` for the link; then a plain `GET` of that link with no token.
+`$select=id,name,size` for the size; `items/{id}/content` (a `302` whose `Location` is the link, not followed); then a plain `GET` of that link with no token.
 
 ### Gaps against the goals
 
@@ -457,8 +457,8 @@ How a OneDrive file becomes a file the agent reads (today in `SbxSandboxAgent.st
 fetched, not how it is copied).
 
 1. **Resolve** the attached `reference` to a Graph item (drive + item id).
-2. **Get the download link:** `GET …/items/{id}?$select=id,name,size,@microsoft.graph.downloadUrl` (or `GET …/content`,
-   which answers `302` to the same link). Microsoft: the link is **pre-authenticated, valid for a limited time ("might
+2. **Get the download link:** `GET …/items/{id}/content`, which answers `302` to the pre-authenticated link (the adapter
+   uses this; a `$select` for `@microsoft.graph.downloadUrl` returned no link in the first real run). Microsoft: the link is **pre-authenticated, valid for a limited time ("might
    expire within minutes")**, so use it immediately, and send **no** `Authorization` header to it.
 3. **Check before downloading:** `size` against the limit; the file type against an allow-list (below).
 4. **Stream to a temporary file**, never into a `byte[]` (G5). Large files can use `Range` requests, which go to the download
