@@ -10,6 +10,7 @@ import com.mobybank.harness.domain.CatalogFile;
 import com.mobybank.harness.domain.DocumentSourceException;
 import com.mobybank.harness.domain.Folder;
 import com.mobybank.harness.domain.FolderId;
+import com.mobybank.harness.infrastructure.LogCapture;
 import com.sun.net.httpserver.HttpServer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -48,6 +49,23 @@ class GraphDocumentCatalogTest {
                 Optional.of(FakeGraphServer.GOOD_TOKEN), server.tokenUrl(), Optional.empty(), Optional.empty(),
                 Duration.ofSeconds(5), maxDownloadBytes);
         return new GraphDocumentCatalog(settings, new GraphTokenProvider(settings, http, Clock.systemUTC()), http);
+    }
+
+    @Test
+    void creatingTheCatalogLogsTheGraphOriginButNeitherTheTokenNorTheClientSecret() {
+        String token = "TOKEN-9c1d-distinctive";
+        String secret = "SECRET-4b8e-distinctive";
+        GraphSettings settings = new GraphSettings(server.baseUrl(), "me/drive", Optional.empty(),
+                Optional.of(token), server.tokenUrl(), Optional.of("client-id-2f6a"), Optional.of(secret),
+                Duration.ofSeconds(5), 1024);
+        try (LogCapture log = LogCapture.of(GraphDocumentCatalog.class)) {
+            new GraphDocumentCatalog(settings, new GraphTokenProvider(settings, http, Clock.systemUTC()), http);
+
+            assertTrue(log.messages().stream().anyMatch(m -> m.contains(server.baseUrl())),
+                    "the origin is logged: " + log.messages());
+            assertTrue(log.messages().stream().noneMatch(m -> m.contains(token) || m.contains(secret)),
+                    "no credential is: " + log.messages());
+        }
     }
 
     // --- folders -----------------------------------------------------------------------------------------------

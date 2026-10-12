@@ -7,6 +7,8 @@ import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.DocumentSourceException;
 import com.mobybank.harness.domain.Folder;
 import com.mobybank.harness.domain.FolderId;
+import io.quarkus.logging.Log;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -45,6 +47,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         this.tokens = tokens;
         this.http = http;
         this.graphOrigin = URI.create(settings.baseUrl());
+        Log.debugf("GraphDocumentCatalog: %s", this.graphOrigin);
     }
 
     @Override

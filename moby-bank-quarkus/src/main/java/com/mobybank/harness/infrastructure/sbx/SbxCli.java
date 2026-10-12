@@ -2,6 +2,8 @@ package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SandboxFailureException;
+import io.quarkus.logging.Log;
+
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public final class SbxCli {
             command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
         }
         command.add(agent);
+        Log.debugf("Creating sandbox %s", name);
         requireSuccess(runner.run(command, commandTimeout), "Creating sandbox " + name);
     }
 
@@ -51,6 +54,7 @@ public final class SbxCli {
     public void copyIn(Location target, Path localFile, String sandbox, String remotePath) {
         List<String> command = base(target);
         command.addAll(List.of("cp", localFile.toString(), sandbox + ":" + remotePath));
+        Log.debugf("Copying %s into %s", localFile.getFileName(), sandbox);
         requireSuccess(runner.run(command, commandTimeout), "Copying " + localFile.getFileName() + " into " + sandbox);
     }
 
@@ -60,6 +64,7 @@ public final class SbxCli {
         List<String> command = base(target);
         command.addAll(List.of("exec", sandbox));
         command.addAll(inside);
+        Log.debugf("Executing a command inside sandbox %s", sandbox);
         return runner.run(command, timeout, onStdoutLine);
     }
 
@@ -74,6 +79,7 @@ public final class SbxCli {
         if (to == Location.CLOUD && cloudTtl != null) {
             command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
         }
+        Log.debugf("Moving %s to %s", source, to.name().toLowerCase());
         requireSuccess(runner.run(command, timeout), "Moving " + source + " to " + to.name().toLowerCase());
     }
 
@@ -83,6 +89,7 @@ public final class SbxCli {
         if (target == Location.CLOUD) {
             command.add("--cloud");
         }
+        Log.debugf("Creating base command for target %s", target);
         return command;
     }
 
