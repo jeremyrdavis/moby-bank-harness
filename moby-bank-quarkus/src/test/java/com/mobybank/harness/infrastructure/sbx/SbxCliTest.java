@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SandboxFailureException;
+import com.mobybank.harness.infrastructure.LogCapture;
 import com.mobybank.harness.infrastructure.sbx.FakeRunner.Response;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -68,6 +69,17 @@ class SbxCliTest {
         cli.exec(Location.LOCAL, "sb", List.of("claude", "-p", "two words; and $(danger)"), Duration.ofMinutes(1), l -> { });
         List<String> command = runner.calls.get(0).command();
         assertEquals(List.of("sbx", "exec", "sb", "claude", "-p", "two words; and $(danger)"), command);
+    }
+
+    @Test
+    void execLogsTheSandboxButNeverThePrompt() {
+        String prompt = "PROMPT-7f3a-confidential-borrower-question";
+        try (LogCapture log = LogCapture.of(SbxCli.class)) {
+            cli.exec(Location.LOCAL, "sb", List.of("claude", "-p", prompt), Duration.ofMinutes(1), l -> { });
+
+            assertTrue(log.messages().stream().anyMatch(m -> m.contains("sb")), "the sandbox is logged: " + log.messages());
+            assertTrue(log.messages().stream().noneMatch(m -> m.contains(prompt)), "the prompt is not: " + log.messages());
+        }
     }
 
     @Test
