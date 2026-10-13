@@ -159,6 +159,17 @@ class GraphDocumentCatalogTest {
     }
 
     @Test
+    void theDownloadLinkComesFromTheContentRedirectNotFromAnAnnotation() {
+        catalog().fetch("Fathom_Q2_2026_10-Q.pdf");
+
+        FakeGraphServer.Hit item = server.hitsOn("/v1.0/me/drive/items/i-10q").get(0);
+        assertEquals("/v1.0/me/drive/items/i-10q", item.path());
+        assertFalse(item.rawQuery().contains("downloadUrl"), "the annotation is not relied on: " + item.rawQuery());
+        FakeGraphServer.Hit content = server.hitsOn("/v1.0/me/drive/items/i-10q/content").get(0);
+        assertEquals("Bearer " + FakeGraphServer.GOOD_TOKEN, content.authorization(), "Graph gets the token");
+    }
+
+    @Test
     void theFileInsideTheFoldersRootIsPreferredWhenNamesCollide() {
         Optional<byte[]> inRoot = catalog(Optional.of("Credit Research/Coverage"), 1024).fetch("notes.docx");
         assertEquals("content of i-notes", new String(inRoot.orElseThrow()));

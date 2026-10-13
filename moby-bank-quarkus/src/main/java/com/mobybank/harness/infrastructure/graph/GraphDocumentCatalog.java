@@ -35,7 +35,6 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final int PAGE_SIZE = 200;
     private static final int MAX_PAGES = 25;
-    private static final String DOWNLOAD_URL = "@microsoft.graph.downloadUrl";
 
     private final GraphSettings settings;
     private final GraphTokenProvider tokens;
@@ -96,7 +95,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         JsonNode item;
         try {
             item = get(URI.create(settings.driveUrl() + "/items/" + encodeSegment(id)
-                    + "?$select=id,name,size," + DOWNLOAD_URL));
+                    + "?$select=id,name,size"));
         } catch (NotFound e) {
             return Optional.empty();
         }
@@ -105,11 +104,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
             throw new DocumentSourceException(fileName + " is " + size + " bytes, over the limit of "
                     + settings.maxDownloadBytes());
         }
-        String downloadUrl = item.path(DOWNLOAD_URL).asText("");
-        if (downloadUrl.isBlank()) {
-            throw new DocumentSourceException("OneDrive gave no download link for " + fileName);
-        }
-        return Optional.of(download(URI.create(downloadUrl), fileName));
+        return Optional.of(download(downloadLink(id, fileName), fileName));
     }
 
     // --- search ------------------------------------------------------------------------------------------------
@@ -177,6 +172,28 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         } catch (IOException e) {
             throw new DocumentSourceException("OneDrive answered with something that is not JSON", e);
         }
+    }
+
+    /**
+     * The pre-authenticated download link. Graph answers {@code <drive>/items/<id>/content} with a redirect to it; the
+     * redirect is not followed (the client never follows them), so the bearer token goes to Graph only and the link is
+     * fetched without it. This does not depend on the {@code @microsoft.graph.downloadUrl} annotation, which a
+     * {@code $select} does not reliably return.
+     */
+    private URI downloadLink(String itemId, String fileName) {
+        URI uri = URI.create(settings.driveUrl() + "/items/" + encodeSegment(itemId) + "/content");
+        HttpRequest request = HttpRequest.newBuilder(uri)
+                .timeout(settings.requestTimeout())
+                .header("Authorization", "Bearer " + tokens.token())
+                .GET()
+                .build();
+        HttpResponse<Void> response = send(request, HttpResponse.BodyHandlers.discarding(), "OneDrive");
+        if (response.statusCode() / 100 == 3) {
+            return response.headers().firstValue("Location").map(uri::resolve)
+                    .orElseThrow(() -> new DocumentSourceException("OneDrive gave no download link for " + fileName));
+        }
+        checkStatus(response.statusCode(), "");
+        throw new DocumentSourceException("OneDrive gave no download link for " + fileName);
     }
 
     private byte[] download(URI uri, String fileName) {

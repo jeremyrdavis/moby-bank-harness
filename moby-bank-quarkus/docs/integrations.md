@@ -198,7 +198,8 @@ and **the client secret never appears in an error message**.
 | The folder library | `GET <drive>/root/children` (or `root:/<folders-root>:/children`) with `$select=id,name,folder,parentReference&$orderby=name&$top=200`; keeps items that have a `folder` facet |
 | A folder's documents | `GET <drive>/items/<id>/children` with `$select=id,name,file&$orderby=name&$top=200`; keeps items that have a `file` facet |
 | Find a document by name | `GET <drive>/root/search(q='<name>')` (a quote in the name is doubled); keeps an exact-name match, preferring one inside `folders-root` |
-| Get its download link | `GET <drive>/items/<id>?$select=id,name,size,@microsoft.graph.downloadUrl` |
+| Check its size | `GET <drive>/items/<id>?$select=id,name,size` |
+| Get its download link | `GET <drive>/items/<id>/content` with the bearer token; Graph answers `302` and the `Location` is the pre-authenticated link. The redirect is not followed, so the token goes to Graph only. The `@microsoft.graph.downloadUrl` annotation is not used: a `$select` for it came back without the link in a real tenant (first real run, P0) |
 | Download | a plain `GET` of that pre-authenticated URL, **without** the bearer token |
 
 A folder's `path` in the API (for example "Credit Research / Coverage / Earnings 2026") is built from the item's
