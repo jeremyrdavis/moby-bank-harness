@@ -145,3 +145,13 @@ Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
 - `sbx --cloud exec vtest-cloud claude -p … --dangerously-skip-permissions --model claude-opus-5-5 --strict-mcp-config` **succeeded**: `model: claude-opus-5-5` (not the `[1m]` default), `mcp_servers: []`, same 22 tools, `apiKeySource: apiKeyHelper`, 2.7 s, $0.027. So both flags are accepted in the cloud as well as locally, and one `harness.sbx.agent-args` value works for both locations.
 - The cloud `skills` list is the 17 built-in ones (`deep-research` … `run-skill-generator`), no host skills. The local list was not captured, so whether local still differs on skills is open.
 - The notice line before the JSON now starts with `⚠` (`⚠ claude.ai connectors are disabled because …`). It is not JSON and is ignored.
+
+### Step 5 (first move, local → cloud) — in progress
+
+- `sbx move vtest-local --to cloud --name vmove --force --ttl 8h --on-timeout stop` succeeded in **27 s**.
+- Warnings printed (stderr, non-fatal): managed secrets not copied; credentials in copied files still travel; local network rules not copied; "source limits are missing for CPU and memory; using cloud defaults" → **no size block**; destination shape `small (2 vCPU / 4096 MiB)`.
+- Destination name is exactly the `--name` value: `vmove` (listed as `claude/vmove`); **no suffix** here. Output also gives the id `sbx_…`.
+- A cloud **template** (`tmpl_…`) is created to back the moved sandbox; docs say to remove it with `sbx --cloud template rm <id>` after the sandbox is deleted. Moves therefore leave a template behind (relevant to Phase 2 cleanup).
+- `--ttl 8h --on-timeout stop` honoured: "Expires in 7h59m; the sandbox will then be stopped (it can be started again later)". Hint: `sbx --cloud ttl <id>`.
+- `sbx --cloud ls -q` afterwards lists `claude/vmove` (plus `claude/cloud-project`, `claude/vtest-cloud`, `claude/harness-511e6094398e-g1`).
+- Still to run: marker file check in the cloud, source state (`sbx ls`), move back to local, resume check.
