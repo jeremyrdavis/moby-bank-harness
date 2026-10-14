@@ -95,3 +95,23 @@ Also, if you can reproduce them: let a TTL of 1h pass with `--on-timeout delete`
   - The adapter creates and addresses a sandbox by the bare name `harness-<id>-g<n>`. Check in step 4 whether `sbx --cloud exec harness-… ` works with the bare name or needs `claude/harness-…`.
   - The local sandbox's recorded size is 18 CPU and 32 GiB. `sbx move` rounds that up to a cloud size and **blocks the move if it is above the largest cloud size**. Step 5 will show whether that bites; if it does, the fix is a `create` flag or a setting for the local sandbox's size (the move docs list no `--cpus` or `--memory` on `move`).
 - Test sandboxes now existing, to remove at the end: `vtest-local` (local), `claude/vtest-cloud` and `claude/vtest-cloud2` (cloud).
+
+## 3. Listing (recorded 2026-10-14)
+
+- `sbx ls -q` prints plain names, one per line. It includes `harness-c08cdbecaade-g0` (left by the earlier local run, which confirms the `harness-<12 hex>-g<n>` naming on a real host) and `vtest-local`.
+- `sbx --cloud ls -q` prints `claude/vtest-cloud` and `claude/vtest-cloud2`: the agent name and a slash in front, no random suffix on a sandbox made by `create`. `SandboxRegistry.generationOf` already strips everything up to the last `/`.
+
+## 4. Headless agent run and stream (recorded 2026-10-14)
+
+Local, `sbx exec vtest-local claude -p … --output-format stream-json --verbose --dangerously-skip-permissions`:
+
+- Worked. Two lines before the JSON: `Sandbox vtest-local started successfully` (so **`exec` starts a stopped local sandbox by itself**) and `Warning: no stdin data received in 3s, proceeding without it…` (the agent CLI waiting on an open stdin; `ProcessCommandRunner` closes stdin, so it should not wait; which stream each line used is not known). `ClaudeStreamParser` ignores lines that aren't JSON, so neither matters.
+- The stream is: `system`/`init` (has `session_id`), `assistant` (`message.content[]` with `text` blocks), `rate_limit_event`, then `result` with `result`, `is_error`, `session_id`, `subtype`, `terminal_reason`, `api_error_status`, `total_cost_usd`. This matches what the parser reads; `rate_limit_event` and `system` are ignored.
+- **`--resume` works but gives a new `session_id` each run.** The second run (`--resume <first id>`) answered "You asked me to say hello in one line", so the conversation carried, and its `session_id` was different from the first. `SbxSandboxAgent` stores the id from every run, so the next turn resumes the latest one; that is correct, and a test should pin it.
+- **The local agent is not the same agent as the cloud one.** Local: model `claude-sonnet-5`, `apiKeySource: none`, the host's skills, memory and **connected MCP servers (Gmail, Slack, Notion, Google Drive, Calendar, Granola)** with about 42k input tokens per turn (about $0.09 each). Cloud: model `claude-opus-5-5[1m]`, `apiKeySource: apiKeyHelper`, 22 built-in tools, no MCP servers, no skills beyond the defaults.
+
+Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
+
+- **The bare name `vtest-cloud` is accepted** by `sbx --cloud exec` (the agent started and printed `init`). So the adapter, which creates and addresses `harness-…-g<n>` without the `claude/` prefix, works. The prefixed form `claude/vtest-cloud` was not run; the adapter uses it after a restart, when the name comes from `ls -q`.
+- **The turn failed: `401 authentication_failed`, "Invalid API key · Fix external API key".** The agent retried 10 times with growing delays (2s, 4s, 8s, 16s, 36s, 32s, 39s, 32s) and gave up after about **175 seconds** (`duration_ms 175041`). The `result` line has `is_error: true`, `api_error_status: 401`, `terminal_reason: api_error`. The exit code was not recorded. The cloud anthropic secret is listed (created 2026-08-20, type `token`) but the key is rejected, so it is probably stale.
+- The failure arrives as `system`/`api_retry` lines (with `error_status`) followed by the `result`. The parser ignores the retries, and the final message would read "The agent failed in <name>: Invalid API key · Fix external API key".
