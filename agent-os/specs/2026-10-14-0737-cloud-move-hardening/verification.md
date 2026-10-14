@@ -139,3 +139,9 @@ Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
   - **Tools:** local has four more built-in tools: `Monitor`, `PushNotification`, `RemoteTrigger`, `ShareOnboardingGuide` (they come with the claude.ai login).
   - **Skills and slash commands:** not captured in this run. The local sandbox links the host's skills read-only (`skills 2 entries`), so they probably still differ.
 - Not yet run: the same flags in the **cloud** sandbox (the model flag in particular), and a check of `skills` in the `init` line.
+
+## 4e. The parity flags in the cloud (recorded 2026-10-14)
+
+- `sbx --cloud exec vtest-cloud claude -p … --dangerously-skip-permissions --model claude-opus-5-5 --strict-mcp-config` **succeeded**: `model: claude-opus-5-5` (not the `[1m]` default), `mcp_servers: []`, same 22 tools, `apiKeySource: apiKeyHelper`, 2.7 s, $0.027. So both flags are accepted in the cloud as well as locally, and one `harness.sbx.agent-args` value works for both locations.
+- The cloud `skills` list is the 17 built-in ones (`deep-research` … `run-skill-generator`), no host skills. The local list was not captured, so whether local still differs on skills is open.
+- The notice line before the JSON now starts with `⚠` (`⚠ claude.ai connectors are disabled because …`). It is not JSON and is ignored.

@@ -65,7 +65,7 @@ Output: update the **(verify)** markers in `docs/integrations.md` and the README
 - Agent defaults (found in Task 2, step 4): the local agent signs in with the claude.ai login and loads the user's
   connectors (Gmail, Slack, Notion, Drive, Calendar, Granola); the cloud agent does not. Change the default of
   `harness.sbx.agent-args` to add `--model claude-opus-5-5 --strict-mcp-config` so both locations run the same agent
-  with no host connectors. Verified locally; the cloud run of the same flags is still to be checked. Document it in
+  with no host connectors. Verified in both the local and the cloud sandbox. Document it in
   `docs/configuration.md` and `docs/integrations.md`.
 - `SbxCli.create` and `SbxCli.move`: pass `--on-timeout <value>` for cloud destinations only (create only if Task 2
   shows it is accepted). Reuse `formatDuration`.
