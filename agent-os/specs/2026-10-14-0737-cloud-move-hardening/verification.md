@@ -129,3 +129,13 @@ Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
 - `sbx --cloud exec vtest-cloud claude -p "Say hello in one line" …` **succeeded**: reply "Hello! What can I help you with today?", `is_error: false`, 2.4 s, $0.027, `apiKeySource: apiKeyHelper`, model `claude-opus-5-5[1m]`, 22 tools, no MCP servers. (It was not recorded whether the sandbox was recreated after the secret change; if it was not, a changed secret reaches an existing cloud sandbox.)
 - Before the JSON the agent printed: `claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login`. It is not JSON, so the parser ignores it. It **explains the local/cloud difference**: the cloud agent authenticates through an API-key helper, so claude.ai connectors are off; the local agent signs in with the claude.ai login (`apiKeySource: none`), so the user's organization connectors (Gmail, Slack, Notion, Drive, Calendar, Granola) load.
 - Per-turn context is about 5k tokens in the cloud against about 42k locally (`cache_creation_input_tokens` 5008 against 22696 plus 19113 cached), so the local turn costs about 3.5x as much even on a smaller model.
+
+## 4d. Making the local agent match the cloud one (recorded 2026-10-14)
+
+- The cloud sandbox **was recreated** before the working cloud turn, so it is still unknown whether a changed secret reaches an existing cloud sandbox. The 401 message should say "set the secret, then start a new sandbox".
+- Local `exec` with `--model claude-opus-5-5 --strict-mcp-config` printed an `init` line with **`mcp_servers: []`, no `mcp__claude_ai_*` tools, and `model: claude-opus-5-5`**. Both flags work in the local sandbox. The connectors are gone.
+- Remaining differences from the cloud agent:
+  - **Model:** the cloud default is `claude-opus-5-5[1m]` (the 1M-context variant); local with the flag is `claude-opus-5-5`.
+  - **Tools:** local has four more built-in tools: `Monitor`, `PushNotification`, `RemoteTrigger`, `ShareOnboardingGuide` (they come with the claude.ai login).
+  - **Skills and slash commands:** not captured in this run. The local sandbox links the host's skills read-only (`skills 2 entries`), so they probably still differ.
+- Not yet run: the same flags in the **cloud** sandbox (the model flag in particular), and a check of `skills` in the `init` line.
