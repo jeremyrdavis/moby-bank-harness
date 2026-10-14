@@ -115,3 +115,10 @@ Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
 - **The bare name `vtest-cloud` is accepted** by `sbx --cloud exec` (the agent started and printed `init`). So the adapter, which creates and addresses `harness-…-g<n>` without the `claude/` prefix, works. The prefixed form `claude/vtest-cloud` was not run; the adapter uses it after a restart, when the name comes from `ls -q`.
 - **The turn failed: `401 authentication_failed`, "Invalid API key · Fix external API key".** The agent retried 10 times with growing delays (2s, 4s, 8s, 16s, 36s, 32s, 39s, 32s) and gave up after about **175 seconds** (`duration_ms 175041`). The `result` line has `is_error: true`, `api_error_status: 401`, `terminal_reason: api_error`. The exit code was not recorded. The cloud anthropic secret is listed (created 2026-08-20, type `token`) but the key is rejected, so it is probably stale.
 - The failure arrives as `system`/`api_retry` lines (with `error_status`) followed by the `result`. The parser ignores the retries, and the final message would read "The agent failed in <name>: Invalid API key · Fix external API key".
+
+## 4b. Cloud credential attempt (recorded 2026-10-14)
+
+- The API-key test against `api.anthropic.com` returned 401, so the key that was tried is not valid.
+- `sbx --cloud secret set anthropic --oauth` was run (the `--oauth` flag is accepted for the anthropic service on the cloud store; Docker's credentials page documents it only for OpenAI). What the command printed was not captured.
+- The command run afterwards was `sbx exec vtest-local …` (**local**, no `--cloud`). It succeeded exactly as before: model `claude-sonnet-5`, `apiKeySource: none`, the host's MCP servers, `is_error: false`, `Hello!`, about $0.09. It says nothing about the cloud sandbox. **The cloud turn is still unverified.**
+- Open: `sbx --cloud secret ls` after the `--oauth` set (does the row's TYPE change from `token`?), and a cloud `exec` on a sandbox created after the set.
