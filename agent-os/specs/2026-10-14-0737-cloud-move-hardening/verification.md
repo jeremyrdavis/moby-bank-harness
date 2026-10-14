@@ -146,12 +146,14 @@ Cloud, `sbx --cloud exec vtest-cloud claude -p …`:
 - The cloud `skills` list is the 17 built-in ones (`deep-research` … `run-skill-generator`), no host skills. The local list was not captured, so whether local still differs on skills is open.
 - The notice line before the JSON now starts with `⚠` (`⚠ claude.ai connectors are disabled because …`). It is not JSON and is ignored.
 
-### Step 5 (first move, local → cloud) — in progress
+### Step 5 (moves) — mostly done
 
 - `sbx move vtest-local --to cloud --name vmove --force --ttl 8h --on-timeout stop` succeeded in **27 s**.
-- Warnings printed (stderr, non-fatal): managed secrets not copied; credentials in copied files still travel; local network rules not copied; "source limits are missing for CPU and memory; using cloud defaults" → **no size block**; destination shape `small (2 vCPU / 4096 MiB)`.
-- Destination name is exactly the `--name` value: `vmove` (listed as `claude/vmove`); **no suffix** here. Output also gives the id `sbx_…`.
-- A cloud **template** (`tmpl_…`) is created to back the moved sandbox; docs say to remove it with `sbx --cloud template rm <id>` after the sandbox is deleted. Moves therefore leave a template behind (relevant to Phase 2 cleanup).
-- `--ttl 8h --on-timeout stop` honoured: "Expires in 7h59m; the sandbox will then be stopped (it can be started again later)". Hint: `sbx --cloud ttl <id>`.
-- `sbx --cloud ls -q` afterwards lists `claude/vmove` (plus `claude/cloud-project`, `claude/vtest-cloud`, `claude/harness-511e6094398e-g1`).
-- Still to run: marker file check in the cloud, source state (`sbx ls`), move back to local, resume check.
+- Warnings printed (stderr, non-fatal): managed secrets not copied; credentials in copied files still travel; local network rules not copied; "source limits are missing for CPU and memory; using cloud defaults" -> **no size block**; destination shape `small (2 vCPU / 4096 MiB)`.
+- Destination name is exactly the `--name` value: `vmove` (listed as `claude/vmove`); **no suffix** in this case. Output gives the id `sbx_...` too.
+- A cloud **template** (`tmpl_...`) is created to back the moved sandbox (`sbx --cloud template rm <id>` after the sandbox is deleted). Moves leave a template behind: Phase 2 cleanup.
+- `--ttl 8h --on-timeout stop` honoured ("Expires in 7h59m; the sandbox will then be stopped (it can be started again later)").
+- **Files travel in both directions.** The first `cat` of a marker failed only because the marker was written (15:51) after the move (15:49). Repeat: local->cloud with the marker present printed `hi`, exit 0 (`vmove2`). The home directory (CLAUDE.md, .claude, .gitconfig, workspace/) came across.
+- **cloud -> local took 5m12s** (`sbx move vmove --to local --name vback --force`); a file written in the cloud (`cloudmarker.txt`) was readable in the local copy. Output says files stay inside the sandbox (no local folder mounted), cloud network policy and env vars do not carry over, local layer reuse may need up to 32 GiB of temp disk. The cloud source is stopped ("Stop accepted... continues in the background"), not deleted. Destination name `vback` exactly.
+- **Consequence:** the default `harness.ui.wait-timeout` (180 s) is shorter than a cloud->local move; the page shows "The move is still running" and the analyst must reopen the conversation. `harness.sbx.move-timeout` (30m) is fine. Task 8 gains a separate, longer wait for moves (`harness.ui.move-wait-timeout`, default 10m) so the toast and pane update when the move ends.
+- Not yet recorded: `sbx ls` after the local->cloud move (is the local source stopped?), duration of the second local->cloud move, whether `exec` on a stopped cloud sandbox auto-starts.
