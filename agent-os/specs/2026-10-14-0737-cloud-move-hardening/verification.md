@@ -68,3 +68,20 @@ sbx move does-not-exist --to cloud --force               # move of a missing sou
 ```
 
 Also, if you can reproduce them: let a TTL of 1h pass with `--on-timeout delete` and exec into it; a platform mismatch on a move (`--platform` differing from the local one); a cloud-to-local move with too little disk; a move of a sandbox above the largest cloud size. For each, paste the message. These become the patterns in `SbxErrors`.
+
+---
+
+# Results
+
+## 1. Version, access and secrets (recorded 2026-10-14)
+
+- `sbx version` prints `v0.47.0 0411f50ee4700fe7bd37e6e7e3aced563e850ca9`: a leading `v`, then the version, then a commit. The preflight must parse the `vX.Y.Z` token. 0.47.0 meets the 0.45.0 minimum; 0.48.0 is available.
+- `sbx diagnose` prints sections (Installation, Connection) of lines marked `✓` or `!`, and ends with `4 passed · 1 warnings`. Checks include `Authentication`, `Cloud API` and `Cloud entitlement`. An available update is a warning (`!`), not a failure, so the preflight must not fail on warnings. **Not yet known:** the exit code, the failure marker, and whether `sbx --cloud diagnose` behaves the same (the pasted output was headed `sbx diagnose`).
+- `sbx secret ls` (local) columns: `SCOPE TYPE NAME SECRET`. The anthropic row is `(global) service anthropic (oauth configured)`.
+- `sbx --cloud secret ls` columns: `SCOPE SERVICE TYPE SECRET CREATED`. The anthropic row is `(global) anthropic token *** <date>`. The cloud anthropic secret is set, so the preflight can look for a row whose service is `anthropic`. The two listings have different layouts, so parse each separately.
+- `sbx --help` shows commands the plan did not use:
+  - `ttl`: "Inspect or extend a cloud sandbox's TTL".
+  - `attach`: "starting it first if it is stopped" (a hint that `exec` may not start a stopped sandbox; step 6 will say).
+  - `stop`, `rm`, `prune`.
+  - `volume`: persistent volumes, cloud-only.
+  - The global `--cloud` flag is "supported by a growing set of verbs".
