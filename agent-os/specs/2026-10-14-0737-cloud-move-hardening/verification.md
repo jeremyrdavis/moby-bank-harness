@@ -85,3 +85,13 @@ Also, if you can reproduce them: let a TTL of 1h pass with `--on-timeout delete`
   - `stop`, `rm`, `prune`.
   - `volume`: persistent volumes, cloud-only.
   - The global `--cloud` flag is "supported by a growing set of verbs".
+
+## 2. Create with no workspace (recorded 2026-10-14)
+
+- **Local:** `sbx create --name vtest-local claude` works with no workspace. It prints `workspace none · no workspace bind mount`, image `docker/sandbox-templates:claude-code-docker`, and **cpu 18, memory 32 GiB** (the local defaults). Ends with `✓ Created sandbox vtest-local`. The first create also prints `✓ Image ready`, so a first create may pull an image; the 2m `command-timeout` is worth keeping in mind.
+- **Cloud:** `sbx --cloud create --name vtest-cloud --ttl 1h claude` works. After a `configure 1 kit(s)` step (about 7s) it prints a bare sandbox id line (`sbx_…`) on its own, then `✓ Created sandbox claude/vtest-cloud (sbx_…, image …)`. The sandbox is reported as **`claude/vtest-cloud`**: the agent name is a prefix on the name that was asked for, and `create` added no random suffix.
+- **`--on-timeout` is accepted on `create`**: `sbx --cloud create --name vtest-cloud2 --ttl 1h --on-timeout stop claude` succeeded with no warning. So Task 3 can pass it on both `create` and `move`. (That the stop behaviour actually keeps state is not yet shown; step 6 covers it.)
+- **Two things to watch in later steps:**
+  - The adapter creates and addresses a sandbox by the bare name `harness-<id>-g<n>`. Check in step 4 whether `sbx --cloud exec harness-… ` works with the bare name or needs `claude/harness-…`.
+  - The local sandbox's recorded size is 18 CPU and 32 GiB. `sbx move` rounds that up to a cloud size and **blocks the move if it is above the largest cloud size**. Step 5 will show whether that bites; if it does, the fix is a `create` flag or a setting for the local sandbox's size (the move docs list no `--cpus` or `--memory` on `move`).
+- Test sandboxes now existing, to remove at the end: `vtest-local` (local), `claude/vtest-cloud` and `claude/vtest-cloud2` (cloud).
