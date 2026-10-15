@@ -223,8 +223,10 @@ class WebTest {
 
         Response response = given().post("/ui/conversations/" + id + "/move?to=cloud");
 
-        response.then().statusCode(200).body(containsString("Running in cloud")).body(containsString("dot cloud"))
+        response.then().statusCode(200).body(containsString("Move to local")).body(containsString("dot cloud"))
+                .body(containsString("data-move-local")).body(containsString("move?to=local"))
                 .body(not(containsString("data-move-cloud")))
+                .body(containsString("data-location=\"cloud\""))
                 .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
                 .header("HX-Trigger", containsString("Session moved to cloud"))
                 .header("HX-Trigger", containsString("conversations-changed"));
@@ -239,6 +241,30 @@ class WebTest {
                 .header("HX-Reswap", equalTo("none"))
                 .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
                 .header("HX-Trigger", containsString("Could not move the session"));
+    }
+
+    @Test
+    void movingBackToLocalOffersTheCloudButtonAgainAndRaisesTheSameToast() {
+        String id = createSession();
+        given().post("/ui/conversations/" + id + "/move?to=cloud").then().statusCode(200);
+
+        given().post("/ui/conversations/" + id + "/move?to=local").then().statusCode(200)
+                .body(containsString("data-move-cloud")).body(not(containsString("data-move-local")))
+                .body(containsString("data-location=\"local\""))
+                .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
+                .header("HX-Trigger", containsString("Session moved to local"));
+        given().get("/api/sessions/" + id).then().body("location", equalTo("local")).body("status", equalTo("idle"));
+    }
+
+    @Test
+    void theMoveToLocalButtonIsEnabledWhenTheCloudSessionIsIdle() {
+        // Busy panes (disabled button, polling) are covered in WebWaitTest.
+        String id = given().contentType(ContentType.JSON).body(Map.of("location", "cloud"))
+                .post("/api/sessions").then().statusCode(201).extract().path("id");
+        String pane = given().get("/ui/conversations/" + id).asString();
+        assertTrue(pane.contains("data-move-local hx-post"), pane);
+        assertTrue(!pane.contains("data-poll"), "an idle pane does not poll");
+        assertTrue(!pane.matches("(?s).*data-move-local[^>]*disabled.*"), "enabled when idle");
     }
 
     @Test

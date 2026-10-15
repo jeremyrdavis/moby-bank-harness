@@ -108,7 +108,7 @@ The whole conversation. After one exchange (trimmed):
     {"id": "0427ca0a-…", "role": "user", "text": "Summarize these for me",
      "files": [{"name": "notes.txt", "source": "upload"},
                {"name": "Fathom_Q2_2026_10-Q.pdf", "source": "onedrive"}],
-     "steps": [], "paragraphs": [], "table": null, "createdAt": "2026-09-30T21:43:48.042802662Z"},
+     "steps": [], "paragraphs": [], "table": null, "notice": null, "createdAt": "2026-09-30T21:43:48.042802662Z"},
     {"id": "f6e1ed37-…", "role": "assistant", "text": "", "files": [],
      "steps": [{"kind": "read", "label": "notes.txt"},
                {"kind": "read", "label": "Fathom_Q2_2026_10-Q.pdf"},
@@ -116,6 +116,7 @@ The whole conversation. After one exchange (trimmed):
      "paragraphs": ["I read notes.txt, Fathom_Q2_2026_10-Q.pdf and extracted the income statement, …"],
      "table": {"cols": ["Metric", "Current", "Prior year", "Change"],
                "rows": [["Revenue", "$2.46B", "$2.31B", "+6.5%"], …]},
+     "notice": null,
      "createdAt": "2026-09-30T21:43:48.486489829Z"}
   ],
   "files": [{"name": "notes.txt", "source": "upload"}, {"name": "Fathom_Q2_2026_10-Q.pdf", "source": "onedrive"}]
@@ -124,6 +125,10 @@ The whole conversation. After one exchange (trimmed):
 
 - A user message has `text` and `files`; an assistant message has `steps`, `paragraphs` and maybe a `table`. Fields
   that don't apply are empty, not absent.
+- `notice` is `null` on almost every message. When it is set, it is a sentence for the analyst about the environment the
+  answer came from, for example *"The cloud sandbox was no longer there (cloud sandboxes can time out or be deleted),
+  so a new cloud sandbox was started from the conversation history. …"*. Show it with the reply. It is stored with the
+  message (it is there after a reload) and it is **not** part of the conversation the agent sees.
 - `title` is derived from the first message (its first 48 characters, or the first file's name if it had no text).
 - `files` is the distinct files shared anywhere in the conversation, in the order they first appeared.
 
@@ -197,7 +202,7 @@ event:step
 data:{"sessionId":"00ca3b14-…","step":{"kind":"compute","label":"extract_financials(income_statement, balance_sheet, cash_flow)"}}
 
 event:message
-data:{"sessionId":"00ca3b14-…","message":{"id":"f6e1ed37-…","role":"assistant","steps":[…],"paragraphs":[…],"table":{…}}}
+data:{"sessionId":"00ca3b14-…","message":{"id":"f6e1ed37-…","role":"assistant","steps":[…],"paragraphs":[…],"table":{…},"notice":null}}
 
 event:move-progress
 data:{"sessionId":"00ca3b14-…","stage":"packaging","detail":"Packaging context · 2 messages · 2 files"}

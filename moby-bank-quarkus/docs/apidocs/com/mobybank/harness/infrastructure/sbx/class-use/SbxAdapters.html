@@ -62,6 +62,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
 </div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-last odd-row-color">
+<div class="block">The real sandbox adapters, which drive Docker Sandboxes through the <code>sbx</code> command line.</div>
+</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -74,15 +78,36 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>(package private) <a href="../../../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../Adapters.html#sandboxAgent(java.lang.String,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../Adapters.html#sandboxAgent(java.lang.String,long,int,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;agentDelayMs,
+ int&nbsp;cloudExpiryTurns,
  <a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>(package private) <a href="../../../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../Adapters.html#sandboxTransfer(java.lang.String,long,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second odd-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../Adapters.html#sandboxTransfer(java.lang.String,long,long,java.lang.String,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;packagingMs,
  long&nbsp;transferMs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;moveFailure,
  <a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.sbx">
+<h2>Uses of <a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a> in <a href="../package-summary.html">com.mobybank.harness.infrastructure.sbx</a></h2>
+<div class="caption"><span>Constructors in <a href="../package-summary.html">com.mobybank.harness.infrastructure.sbx</a> with parameters of type <a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../SbxReadiness.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SbxAdapters,java.lang.String)" class="member-name-link">SbxReadiness</a><wbr>(<a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../SbxStartupCheck.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SbxAdapters,java.lang.String)" class="member-name-link">SbxStartupCheck</a><wbr>(<a href="../SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>

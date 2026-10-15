@@ -158,7 +158,7 @@ final class DemoData {
                                    List<Message> messages) {
         List<Message> dated = messages.stream()
                 .map(m -> Message.rehydrate(m.id(), m.role(), m.text(), m.files(), m.steps(), m.paragraphs(),
-                        m.table(), updatedAt))
+                        m.table(), m.notice(), updatedAt))
                 .toList();
         return Session.rehydrate(new SessionId(uuid("session-" + key)), new SessionTitle(title), location,
                 SessionStatus.IDLE, null, dated, updatedAt.minus(Duration.ofMinutes(5)), updatedAt, 0L);

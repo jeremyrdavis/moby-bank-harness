@@ -145,6 +145,24 @@ turn can resume.</div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">The few <code>sbx</code> commands the harness needs, built as argument lists.</div>
 </div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SbxErrors.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxErrors</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Turns what <code>sbx</code> (or the agent inside a sandbox) printed into a sentence that says what to do.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Checks, without changing anything the demo depends on, that this host can run what the adapters will ask of it: sbx
+is installed and new enough for the cloud, the local daemon is healthy, and the agent has a credential in each
+location.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab4"><a href="SbxPreflight.Report.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight.Report</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab4">
+<div class="block">What the checks found.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SbxReadiness.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxReadiness</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Reports whether this host can run real sandboxes (<code>/q/health/ready</code>), using <a href="SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx"><code>SbxPreflight</code></a>.</div>
+</div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SbxSandboxAgent.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxAgent</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Runs each turn by driving the agent (the Claude Code CLI) inside a Docker Sandbox through the <code>sbx</code> CLI,
@@ -158,6 +176,11 @@ sandbox from it at the destination.</div>
 <div class="col-first odd-row-color class-summary class-summary-tab4"><a href="SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab4">
 <div class="block">Settings for the sbx adapters.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SbxStartupCheck.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxStartupCheck</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Logs what is wrong with this host's sandbox setup when the app starts in <code>sbx</code> mode, so a missing cloud
+credential shows up in the log before the first turn fails.</div>
 </div>
 </div>
 </div>

@@ -106,6 +106,97 @@ class FakeAdaptersTest {
         assertEquals("Restoring the session on this machine · 1 message · 1 file", progress.get(1).detail());
     }
 
+    // --- faults ------------------------------------------------------------------------------------------------
+
+    private static AgentTurn cloudTurn(Session session, String text) {
+        var message = session.postUserMessage(text, List.of(), T0);
+        return new AgentTurn(session.id(), Location.CLOUD, List.of(), message);
+    }
+
+    private static void answered(Session session) {
+        session.recordAgentReply(new AgentReply(List.of(), List.of("ok"), java.util.Optional.empty()), T0);
+    }
+
+    @Test
+    void aCloudSandboxIsLostAfterTheConfiguredNumberOfCloudTurnsAndThenCounting_StartsAgain() {
+        FakeSandboxAgent agent = new FakeSandboxAgent(Duration.ZERO, 2);
+        Session session = Session.start(SessionId.fresh(), Location.CLOUD, T0);
+        List<Boolean> notices = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            notices.add(agent.runTurn(cloudTurn(session, "turn " + i), step -> { }).notice().isPresent());
+            answered(session);
+        }
+        assertEquals(List.of(false, false, true, false, false, true), notices);
+    }
+
+    @Test
+    void theNoticeIsTheOneARealRecoveryShows() {
+        FakeSandboxAgent agent = new FakeSandboxAgent(Duration.ZERO, 1);
+        Session session = Session.start(SessionId.fresh(), Location.CLOUD, T0);
+        agent.runTurn(cloudTurn(session, "one"), step -> { });
+        answered(session);
+        AgentReply reply = agent.runTurn(cloudTurn(session, "two"), step -> { });
+        assertEquals(com.mobybank.harness.infrastructure.sbx.SbxSandboxAgent.recreatedNotice(Location.CLOUD, List.of()),
+                reply.notice().orElseThrow());
+    }
+
+    @Test
+    void expiryIsOffByDefaultAndNeverAppliesToLocalTurns() {
+        FakeSandboxAgent off = new FakeSandboxAgent(Duration.ZERO);
+        Session cloud = Session.start(SessionId.fresh(), Location.CLOUD, T0);
+        for (int i = 0; i < 5; i++) {
+            assertTrue(off.runTurn(cloudTurn(cloud, "t" + i), step -> { }).notice().isEmpty());
+            answered(cloud);
+        }
+        FakeSandboxAgent every = new FakeSandboxAgent(Duration.ZERO, 1);
+        for (int i = 0; i < 3; i++) {
+            assertTrue(every.runTurn(turn("local " + i), step -> { }).notice().isEmpty());
+        }
+    }
+
+    @Test
+    void aNegativeExpiryIsRejected() {
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new FakeSandboxAgent(Duration.ZERO, -1));
+    }
+
+    @Test
+    void theTransferRefusesOnlyTheConfiguredDirectionAfterPackaging() {
+        FakeSandboxTransfer transfer = new FakeSandboxTransfer(Duration.ZERO, Duration.ZERO, FakeMoveFailure.TO_CLOUD);
+        List<MoveProgress> progress = new ArrayList<>();
+
+        var failure = org.junit.jupiter.api.Assertions.assertThrows(com.mobybank.harness.domain.SandboxFailureException.class,
+                () -> transfer.move(new MoveRequest(SessionId.fresh(), Location.LOCAL, Location.CLOUD, List.of(), List.of()),
+                        progress::add));
+        assertTrue(failure.getMessage().contains("refused the move to the cloud"), failure.getMessage());
+        assertEquals(List.of(MoveStage.PACKAGING), progress.stream().map(MoveProgress::stage).toList());
+
+        transfer.move(new MoveRequest(SessionId.fresh(), Location.CLOUD, Location.LOCAL, List.of(), List.of()),
+                progress::add);
+        assertEquals(3, progress.size(), "the other direction works");
+    }
+
+    @Test
+    void theMoveFailureSettingIsReadStrictly() {
+        assertEquals(FakeMoveFailure.NONE, FakeMoveFailure.parse("none"));
+        assertEquals(FakeMoveFailure.NONE, FakeMoveFailure.parse(""));
+        assertEquals(FakeMoveFailure.TO_CLOUD, FakeMoveFailure.parse("To-Cloud"));
+        assertEquals(FakeMoveFailure.TO_LOCAL, FakeMoveFailure.parse(" to-local "));
+        var e = org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException.class, () -> FakeMoveFailure.parse("both"));
+        assertEquals("Unsupported harness.fake.move-failure=both (supported: none, to-cloud, to-local)", e.getMessage());
+    }
+
+    @Test
+    void theFaultSettingsReachTheFakesThroughTheSelectors() {
+        FakeSandboxAgent agent = (FakeSandboxAgent) Adapters.selectAgent("fake", Duration.ZERO, 1, () -> SBX_AGENT);
+        Session session = Session.start(SessionId.fresh(), Location.CLOUD, T0);
+        agent.runTurn(cloudTurn(session, "one"), step -> { });
+        answered(session);
+        assertTrue(agent.runTurn(cloudTurn(session, "two"), step -> { }).notice().isPresent());
+        assertSame(SBX_TRANSFER, Adapters.selectTransfer("sbx", Duration.ZERO, Duration.ZERO, FakeMoveFailure.TO_LOCAL,
+                () -> SBX_TRANSFER));
+    }
+
     // --- document catalog --------------------------------------------------------------------------------------
 
     @Test

@@ -219,6 +219,46 @@ class SessionApplicationServiceTest {
     }
 
     @Test
+    void aNoticeFromTheAgentIsStoredWithTheReplyAndSentOnTheMessageEvent() {
+        SessionDTO created = service.create(new CreateSessionCommand("cloud"));
+        agent.reply = agent.reply.withNotice("The cloud sandbox was no longer there, so a new one was started.");
+        service.sendMessage(new SendMessageCommand(created.id(), "question", List.of()));
+
+        runner.drain();
+
+        MessageDTO reply = service.get(created.id()).messages().get(1);
+        assertEquals("The cloud sandbox was no longer there, so a new one was started.", reply.notice());
+        assertTrue(events.published.stream().anyMatch(event -> event instanceof MessageAdded added
+                && added.message().notice() != null), "the message event carries it: " + events.types());
+        assertNull(service.get(created.id()).messages().get(0).notice(), "the analyst's own message has none");
+    }
+
+    @Test
+    void aReplyWithoutANoticeHasANullNotice() {
+        SessionDTO created = service.create(new CreateSessionCommand(null));
+        service.sendMessage(new SendMessageCommand(created.id(), "question", List.of()));
+        runner.drain();
+        assertNull(service.get(created.id()).messages().get(1).notice());
+    }
+
+    @Test
+    void theAgentIsToldEveryFileSharedSoFarNotOnlyTheNewOnes() {
+        SessionDTO created = service.create(new CreateSessionCommand(null));
+        uploads.store(SessionId.parse(created.id()), "a.pdf", new byte[] {1});
+        uploads.store(SessionId.parse(created.id()), "b.pdf", new byte[] {2});
+        service.sendMessage(new SendMessageCommand(created.id(), "one",
+                List.of(new FileRefDTO("a.pdf", "upload"))));
+        runner.drain();
+        service.sendMessage(new SendMessageCommand(created.id(), "two",
+                List.of(new FileRefDTO("b.pdf", "upload"))));
+        runner.drain();
+
+        var second = agent.turns.get(1);
+        assertEquals(List.of("b.pdf"), second.userMessage().files().stream().map(f -> f.name()).toList());
+        assertEquals(List.of("a.pdf", "b.pdf"), second.sessionFiles().stream().map(f -> f.name()).toList());
+    }
+
+    @Test
     void anUnexpectedAgentErrorIsHandledTheSameWay() {
         SessionDTO created = service.create(new CreateSessionCommand(null));
         agent.failure = new IllegalStateException("boom");

@@ -125,17 +125,30 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</code></div>
 <div class="col-last even-row-color">
+<div class="block">Reconstruction path for a message without a notice.</div>
+</div>
+<div class="col-first odd-row-color"><code>static <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Message.</span><code><a href="../Message.html#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.util.Optional,java.time.Instant)" class="member-name-link">rehydrate</a><wbr>(<a href="../MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
+ <a href="../MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Step.html" title="class in com.mobybank.harness.domain">Step</a>&gt;&nbsp;steps,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;paragraphs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;notice,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Reconstruction path for the persistence layer.</div>
 </div>
-<div class="col-first odd-row-color"><code>(package private) static <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Message.</span><code><a href="../Message.html#user(com.mobybank.harness.domain.MessageId,java.lang.String,java.util.List,java.time.Instant)" class="member-name-link">user</a><wbr>(<a href="../MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
+<div class="col-first even-row-color"><code>(package private) static <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Message.</span><code><a href="../Message.html#user(com.mobybank.harness.domain.MessageId,java.lang.String,java.util.List,java.time.Instant)" class="member-name-link">user</a><wbr>(<a href="../MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;at)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AgentTurn.</span><code><a href="../AgentTurn.html#userMessage()" class="member-name-link">userMessage</a>()</code></div>
-<div class="col-last even-row-color">
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AgentTurn.</span><code><a href="../AgentTurn.html#userMessage()" class="member-name-link">userMessage</a>()</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Returns the value of the <code>userMessage</code> record component.</div>
 </div>
 </div>
@@ -188,6 +201,15 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
  <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)</code></div>
 <div class="col-last even-row-color">
+<div class="block">A turn whose only files are the ones attached to the new message.</div>
+</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../AgentTurn.html#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message,java.util.List)" class="member-name-link">AgentTurn</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
+ <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;sessionFiles)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Creates an instance of a <code>AgentTurn</code> record class.</div>
 </div>
 </div>
@@ -202,15 +224,24 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
  <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Creates an instance of a <code>AgentTurn</code> record class.</div>
+<div class="block">A turn whose only files are the ones attached to the new message.</div>
 </div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../MoveRequest.html#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.Location,java.util.List,java.util.List)" class="member-name-link">MoveRequest</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+<div class="col-second odd-row-color"><code><a href="../AgentTurn.html#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message,java.util.List)" class="member-name-link">AgentTurn</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
+ <a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;sessionFiles)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates an instance of a <code>AgentTurn</code> record class.</div>
+</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../MoveRequest.html#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.Location,java.util.List,java.util.List)" class="member-name-link">MoveRequest</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
  <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;from,
  <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;to,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Creates an instance of a <code>MoveRequest</code> record class.</div>
 </div>
 </div>

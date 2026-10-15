@@ -263,4 +263,50 @@ class SessionTest {
         assertEquals(7L, restored.version());
         assertTrue(restored.pullPendingEvents().isEmpty());
     }
+
+    // --- notices -----------------------------------------------------------------------------------------------
+
+    @Test
+    void aNoticeOnTheReplyIsKeptOnTheAssistantMessageAndAnOrdinaryReplyHasNone() {
+        Session session = newSession(Location.CLOUD);
+        session.postUserMessage("first", List.of(), T0);
+        Message plain = session.recordAgentReply(REPLY, T1);
+        session.postUserMessage("second", List.of(), T1);
+        Message noted = session.recordAgentReply(REPLY.withNotice("  The sandbox was started again.  "), T2);
+
+        assertTrue(plain.notice().isEmpty());
+        assertEquals(Optional.of("The sandbox was started again."), noted.notice(), "stripped");
+        assertTrue(session.messages().get(0).notice().isEmpty(), "user messages never carry one");
+    }
+
+    @Test
+    void aBlankNoticeIsNoNotice() {
+        assertTrue(REPLY.withNotice("   ").notice().isEmpty());
+    }
+
+    @Test
+    void rehydratingKeepsTheNoticeAndTheOldFormHasNone() {
+        MessageId id = MessageId.fresh();
+        Message noted = Message.rehydrate(id, MessageRole.ASSISTANT, "", List.of(), List.of(), List.of("ok"),
+                Optional.empty(), Optional.of("Started again"), T0);
+        Message old = Message.rehydrate(id, MessageRole.ASSISTANT, "", List.of(), List.of(), List.of("ok"),
+                Optional.empty(), T0);
+        assertEquals(Optional.of("Started again"), noted.notice());
+        assertTrue(old.notice().isEmpty());
+    }
+
+    @Test
+    void anAgentTurnCarriesEveryFileSharedSoFar() {
+        Session session = newSession(Location.LOCAL);
+        FileRef a = new FileRef("a.pdf", FileSource.UPLOAD);
+        FileRef b = new FileRef("b.pdf", FileSource.ONEDRIVE);
+        session.postUserMessage("one", List.of(a), T0);
+        session.recordAgentReply(REPLY, T1);
+        Message second = session.postUserMessage("two", List.of(b), T1);
+
+        assertEquals(List.of(b), new AgentTurn(session.id(), Location.LOCAL, List.of(), second).sessionFiles(),
+                "the short form knows only the new message's files");
+        assertEquals(List.of(a, b),
+                new AgentTurn(session.id(), Location.LOCAL, List.of(), second, session.filesShared()).sessionFiles());
+    }
 }

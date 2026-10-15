@@ -150,12 +150,13 @@ responses.</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="class-use/AgentReply.html#com.mobybank.harness.domain">AgentReply</a></div>
 <div class="col-last even-row-color">
-<div class="block">What the agent produced for one turn: its trace, the prose answer, and optionally a financial table.</div>
+<div class="block">What the agent produced for one turn: its trace, the prose answer, optionally a financial table, and optionally a
+notice about the environment the answer came from (for example that the sandbox had to be started again).</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/AgentTurn.html#com.mobybank.harness.domain">AgentTurn</a></div>
 <div class="col-last odd-row-color">
-<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far
-and the new user message.</div>
+<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far,
+the new user message and every file shared anywhere in the conversation.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/CatalogFile.html#com.mobybank.harness.domain">CatalogFile</a></div>
 <div class="col-last even-row-color">
@@ -264,12 +265,13 @@ and the new user message.</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="class-use/AgentReply.html#com.mobybank.harness.infrastructure">AgentReply</a></div>
 <div class="col-last even-row-color">
-<div class="block">What the agent produced for one turn: its trace, the prose answer, and optionally a financial table.</div>
+<div class="block">What the agent produced for one turn: its trace, the prose answer, optionally a financial table, and optionally a
+notice about the environment the answer came from (for example that the sandbox had to be started again).</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/AgentTurn.html#com.mobybank.harness.infrastructure">AgentTurn</a></div>
 <div class="col-last odd-row-color">
-<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far
-and the new user message.</div>
+<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far,
+the new user message and every file shared anywhere in the conversation.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/CatalogFile.html#com.mobybank.harness.infrastructure">CatalogFile</a></div>
 <div class="col-last even-row-color">
@@ -295,40 +297,44 @@ and the new user message.</div>
 <div class="col-last odd-row-color">
 <div class="block">Opaque identifier of a document folder in the catalog (an item id when the catalog is OneDrive).</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure">MoveProgress</a></div>
+<div class="col-first even-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure">Location</a></div>
 <div class="col-last even-row-color">
+<div class="block">Where a session's agent runs: a sandbox on the analyst's machine, or a sandbox in the cloud.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure">MoveProgress</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A progress report emitted by a transfer while it moves a session.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure">MoveRequest</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure">MoveRequest</a></div>
+<div class="col-last even-row-color">
 <div class="block">Everything a transfer needs to carry a session from one location to the other.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure">SandboxAgent</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure">SandboxAgent</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The agent running in a Docker Sandbox.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure">SandboxTransfer</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure">SandboxTransfer</a></div>
+<div class="col-last even-row-color">
 <div class="block">Carries a session's context and files from one location to the other.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/Session.html#com.mobybank.harness.infrastructure">Session</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/Session.html#com.mobybank.harness.infrastructure">Session</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A conversation between an analyst and the agent, and the aggregate root for its messages.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure">SessionId</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure">SessionId</a></div>
+<div class="col-last even-row-color">
 <div class="block">Identifies a <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/SessionRepository.html#com.mobybank.harness.infrastructure">SessionRepository</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/SessionRepository.html#com.mobybank.harness.infrastructure">SessionRepository</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Stores <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>s.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/Step.html#com.mobybank.harness.infrastructure">Step</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/Step.html#com.mobybank.harness.infrastructure">Step</a></div>
+<div class="col-last even-row-color">
 <div class="block">One entry in an agent's trace: a file it read or a calculation it ran.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/UserId.html#com.mobybank.harness.infrastructure">UserId</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/UserId.html#com.mobybank.harness.infrastructure">UserId</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Identifies the analyst.</div>
 </div>
 </div>
@@ -367,43 +373,48 @@ and the new user message.</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="class-use/AgentReply.html#com.mobybank.harness.infrastructure.sbx">AgentReply</a></div>
 <div class="col-last even-row-color">
-<div class="block">What the agent produced for one turn: its trace, the prose answer, and optionally a financial table.</div>
+<div class="block">What the agent produced for one turn: its trace, the prose answer, optionally a financial table, and optionally a
+notice about the environment the answer came from (for example that the sandbox had to be started again).</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/AgentTurn.html#com.mobybank.harness.infrastructure.sbx">AgentTurn</a></div>
 <div class="col-last odd-row-color">
-<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far
-and the new user message.</div>
+<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far,
+the new user message and every file shared anywhere in the conversation.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/DocumentCatalog.html#com.mobybank.harness.infrastructure.sbx">DocumentCatalog</a></div>
 <div class="col-last even-row-color">
 <div class="block">The document source analysts connect folders from (OneDrive in production).</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure.sbx">Location</a></div>
+<div class="col-first odd-row-color"><a href="class-use/FileRef.html#com.mobybank.harness.infrastructure.sbx">FileRef</a></div>
 <div class="col-last odd-row-color">
+<div class="block">A file attached to a message, identified by its name and where it came from.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure.sbx">Location</a></div>
+<div class="col-last even-row-color">
 <div class="block">Where a session's agent runs: a sandbox on the analyst's machine, or a sandbox in the cloud.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure.sbx">MoveProgress</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure.sbx">MoveProgress</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A progress report emitted by a transfer while it moves a session.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure.sbx">MoveRequest</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure.sbx">MoveRequest</a></div>
+<div class="col-last even-row-color">
 <div class="block">Everything a transfer needs to carry a session from one location to the other.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure.sbx">SandboxAgent</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure.sbx">SandboxAgent</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The agent running in a Docker Sandbox.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure.sbx">SandboxTransfer</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure.sbx">SandboxTransfer</a></div>
+<div class="col-last even-row-color">
 <div class="block">Carries a session's context and files from one location to the other.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure.sbx">SessionId</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure.sbx">SessionId</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Identifies a <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/Step.html#com.mobybank.harness.infrastructure.sbx">Step</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/Step.html#com.mobybank.harness.infrastructure.sbx">Step</a></div>
+<div class="col-last even-row-color">
 <div class="block">One entry in an agent's trace: a file it read or a calculation it ran.</div>
 </div>
 </div>

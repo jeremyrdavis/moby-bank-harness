@@ -15,6 +15,13 @@ class HealthTest {
     }
 
     @Test
+    void theSbxCheckIsInTheReadinessReportAndSaysItIsNotInUseWithTheFakes() {
+        given().when().get("/q/health/ready").then().statusCode(200)
+                .body("checks.find { it.name == 'sbx' }.status", equalTo("UP"))
+                .body("checks.find { it.name == 'sbx' }.data.mode", equalTo("fake"));
+    }
+
+    @Test
     void openApiDocumentIsServed() {
         given().when().get("/q/openapi").then().statusCode(200);
     }

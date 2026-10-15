@@ -26,12 +26,15 @@ public final class SbxCli {
         this.commandTimeout = commandTimeout;
     }
 
-    /** Creates a sandbox without a workspace mount. Cloud sandboxes can be given a time-to-live. */
-    public void create(Location target, String name, String agent, Duration cloudTtl) {
+    /**
+     * Creates a sandbox without a workspace mount. A cloud sandbox can be given a time-to-live and told what to do
+     * when it runs out ({@code stop}, {@code delete} or {@code restart}); neither applies locally.
+     */
+    public void create(Location target, String name, String agent, Duration cloudTtl, String cloudOnTimeout) {
         List<String> command = base(target);
         command.addAll(List.of("create", "--name", name));
-        if (target == Location.CLOUD && cloudTtl != null) {
-            command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
+        if (target == Location.CLOUD) {
+            addCloudLifetime(command, cloudTtl, cloudOnTimeout);
         }
         command.add(agent);
         Log.debugf("Creating sandbox %s", name);
@@ -71,16 +74,57 @@ public final class SbxCli {
     /**
      * Moves a sandbox to the other location with {@code sbx move}, which captures the sandbox's filesystem and starts a
      * new sandbox from it at the destination. The destination gets a new id; {@code newName} is the name requested
-     * for it (a cloud destination always appends a short suffix).
+     * for it (a cloud destination may be listed with an agent prefix, and the service may add a suffix).
      */
-    public void move(String source, Location to, String newName, Duration cloudTtl, Duration timeout) {
+    public void move(String source, Location to, String newName, Duration cloudTtl, String cloudOnTimeout,
+                     Duration timeout) {
         List<String> command = new ArrayList<>(List.of(binary, "move", source, "--to", to == Location.CLOUD ? "cloud" : "local",
                 "--name", newName, "--force"));
-        if (to == Location.CLOUD && cloudTtl != null) {
-            command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
+        if (to == Location.CLOUD) {
+            addCloudLifetime(command, cloudTtl, cloudOnTimeout);
         }
         Log.debugf("Moving %s to %s", source, to.name().toLowerCase());
         requireSuccess(runner.run(command, timeout), "Moving " + source + " to " + to.name().toLowerCase());
+    }
+
+    /** What {@code sbx --version} prints, for example {@code v0.48.0 <commit>}; fails if sbx cannot be started. */
+    public String version() {
+        CommandResult result = requireSuccess(runner.run(List.of(binary, "--version"), commandTimeout),
+                "Asking sbx for its version");
+        return result.stdout().lines().map(String::strip).filter(line -> !line.isEmpty()).findFirst().orElse("");
+    }
+
+    /**
+     * Runs {@code sbx diagnose} (with {@code --cloud} for the cloud). The caller reads the result: a healthy host exits
+     * 0 and prints {@code ✓} lines and a summary such as {@code 14 passed}.
+     */
+    public CommandResult diagnose(Location target) {
+        List<String> command = base(target);
+        command.add("diagnose");
+        return runner.run(command, commandTimeout);
+    }
+
+    /** The output of {@code sbx secret ls}: one line per stored secret, with the service name in it. */
+    public String secrets(Location target) {
+        List<String> command = base(target);
+        command.addAll(List.of("secret", "ls"));
+        return requireSuccess(runner.run(command, commandTimeout), "Listing secrets").stdout();
+    }
+
+    /** Deletes a sandbox. */
+    public void remove(Location target, String sandbox) {
+        List<String> command = base(target);
+        command.addAll(List.of("rm", sandbox));
+        requireSuccess(runner.run(command, commandTimeout), "Removing sandbox " + sandbox);
+    }
+
+    private static void addCloudLifetime(List<String> command, Duration ttl, String onTimeout) {
+        if (ttl != null) {
+            command.addAll(List.of("--ttl", formatDuration(ttl)));
+        }
+        if (onTimeout != null) {
+            command.addAll(List.of("--on-timeout", onTimeout));
+        }
     }
 
     private List<String> base(Location target) {
@@ -95,7 +139,10 @@ public final class SbxCli {
 
     static CommandResult requireSuccess(CommandResult result, String what) {
         if (!result.succeeded()) {
-            throw new SandboxFailureException(what + " failed (exit " + result.exitCode() + "): " + result.tail());
+            String detail = "exit " + result.exitCode() + ": " + result.tail();
+            throw new SandboxFailureException(SbxErrors.hint(result.tail(), null)
+                    .map(hint -> what + " failed: " + hint + " (" + detail + ")")
+                    .orElse(what + " failed (" + detail + ")"));
         }
         return result;
     }

@@ -114,15 +114,22 @@ attached file, "computes" one calculation, and returns a short summary plus a ta
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>(package private) <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#sandboxAgent(java.lang.String,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#sandboxAgent(java.lang.String,long,int,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;agentDelayMs,
+ int&nbsp;cloudExpiryTurns,
  <a href="../../infrastructure/sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>(package private) static <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second odd-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,int,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ int&nbsp;fakeCloudExpiryTurns,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>(package private) static <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Method parameters in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> with type arguments of type <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></span></div>
 <div class="summary-table three-column-summary">
@@ -130,10 +137,16 @@ attached file, "computes" one calculation, and returns a short summary plus a ta
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>(package private) static <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second even-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,int,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ int&nbsp;fakeCloudExpiryTurns,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>(package private) static <a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Adapters.</span><code><a href="../../infrastructure/Adapters.html#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

@@ -36,7 +36,8 @@ By default everything is simulated (`harness.sandbox.mode=fake`). To drive real 
 ```
 
 - **Local and cloud** use the same commands; cloud adds the global `--cloud` flag (`sbx --cloud exec ...`).
-  Check cloud access with `sbx --cloud diagnose`.
+  The cloud needs sbx 0.45.0 or newer, a subscription and its own agent credential
+  (`sbx --cloud secret set anthropic --oauth`). `/q/health/ready` shows whether the host is set up.
 - **One sandbox per session**, created on its first turn and named `harness-<session>-g<generation>`. Attached
   files are copied into `<workspace-dir>/files` with `sbx cp`, then the agent runs headless:
   `sbx exec <sandbox> claude -p <prompt> --output-format stream-json --verbose`. Its tool calls appear as steps,
@@ -44,7 +45,11 @@ By default everything is simulated (`harness.sandbox.mode=fake`). To drive real 
 - **Moving a session** runs `sbx move <sandbox> --to cloud|local`, which carries the whole sandbox filesystem
   (including the agent's conversation history) to a new sandbox. Processes and in-memory state do not travel,
   and the source sandbox is stopped, not deleted. Each move creates the next generation; sandboxes are found
-  again after a restart by listing them.
+  again after a restart by listing them. Moving to the cloud takes about half a minute; moving back took 5 to 17
+  minutes on a real host.
+- **A cloud sandbox times out** after `harness.sbx.cloud-ttl` (8h) and is stopped, not deleted
+  (`harness.sbx.cloud-on-timeout`); the next turn starts it again. A sandbox that is really gone is recreated from the
+  conversation history, and the analyst sees a notice.
 - **The agent needs credentials inside the sandbox.** Configure them with `sbx secret`, and separately for cloud
   (credentials saved for local sandboxes are not available there). The sandbox's network policy must allow the
   agent's API host.
@@ -52,9 +57,12 @@ By default everything is simulated (`harness.sandbox.mode=fake`). To drive real 
 
 What the automated tests cover: every `sbx` command the adapters issue (asserted exactly, through a fake command
 runner), parsing of the agent's JSON stream, moves in both directions, and failure handling. What they cannot
-cover is the real CLI, so check these on a machine with `sbx` installed: the agent's headless flags and stream
-format, that `sbx ls -q` lists cloud sandboxes as `agent/name` (the adapters accept either form), and that
-`sbx move --force` runs without a prompt.
+cover is the real CLI. The commands, the agent's headless flags and its stream, the listing forms, `--ttl` and
+`--on-timeout`, both moves (with `--force`, no prompt) and starting a stopped cloud sandbox were run by hand on a real
+host and are recorded in
+[`verification.md`](../agent-os/specs/2026-10-14-0737-cloud-move-hardening/verification.md). **Still to check on a host
+with `sbx`:** the app itself end to end in `sbx` mode; `sbx --cloud diagnose`; `sbx --cloud rm` (used only by the
+optional probe); moving a stopped cloud sandbox; and the exact `sbx` text for platform, disk and size failures.
 
 ## Reading documents from OneDrive
 

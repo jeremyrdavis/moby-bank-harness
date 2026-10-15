@@ -20,19 +20,21 @@ class SbxCliTest {
 
     @Test
     void createsALocalSandboxWithoutAWorkspace() {
-        cli.create(Location.LOCAL, "harness-abc-g0", "claude", Duration.ofHours(8));
-        assertEquals(List.of("sbx create --name harness-abc-g0 claude"), runner.lines(), "no --ttl for local sandboxes");
+        cli.create(Location.LOCAL, "harness-abc-g0", "claude", Duration.ofHours(8), "stop");
+        assertEquals(List.of("sbx create --name harness-abc-g0 claude"), runner.lines(),
+                "no --ttl or --on-timeout for local sandboxes");
     }
 
     @Test
-    void createsACloudSandboxWithTheCloudFlagAndATimeToLive() {
-        cli.create(Location.CLOUD, "harness-abc-g0", "claude", Duration.ofHours(8));
-        assertEquals(List.of("sbx --cloud create --name harness-abc-g0 --ttl 8h claude"), runner.lines());
+    void createsACloudSandboxWithTheCloudFlagATimeToLiveAndWhatToDoWhenItRunsOut() {
+        cli.create(Location.CLOUD, "harness-abc-g0", "claude", Duration.ofHours(8), "stop");
+        assertEquals(List.of("sbx --cloud create --name harness-abc-g0 --ttl 8h --on-timeout stop claude"),
+                runner.lines());
     }
 
     @Test
-    void aCloudSandboxWithoutATtlUsesTheServiceDefault() {
-        cli.create(Location.CLOUD, "harness-abc-g0", "claude", null);
+    void aCloudSandboxWithoutALifetimeUsesTheServiceDefaults() {
+        cli.create(Location.CLOUD, "harness-abc-g0", "claude", null, null);
         assertEquals(List.of("sbx --cloud create --name harness-abc-g0 claude"), runner.lines());
     }
 
@@ -83,15 +85,17 @@ class SbxCliTest {
     }
 
     @Test
-    void movesToTheCloudWithoutTheCloudFlagButWithForceAndTtl() {
-        cli.move("harness-abc-g0", Location.CLOUD, "harness-abc-g1", Duration.ofHours(8), Duration.ofMinutes(30));
-        assertEquals(List.of("sbx move harness-abc-g0 --to cloud --name harness-abc-g1 --force --ttl 8h"), runner.lines());
+    void movesToTheCloudWithoutTheCloudFlagButWithForceTtlAndOnTimeout() {
+        cli.move("harness-abc-g0", Location.CLOUD, "harness-abc-g1", Duration.ofHours(8), "stop", Duration.ofMinutes(30));
+        assertEquals(List.of("sbx move harness-abc-g0 --to cloud --name harness-abc-g1 --force --ttl 8h --on-timeout stop"),
+                runner.lines());
         assertEquals(Duration.ofMinutes(30), runner.calls.get(0).timeout());
     }
 
     @Test
-    void movesBackToLocalWithoutATtl() {
-        cli.move("claude/harness-abc-g1-xy", Location.LOCAL, "harness-abc-g2", Duration.ofHours(8), Duration.ofMinutes(30));
+    void movesBackToLocalWithoutALifetime() {
+        cli.move("claude/harness-abc-g1-xy", Location.LOCAL, "harness-abc-g2", Duration.ofHours(8), "stop",
+                Duration.ofMinutes(30));
         assertEquals(List.of("sbx move claude/harness-abc-g1-xy --to local --name harness-abc-g2 --force"), runner.lines());
     }
 
@@ -99,7 +103,7 @@ class SbxCliTest {
     void aFailingCommandBecomesASandboxFailureWithTheReason() {
         runner.on(FakeRunner.has("create"), Response.fail(1, "Error: name already in use"));
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.create(Location.LOCAL, "harness-abc-g0", "claude", null));
+                () -> cli.create(Location.LOCAL, "harness-abc-g0", "claude", null, null));
         assertTrue(e.getMessage().contains("harness-abc-g0"), e.getMessage());
         assertTrue(e.getMessage().contains("exit 1"), e.getMessage());
         assertTrue(e.getMessage().contains("name already in use"), e.getMessage());

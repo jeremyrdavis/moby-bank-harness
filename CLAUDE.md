@@ -72,7 +72,7 @@ Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Depend
 - **Requests wait.** The page has no SSE, so `POST …/messages` and `POST …/move` block (`SessionWaiter`) until the reply or the move ends, up to `harness.ui.wait-timeout` (180s). Steps and reply therefore appear together.
 - **Templates are type-checked** (`@CheckedTemplate`): a typo fails the build. They live in `src/main/resources/templates/`; HTML is auto-escaped, so never use `.raw` on user or agent text.
 - **No server-side page state.** The open conversation is the `moby-current` cookie; attached files are chips with hidden inputs.
-- htmx and the Manrope font come from jars (`org.webjars.npm:htmx.org`, `org.mvnpm.at.fontsource:manrope`), not CDNs. The page offers Move to cloud only for now.
+- htmx and the Manrope font come from jars (`org.webjars.npm:htmx.org`, `org.mvnpm.at.fontsource:manrope`), not CDNs. The header offers **Move to cloud** or **Move to local** by where the session runs; a move that outlasts the wait leaves a busy pane that polls itself.
 
 ## UI architecture (`moby-bank-prototype`)
 

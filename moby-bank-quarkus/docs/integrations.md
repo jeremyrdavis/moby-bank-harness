@@ -5,8 +5,11 @@ Graph). Both sit behind domain ports, and the default fakes stand in for them. T
 adapter works, what it assumes, and what to check on a real system.
 
 > **What has and has not been verified.** The adapters are tested thoroughly against stand-ins: a fake
-> `CommandRunner` for `sbx` and an in-process HTTP server for Graph. Nothing here has been run against a real `sbx`
-> or a real Microsoft tenant. Treat the assumptions marked **(verify)** as the checklist for the first real run.
+> `CommandRunner` for `sbx` and an in-process HTTP server for Graph. The `sbx` commands, the agent's headless run and
+> stream, and both moves were run **by hand** on a real host (sbx 0.47/0.48, October 2026; results in
+> [`verification.md`](../../agent-os/specs/2026-10-14-0737-cloud-move-hardening/verification.md)). The app itself has not
+> yet been run end to end against real sandboxes, and nothing has been run against a real Microsoft tenant. Treat the
+> assumptions marked **(verify)** as the checklist for the first real run.
 
 ---
 
@@ -58,14 +61,16 @@ Exactly these, built in `SbxCli` and asserted by `SbxCliTest`:
 
 | Purpose | Command |
 |---|---|
-| Create a sandbox (no workspace mount) | `sbx [--cloud] create --name <name> [--ttl <t>] <agent>` (`--ttl` only for cloud, only if configured) |
+| Create a sandbox (no workspace mount) | `sbx [--cloud] create --name <name> [--ttl <t>] [--on-timeout <action>] <agent>` (the two flags only for cloud, only if configured) |
 | List sandbox names | `sbx [--cloud] ls -q` |
 | Make a folder inside a sandbox | `sbx [--cloud] exec <sandbox> mkdir -p <dir>` |
 | Copy a file in | `sbx [--cloud] cp <local file> <sandbox>:<remote path>` |
 | Run the agent | `sbx [--cloud] exec <sandbox> <agent> -p <prompt> --output-format stream-json --verbose <agent-args> [--resume <id>]` |
-| Move a sandbox | `sbx move <sandbox> --to local\|cloud --name <new name> --force [--ttl <t>]` |
+| Move a sandbox | `sbx move <sandbox> --to local\|cloud --name <new name> --force [--ttl <t>] [--on-timeout <action>]` (the two flags only towards the cloud) |
 
-`sbx move` takes no `--cloud` flag: the docs' examples address cloud sandboxes by id or name with `--to`. **(verify)**
+`sbx move` takes no `--cloud` flag: a cloud sandbox is addressed by name or id with `--to`. Both directions were run on a
+real host (sbx 0.47/0.48); the results are in
+[`verification.md`](../../agent-os/specs/2026-10-14-0737-cloud-move-hardening/verification.md).
 
 ### Sandbox names and generations
 
@@ -76,9 +81,10 @@ harness-<first 12 hex digits of the session id>-g<generation>          e.g. harn
 ```
 
 Every move creates the **next generation** (`…-g1`, `…-g2`), because `sbx move` makes a new sandbox at the destination.
-The service may decorate the name: a cloud sandbox can be listed as `claude/harness-0a1b2c3d4e5f-g1-k3j2x` (an agent
-prefix and a short suffix). `SandboxRegistry.generationOf` reads the generation out of any of these forms, and the
-full listed string is what is passed to later commands. **(verify how `sbx ls -q` prints cloud names.)**
+The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/harness-0a1b2c3d4e5f-g1` (an
+agent prefix; a move destination kept exactly the requested name with no suffix on a real host, but the adapter still
+accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms. Later commands are given
+the **bare name** (the agent prefix is dropped), the form that was run against a real host.
 
 The registry is in memory. After a restart it is empty, so both adapters **rediscover** a session's sandbox by
 listing names at the right location and taking the highest generation that matches. Sandboxes therefore survive an
@@ -87,7 +93,7 @@ app restart even though the app's state does not.
 ### A turn (`SbxSandboxAgent.runTurn`)
 
 1. **Find the sandbox.** Use the registry; else list and pick the highest generation; else create generation 0.
-2. **Stage files** (only if the message has any): `mkdir -p <workspace-dir>/files`, then for each file read its bytes
+2. **Stage files** (the message's files, or every file shared so far when this turn had to create the sandbox):`mkdir -p <workspace-dir>/files`, then for each file read its bytes
    (`UploadStore` for uploads, `DocumentCatalog.fetch(name)` for OneDrive), write them to a temporary directory and
    `sbx cp` each in. The temporary directory is deleted afterwards. A file that is no longer available fails the
    turn with its name, before the agent runs. A name containing a path is refused.
@@ -105,6 +111,16 @@ history (the agent has it). If there is no id (a new sandbox, a rediscovered one
 exists in this app, such as the demo conversations), the prompt includes the earlier conversation, each message
 clipped to 1500 characters. **If a resumed run fails with no answer, it is retried once without `--resume`**, with
 the history in the prompt.
+
+**A sandbox that is gone.** If the turn fails and the sandbox is no longer in `sbx ls -q` (deleted, or removed by
+`--on-timeout delete`), the adapter creates the next generation, forgets the old agent conversation id, copies in
+**every** file shared in the conversation, and runs the turn again with the history in the prompt. The reply carries a
+`notice` for the analyst ("The cloud sandbox was no longer there… Anything the agent installed or created in the old
+one is gone."). The listing is the test, not the error text, so a sandbox that exists but fails for another reason
+(not signed in, no credential) is **not** replaced. If the listing itself fails, the original failure is reported. A
+sandbox that merely *timed out* with `--on-timeout stop` is still listed: `exec` starts it again in about a second
+and the analyst sees nothing. A move whose source is gone is not a failure either: the session switches location and
+the next turn starts a fresh sandbox there, as above.
 
 **What counts as failure.** A run fails the turn (becoming a failure message in the conversation) if the agent's
 `result` says it errored, or if the process exited non-zero *and* produced no answer. A non-zero exit *after* an
@@ -132,7 +148,13 @@ keeps only what the UI shows and ignores the rest, so unknown events, non-JSON n
 | anything else | compute | `<Tool> <first text input>` |
 | `TodoWrite` | *(skipped: bookkeeping)* | |
 
-Labels are cut to 140 characters. **(verify the flags and the event format against the installed agent version.)**
+Labels are cut to 140 characters. The flags and the stream were checked against the agent in a real local and cloud
+sandbox: the events seen were `system`/`init` (with `session_id`), `assistant`, `rate_limit_event` and `result` (with
+`result`, `is_error`, `session_id`, `terminal_reason`, `api_error_status`, cost). Two things worth knowing: resuming
+returns a **new** `session_id` each run (the adapter keeps the latest), and a cloud run prints a non-JSON warning line
+before the stream ("claude.ai connectors are disabled because ANTHROPIC_API_KEY…"), which the parser ignores. Local runs
+also load the host's claude.ai connectors unless `--strict-mcp-config` is passed, which is why it is in the default
+`harness.sbx.agent-args`.
 
 ### How the answer becomes paragraphs and a table
 
@@ -157,10 +179,46 @@ else is split on blank lines into paragraphs. A second table stays inside the pa
 A failed move leaves the registry unchanged, and the application service aborts the move so the session stays
 where it was (`MoveFailed`).
 
+### Checking the host before the first turn (`SbxPreflight`)
+
+In `sbx` mode the app checks, without changing anything, what a demo needs: `sbx --version` (0.45.0 or newer for the
+cloud), `sbx diagnose` and `sbx --cloud diagnose`, and that `sbx secret ls` / `sbx --cloud secret ls` list an
+`anthropic` secret. It never stops the app:
+
+- **At startup** the result is logged in the background (`sbx preflight passed`, or one `WARN` per problem, each saying
+  what to do).
+- **`/q/health/ready`** shows it as the check `sbx`, with one data entry per step. It is **down** only when the local
+  side cannot work (sbx missing, `sbx diagnose` failing); a missing cloud credential or a failing cloud diagnosis is a
+  `warning n` entry, because a host without a cloud subscription still runs local sandboxes. In the other modes the
+  check is up and says `mode: fake`. The result is cached for `harness.sbx.preflight-cache`.
+- **`harness.sbx.preflight-probe=true`** adds one trivial agent turn in a throwaway cloud sandbox (once per start),
+  because a stale secret is listed but gives `401`. The probe sandbox is removed with `sbx --cloud rm <name>`, which has
+  not been run on a real host yet **(verify)**; if the removal fails the log names the sandbox to delete by hand.
+
+`sbx --cloud diagnose` has not been run on a real host yet **(verify)**; `sbx diagnose` exits 0 with a `14 passed` summary.
+
+### Failure messages (`SbxErrors`)
+
+`SbxErrors` recognises what `sbx` or the agent prints for the failures a demo actually hits and puts a sentence about
+what to do in front of the raw text (`… failed: <what to do> (exit 1: <what sbx said>)`). Anything else keeps the plain
+form. `SbxErrorsTest` is the table.
+
+| Recognised | Seen on a real host? | Says |
+|---|---|---|
+| `sandbox '<name>' not found` | yes (exit 1) | The sandbox no longer exists; start a new one |
+| `Invalid API key · Fix external API key` (401) | yes, in a cloud sandbox with a missing or stale secret | Set the secret (`sbx secret set anthropic` or `sbx --cloud secret set anthropic --oauth`), then start a new sandbox |
+| not authenticated / no secret | no | The agent has no credential; same command |
+| not signed in | no | Run `sbx login` |
+| platform mismatch, disk full, larger than the biggest cloud size, daemon not running | no (from Docker's documentation) | What to change |
+
 ### Things to watch on a real host
 
 - **The source sandbox is left behind** after every move (stopped, not deleted). Nothing cleans them up.
-- **Cloud sandboxes expire** (the service's default is about an hour). Set `harness.sbx.cloud-ttl` for a demo.
+- **Cloud sandboxes expire** after `harness.sbx.cloud-ttl` (default 8h; the service's own default is about an hour).
+  `harness.sbx.cloud-on-timeout=stop` (the default) stops them instead of deleting them, and the next `exec` starts a
+  stopped one again in about a second, so an idle demo comes back where it was.
+- **Moving to the cloud is quick (about 30 s), moving back is not** (5 to 17 minutes seen on a real host), hence the
+  1h `harness.sbx.move-timeout`.
 - **The agent runs with `--dangerously-skip-permissions`** (`harness.sbx.agent-args`) because nothing can answer a
   permission prompt in a headless run. That is acceptable only because the agent is inside a sandbox.
 - **Workspace paths:** cloud sandboxes have no host workspace, so nothing is mounted and files always go in by

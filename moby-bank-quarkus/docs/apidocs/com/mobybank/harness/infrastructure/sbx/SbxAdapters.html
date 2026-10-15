@@ -54,15 +54,22 @@ loadScripts(document, 'script');</script>
 <div class="toc-header">Contents&nbsp;<input type="text" class="filter-input" disabled placeholder="Filter contents (type .)" aria-label="Filter table of contents" autocomplete="off" spellcheck="false"><input type="reset" class="reset-filter" disabled tabindex="-1" value="Reset"></div>
 <ol class="toc-list" tabindex="-1">
 <li><a href="#" tabindex="0">Description</a></li>
+<li><a href="#field-summary" tabindex="0">Field Summary</a></li>
 <li><a href="#constructor-summary" tabindex="0">Constructor Summary</a></li>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
+<li><a href="#field-detail" tabindex="0">Field Details</a>
+<ol class="toc-list">
+<li><a href="#DEFAULT_AGENT_ARGS" tabindex="0">DEFAULT_AGENT_ARGS</a></li>
+</ol>
+</li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.util.Optional)" tabindex="0">SbxAdapters(SandboxRegistry, UploadStore, DocumentCatalog, String, String, String, String, Duration, Duration, Duration, Optional)</a></li>
+<li><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)" tabindex="0">SbxAdapters(SandboxRegistry, UploadStore, DocumentCatalog, String, String, String, String, Duration, Duration, Duration, Duration, String, Duration, boolean)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#preflight()" tabindex="0">preflight()</a></li>
 <li><a href="#agent()" tabindex="0">agent()</a></li>
 <li><a href="#transfer()" tabindex="0">transfer()</a></li>
 </ol>
@@ -90,6 +97,25 @@ turn or move runs, so the app starts fine without it installed; the adapters are
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>(package private) static final <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#DEFAULT_AGENT_ARGS" class="member-name-link">DEFAULT_AGENT_ARGS</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Headless runs cannot answer permission prompts, and the same flags must work in both locations: the model is
+pinned so local and cloud agree, and <code>--strict-mcp-config</code> keeps a host's claude.ai connectors out of a
+local sandbox (a cloud one has none).</div>
+</div>
+</div>
+</section>
+</li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <li>
 <section class="constructor-summary" id="constructor-summary">
@@ -98,7 +124,7 @@ turn or move runs, so the app starts fine without it installed; the adapters are
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.util.Optional)" class="member-name-link">SbxAdapters</a><wbr>(<a href="SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)" class="member-name-link">SbxAdapters</a><wbr>(<a href="SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
  <a href="../../application/UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
  <a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;binary,
@@ -108,7 +134,10 @@ turn or move runs, so the app starts fine without it installed; the adapters are
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;commandTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;turnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;moveTimeout,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&gt;&nbsp;cloudTtl)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;preflightCache,
+ boolean&nbsp;preflightProbe)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -127,9 +156,14 @@ turn or move runs, so the app starts fine without it installed; the adapters are
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#agent()" class="member-name-link">agent</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transfer()" class="member-name-link">transfer</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#preflight()" class="member-name-link">preflight</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">The host checks behind <code>/q/health/ready</code> and the warning logged at startup.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transfer()" class="member-name-link">transfer</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -142,13 +176,40 @@ turn or move runs, so the app starts fine without it installed; the adapters are
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="DEFAULT_AGENT_ARGS">
+<h3>DEFAULT_AGENT_ARGS</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">DEFAULT_AGENT_ARGS</span></div>
+<div class="block">Headless runs cannot answer permission prompts, and the same flags must work in both locations: the model is
+pinned so local and cloud agree, and <code>--strict-mcp-config</code> keeps a host's claude.ai connectors out of a
+local sandbox (a cloud one has none).</div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../../../../../constant-values.html#com.mobybank.harness.infrastructure.sbx.SbxAdapters.DEFAULT_AGENT_ARGS">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.util.Optional)">
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)">
 <h3>SbxAdapters</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Inject
@@ -162,7 +223,10 @@ turn or move runs, so the app starts fine without it installed; the adapters are
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;commandTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;turnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;moveTimeout,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&gt;&nbsp;cloudTtl)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;preflightCache,
+ boolean&nbsp;preflightProbe)</span></div>
 </div>
 </section>
 </li>
@@ -174,6 +238,15 @@ turn or move runs, so the app starts fine without it installed; the adapters are
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="preflight()">
+<h3>preflight</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight</a></span>&nbsp;<span class="element-name">preflight</span>()</div>
+<div class="block">The host checks behind <code>/q/health/ready</code> and the warning logged at startup.</div>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="agent()">
 <h3>agent</h3>

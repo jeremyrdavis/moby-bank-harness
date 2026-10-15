@@ -36,7 +36,7 @@ class SbxSandboxTransferTest {
         runner = new FakeRunner();
         registry = new SandboxRegistry();
         SbxSettings settings = new SbxSettings("claude", List.of(), "/home/agent/workspace", Duration.ofMinutes(10),
-                Duration.ofMinutes(30), Duration.ofHours(8));
+                Duration.ofMinutes(30), Duration.ofHours(8), "stop");
         transfer = new SbxSandboxTransfer(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, settings);
     }
 
@@ -52,9 +52,9 @@ class SbxSandboxTransferTest {
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertEquals(List.of(
-                "sbx move harness-0a1b2c3d4e5f-g0 --to cloud --name harness-0a1b2c3d4e5f-g1 --force --ttl 8h",
+                "sbx move harness-0a1b2c3d4e5f-g0 --to cloud --name harness-0a1b2c3d4e5f-g1 --force --ttl 8h --on-timeout stop",
                 "sbx --cloud ls -q"), runner.lines());
-        assertEquals(Optional.of(new Handle(Location.CLOUD, "claude/harness-0a1b2c3d4e5f-g1-k3j2x", 1)),
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1-k3j2x", 1)),
                 registry.current(SESSION));
         assertEquals(List.of(MoveStage.PACKAGING, MoveStage.TRANSFERRING),
                 progress.stream().map(MoveProgress::stage).toList());
@@ -117,6 +117,7 @@ class SbxSandboxTransferTest {
         Handle before = new Handle(Location.LOCAL, "harness-0a1b2c3d4e5f-g0", 0);
         registry.set(SESSION, before);
         runner.on(has("move"), Response.fail(1, "Error: sign in to Docker first"));
+        runner.on(has("ls"), Response.ok("harness-0a1b2c3d4e5f-g0"));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add));
@@ -136,6 +137,52 @@ class SbxSandboxTransferTest {
         transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add);
 
         assertEquals(Optional.of(new Handle(Location.LOCAL, "harness-0a1b2c3d4e5f-g2", 2)), registry.current(SESSION));
-        assertTrue(runner.linesWith("move").get(1).contains("claude/harness-0a1b2c3d4e5f-g1-aa"));
+        assertTrue(runner.linesWith("move").get(1).contains(" harness-0a1b2c3d4e5f-g1-aa "),
+                "the agent prefix is dropped: " + runner.linesWith("move").get(1));
+    }
+
+    @Test
+    void aSourceThatIsGoneIsNotAFailureTheSessionStartsFreshAtTheDestination() {
+        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        registry.setAgentSession(SESSION, "agent-1");
+        runner.on(has("move"), Response.fail(1, "error: sandbox 'harness-0a1b2c3d4e5f-g1' not found"));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/something-else"));
+
+        transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add);
+
+        assertEquals(List.of(MoveStage.PACKAGING, MoveStage.TRANSFERRING),
+                progress.stream().map(MoveProgress::stage).toList());
+        assertTrue(progress.get(1).detail().contains("no longer there"), progress.get(1).detail());
+        assertTrue(progress.get(1).detail().contains("conversation history"), progress.get(1).detail());
+        assertTrue(registry.agentSession(SESSION).isEmpty(), "the agent's conversation was in the sandbox that is gone");
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1)), registry.current(SESSION),
+                "the old generation is remembered so the next sandbox gets the next number");
+        assertTrue(runner.linesWith("ls").stream().noneMatch(line -> !line.contains("--cloud")),
+                "the destination is not searched");
+    }
+
+    @Test
+    void anOlderSourceLeftByAnEarlierMoveIsNotMovedAgainAfterTheNewerSandboxWasDeleted() {
+        // the session is local again after cloud g1 vanished, but local g0 (the source of the first move) still exists
+        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
+                Response.ok("harness-0a1b2c3d4e5f-g0"));
+
+        transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
+
+        assertTrue(runner.linesWith("move").isEmpty(), "the stale g0 is not moved: " + runner.lines());
+        assertTrue(progress.get(0).detail().startsWith("Nothing to package"), progress.get(0).detail());
+    }
+
+    @Test
+    void ifTheListingFailsTooTheMoveFailureIsReported() {
+        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        runner.on(has("move"), Response.fail(1, "error: could not reach the service"));
+        runner.on(has("ls"), Response.fail(1, "error: not signed in"));
+
+        SandboxFailureException e = assertThrows(SandboxFailureException.class,
+                () -> transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add));
+
+        assertTrue(e.getMessage().contains("could not reach the service"), e.getMessage());
     }
 }

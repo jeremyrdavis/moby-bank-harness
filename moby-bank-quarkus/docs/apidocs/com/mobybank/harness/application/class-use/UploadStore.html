@@ -118,7 +118,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../infrastructure/sbx/SbxAdapters.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.util.Optional)" class="member-name-link">SbxAdapters</a><wbr>(<a href="../../infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
+<div class="col-second even-row-color"><code><a href="../../infrastructure/sbx/SbxAdapters.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)" class="member-name-link">SbxAdapters</a><wbr>(<a href="../../infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
  <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
  <a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;binary,
@@ -128,7 +128,10 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;commandTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;turnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;moveTimeout,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&gt;&nbsp;cloudTtl)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;preflightCache,
+ boolean&nbsp;preflightProbe)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../../infrastructure/sbx/SbxSandboxAgent.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SbxCli,com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,com.mobybank.harness.infrastructure.sbx.SbxSettings)" class="member-name-link">SbxSandboxAgent</a><wbr>(<a href="../../infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a>&nbsp;cli,

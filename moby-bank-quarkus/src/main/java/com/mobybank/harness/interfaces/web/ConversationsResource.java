@@ -156,7 +156,11 @@ public class ConversationsResource {
             return moveToast("Could not move the session", e.getMessage());
         }
         if (outcome.isEmpty()) {
-            return moveToast("The move is still running", "Open the conversation again in a moment to see where it runs.");
+            // Moving back to local takes minutes. Answer with the busy pane, which refreshes itself until the move
+            // ends, and keep the page's loading toast until it does.
+            Hx.Triggers waiting = Hx.triggers().toast(MOVE_TOAST, "loading", "Still moving the session…",
+                    "This page updates when it finishes.");
+            return waiting.on(withCookie(Hx.html(Templates.main(sessions.get(id))), id)).build();
         }
         if (!outcome.get().completed()) {
             return moveToast("Move failed", outcome.get().detail());

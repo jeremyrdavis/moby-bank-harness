@@ -112,6 +112,14 @@ components:
           anyOf:
           - $ref: "#/components/schemas/TableDTO"
           - type: "null"
+        notice:
+          type:
+          - string
+          - "null"
+          description: "A note to the analyst about the environment this answer came\
+            \ from, for example that the sandbox was no longer there and a new one\
+            \ was started from the conversation history; null on most messages. Show\
+            \ it; it is not part of the conversation the agent sees"
         createdAt:
           $ref: "#/components/schemas/Instant"
     MoveSessionRequest:

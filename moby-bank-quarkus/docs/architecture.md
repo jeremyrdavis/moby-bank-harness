@@ -147,6 +147,10 @@ Details that matter when changing this code (all in `SessionApplicationService`)
 - `publish(session)` drains the aggregate's pending domain events after the save and turns them into
   `SessionEvent`s: `AgentRepliedEvent` becomes `MessageAdded` and `SessionMovedEvent` becomes `MoveCompleted`. The
   user's own message and failure messages have no domain event, so they are published directly.
+- **If the environment had to be replaced**, the reply is still a normal answer but carries a `notice`
+  (`AgentReply.notice`, stored on the assistant `Message`, shown by the page, never replayed to the agent). Today that is
+  the `sbx` adapter starting a new sandbox because the old one is gone; see
+  [integrations.md](integrations.md#a-turn-sbxsandboxagentrunturn).
 - **If the agent fails** (`runTurn` catches any `RuntimeException`), `failTurn` records an assistant message
   explaining the failure (`Session.recordAgentFailure`) and frees the session. The analyst sees the reason in the
   conversation and can send again. If even that fails, it is logged and the session stays RUNNING; see the known rough

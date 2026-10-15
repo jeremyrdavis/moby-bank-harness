@@ -21,7 +21,7 @@
     --muted-fg:oklch(46.2% .014 245);--border:oklch(91.3% .007 245);--border-subtle:oklch(91.3% .007 245);
     --primary:oklch(54.6% .219 262);--primary-fg:oklch(98.5% .004 245);--sidebar:oklch(98.5% .004 245);
     --sidebar-fg:oklch(18.4% .008 245);--sidebar-border:oklch(91.3% .007 245);--sidebar-accent:oklch(96.8% .005 245);
-    --success:oklch(48.1% .077 179.4);--hover:oklch(0% 0 0/.04);--shadow:0 1px 2px oklch(0% 0 0/.06),0 4px 12px oklch(0% 0 0/.06);
+    --success:oklch(48.1% .077 179.4);--danger:oklch(52% .19 27);--hover:oklch(0% 0 0/.04);--shadow:0 1px 2px oklch(0% 0 0/.06),0 4px 12px oklch(0% 0 0/.06);
     --r:5px;--r-lg:8px;--sans:"Manrope",system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   .dark{
@@ -29,7 +29,7 @@
     --muted-fg:oklch(66.1% .014 245);--border:oklch(36.6% .012 245);--border-subtle:oklch(21.4% .008 245);
     --primary:oklch(64% .169 249.4);--primary-fg:oklch(18.4% .008 245);--sidebar:oklch(16% .012 245);
     --sidebar-fg:oklch(100% 0 0);--sidebar-border:oklch(100% 0 0/.12);--sidebar-accent:oklch(21.4% .008 245);
-    --success:oklch(73% .089 176.7);--hover:oklch(100% 0 0/.06);--shadow:0 1px 2px oklch(0% 0 0/.4),0 4px 12px oklch(0% 0 0/.4);
+    --success:oklch(73% .089 176.7);--danger:oklch(70% .17 25);--hover:oklch(100% 0 0/.06);--shadow:0 1px 2px oklch(0% 0 0/.4),0 4px 12px oklch(0% 0 0/.4);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -82,6 +82,8 @@
   .chip button{display:flex;padding:2px;border-radius:4px;color:var(--muted-fg)}.chip button:hover{background:var(--hover)}
   .msg-agent{display:flex;flex-direction:column;gap:12px}
   .msg-agent p{margin:0;line-height:1.65;text-wrap:pretty}
+  .notice{display:flex;align-items:flex-start;gap:8px;align-self:flex-start;max-width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--muted);font-size:13px;line-height:1.5;color:var(--muted-fg)}
+  .notice svg{flex-shrink:0;margin-top:3px}
   details.steps{align-self:flex-start;border:1px solid var(--border-subtle);border-radius:var(--r);min-width:280px;max-width:100%}
   details.steps summary{display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:13px;color:var(--muted-fg);cursor:pointer;list-style:none}
   details.steps summary::-webkit-details-marker{display:none}
@@ -121,7 +123,7 @@
   #toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:50}
   .toast{display:flex;gap:10px;align-items:flex-start;width:340px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow);font-size:13px}
   .toast strong{display:block;font-weight:520}.toast small{display:block;color:var(--muted-fg);font-size:12px}
-  .toast .spinner{margin-top:2px}.toast .ok{color:var(--success);margin-top:1px}
+  .toast .spinner{margin-top:2px}.toast .ok{color:var(--success);margin-top:1px}.toast .err{color:var(--danger);margin-top:1px}
 </style>
 </head>
 <body hx-headers='{"Accept":"text/html"}'>
@@ -215,7 +217,10 @@
   function toast(o){
     var el=o.id&&document.getElementById(o.id)||document.createElement('div');
     el.className='toast'; if(o.id) el.id=o.id;
-    el.innerHTML=(o.variant==='loading'?'<span class="spinner"></span>':'<svg class="ok" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>')
+    el.dataset.variant=o.variant||'';
+    el.innerHTML=(o.variant==='loading'?'<span class="spinner"></span>'
+      :o.variant==='error'?'<svg class="err" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>'
+      :'<svg class="ok" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>')
       +'<div><strong></strong><small></small></div>';
     el.querySelector('strong').textContent=o.title||''; el.querySelector('small').textContent=o.description||'';
     if(!el.parentNode) toasts.appendChild(el);
@@ -267,9 +272,28 @@
     var t=document.getElementById('thread'); if(t&&e.target.closest&&e.target.closest('#main')) t.scrollTop=t.scrollHeight;
   });
 
-  // Move to cloud: loading toast on request; server finishes it with HX-Trigger toast using id "move-cloud".
+  // Moving (to cloud or back to local): loading toast on request; the server finishes it with an HX-Trigger toast using
+  // id "move-cloud". A move can outlast the server's wait (moving back takes minutes): the server then answers with the
+  // busy pane, which polls itself (swapping only the thread and the header, so a draft in the composer survives), and
+  // the toast stays "loading" until a settled pane shows how the move ended.
+  var moveTarget=null;
   document.body.addEventListener('htmx:beforeRequest',function(e){
-    if(e.target.matches&&e.target.matches('[data-move-cloud]')) toast({id:'move-cloud',variant:'loading',title:'Moving session to Moby Private Cloud…',description:'Packaging context and files'});
+    var t=e.target; if(!t||!t.matches) return;
+    if(t.matches('[data-move-cloud]')){
+      moveTarget='cloud';
+      toast({id:'move-cloud',variant:'loading',title:'Moving session to Moby Private Cloud…',description:'Packaging context and files'});
+    } else if(t.matches('[data-move-local]')){
+      moveTarget='local';
+      toast({id:'move-cloud',variant:'loading',title:'Moving session back to this machine…',description:'This can take several minutes'});
+    }
+  });
+  document.body.addEventListener('htmx:afterSettle',function(e){
+    var el=document.getElementById('move-cloud'),main=document.getElementById('main');
+    if(!el||el.dataset.variant!=='loading'||!moveTarget||!e.target||['main','thread','topbar'].indexOf(e.target.id)<0||main.querySelector('[data-poll]')) return;
+    var at=main.querySelector('[data-location]'); at=at&&at.dataset.location;
+    if(at===moveTarget) toast({id:'move-cloud',variant:'success',title:moveTarget==='cloud'?'Session moved to cloud':'Session moved to local',description:'The session finished moving.'});
+    else toast({id:'move-cloud',variant:'error',title:'Move failed',description:'The session is still '+(at==='cloud'?'in the cloud':'local')+'. The server log has the reason.'});
+    moveTarget=null;
   });
   document.body.addEventListener('htmx:responseError',function(e){
     toast({title:'Request failed',description:e.detail.xhr.status+' '+e.detail.pathInfo.requestPath});
