@@ -59,6 +59,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
 <li><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration)" tabindex="0">FakeSandboxTransfer(Duration, Duration)</a></li>
+<li><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure)" tabindex="0">FakeSandboxTransfer(Duration, Duration, FakeMoveFailure)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -87,7 +88,8 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></span></div>
 <div class="block">A stand-in transfer that reports the two stages the prototype shows ("Packaging context", then the transfer) and
-waits between them, in either direction.</div>
+waits between them, in either direction.
+It can be told to refuse one direction, so a failed move can be seen without a real service.</div>
 </div>
 </section>
 <section class="summary">
@@ -103,6 +105,10 @@ waits between them, in either direction.</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration)" class="member-name-link">FakeSandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;packaging,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;transferring)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure)" class="member-name-link">FakeSandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;packaging,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;transferring,
+ <a href="FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a>&nbsp;failure)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -146,6 +152,20 @@ waits between them, in either direction.</div>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FakeSandboxTransfer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;packaging,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;transferring)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure)">
+<h3>FakeSandboxTransfer</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FakeSandboxTransfer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;packaging,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;transferring,
+ <a href="FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a>&nbsp;failure)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>failure</code> - a direction to refuse after the packaging stage, as a real <code>sbx move</code> can fail</dd>
+</dl>
 </div>
 </section>
 </li>

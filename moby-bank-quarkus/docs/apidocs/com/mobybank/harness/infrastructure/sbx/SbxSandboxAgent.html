@@ -64,6 +64,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#runTurn(com.mobybank.harness.domain.AgentTurn,java.util.function.Consumer)" tabindex="0">runTurn(AgentTurn, Consumer)</a></li>
+<li><a href="#recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)" tabindex="0">recreatedNotice(Location, List)</a></li>
 </ol>
 </li>
 </ol>
@@ -120,16 +121,22 @@ this app), the earlier conversation is included in the prompt instead.</div>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/AgentReply.html" title="class in com.mobybank.harness.domain">AgentReply</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#runTurn(com.mobybank.harness.domain.AgentTurn,java.util.function.Consumer)" class="member-name-link">runTurn</a><wbr>(<a href="../../domain/AgentTurn.html" title="class in com.mobybank.harness.domain">AgentTurn</a>&nbsp;turn,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)" class="member-name-link">recreatedNotice</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../domain/FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">The note shown to the analyst when a turn had to start in a new sandbox.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/AgentReply.html" title="class in com.mobybank.harness.domain">AgentReply</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#runTurn(com.mobybank.harness.domain.AgentTurn,java.util.function.Consumer)" class="member-name-link">runTurn</a><wbr>(<a href="../../domain/AgentTurn.html" title="class in com.mobybank.harness.domain">AgentTurn</a>&nbsp;turn,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../../domain/Step.html" title="class in com.mobybank.harness.domain">Step</a>&gt;&nbsp;onStep)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Runs one turn to completion.</div>
 </div>
 </div>
@@ -183,6 +190,16 @@ this app), the earlier conversation is included in the prompt instead.</div>
 <dt>Parameters:</dt>
 <dd><code>onStep</code> - called for each step of the trace as it happens, before the reply is returned</dd>
 </dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)">
+<h3>recreatedNotice</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">recreatedNotice</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../domain/FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files)</span></div>
+<div class="block">The note shown to the analyst when a turn had to start in a new sandbox. Public so the fake agent says the same.</div>
 </div>
 </section>
 </li>

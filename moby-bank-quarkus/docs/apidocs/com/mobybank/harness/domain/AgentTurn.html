@@ -58,6 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
+<li><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message,java.util.List)" tabindex="0">AgentTurn(SessionId, Location, List, Message, List)</a></li>
 <li><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message)" tabindex="0">AgentTurn(SessionId, Location, List, Message)</a></li>
 </ol>
 </li>
@@ -70,6 +71,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#location()" tabindex="0">location()</a></li>
 <li><a href="#history()" tabindex="0">history()</a></li>
 <li><a href="#userMessage()" tabindex="0">userMessage()</a></li>
+<li><a href="#sessionFiles()" tabindex="0">sessionFiles()</a></li>
 </ol>
 </li>
 </ol>
@@ -87,10 +89,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <hr>
 <div class="horizontal-scroll">
-<div class="type-signature"><span class="modifiers">public record </span><span class="element-name type-name-label">AgentTurn</span>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId, <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history, <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)
+<div class="type-signature"><span class="modifiers">public record </span><span class="element-name type-name-label">AgentTurn</span>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId, <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history, <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;sessionFiles)
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html" title="class or interface in java.lang" class="external-link">Record</a></span></div>
-<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far
-and the new user message. A snapshot, not the aggregate, because the agent works outside any aggregate update.</div>
+<div class="block">An immutable snapshot of one turn handed to the sandbox agent: where the session runs, the conversation so far,
+the new user message and every file shared anywhere in the conversation. A snapshot, not the aggregate, because the
+agent works outside any aggregate update. The shared files let an agent that starts in a fresh sandbox copy in what
+the analyst attached earlier.</div>
 </div>
 </section>
 <section class="summary">
@@ -108,6 +112,14 @@ and the new user message. A snapshot, not the aggregate, because the agent works
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
  <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)</code></div>
 <div class="col-last even-row-color">
+<div class="block">A turn whose only files are the ones attached to the new message.</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message,java.util.List)" class="member-name-link">AgentTurn</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
+ <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;sessionFiles)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Creates an instance of a <code>AgentTurn</code> record class.</div>
 </div>
 </div>
@@ -144,19 +156,24 @@ and the new user message. A snapshot, not the aggregate, because the agent works
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>location</code> record component.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionId()" class="member-name-link">sessionId</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionFiles()" class="member-name-link">sessionFiles</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the value of the <code>sessionFiles</code> record component.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionId()" class="member-name-link">sessionId</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>sessionId</code> record component.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a string representation of this record class.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userMessage()" class="member-name-link">userMessage</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userMessage()" class="member-name-link">userMessage</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>userMessage</code> record component.</div>
 </div>
 </div>
@@ -177,13 +194,14 @@ and the new user message. A snapshot, not the aggregate, because the agent works
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message)">
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message,java.util.List)">
 <h3>AgentTurn</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AgentTurn</span><wbr><span class="parameters">(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
  <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
- <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)</span></div>
+ <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;sessionFiles)</span></div>
 <div class="block">Creates an instance of a <code>AgentTurn</code> record class.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -191,7 +209,20 @@ and the new user message. A snapshot, not the aggregate, because the agent works
 <dd><code>location</code> - the value for the <code>location</code> record component</dd>
 <dd><code>history</code> - the value for the <code>history</code> record component</dd>
 <dd><code>userMessage</code> - the value for the <code>userMessage</code> record component</dd>
+<dd><code>sessionFiles</code> - the value for the <code>sessionFiles</code> record component</dd>
 </dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.util.List,com.mobybank.harness.domain.Message)">
+<h3>AgentTurn</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AgentTurn</span><wbr><span class="parameters">(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;history,
+ <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&nbsp;userMessage)</span></div>
+<div class="block">A turn whose only files are the ones attached to the new message.</div>
 </div>
 </section>
 </li>
@@ -298,6 +329,19 @@ and the new user message. A snapshot, not the aggregate, because the agent works
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the value of the <code>userMessage</code> record component</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="sessionFiles()">
+<h3>sessionFiles</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;</span>&nbsp;<span class="element-name">sessionFiles</span>()</div>
+<div class="block">Returns the value of the <code>sessionFiles</code> record component.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the value of the <code>sessionFiles</code> record component</dd>
 </dl>
 </div>
 </section>

@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
 <li><a href="#%3Cinit%3E(java.time.Duration)" tabindex="0">FakeSandboxAgent(Duration)</a></li>
+<li><a href="#%3Cinit%3E(java.time.Duration,int)" tabindex="0">FakeSandboxAgent(Duration, int)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -94,7 +95,8 @@ loadScripts(document, 'script');</script>
 implements <a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></span></div>
 <div class="block">A stand-in for the sandbox agent that answers with the same canned reply as the prototype: it "reads" each
 attached file, "computes" one calculation, and returns a short summary plus a table when files were attached.
-It lets the whole app run with no sandbox installed.</div>
+It lets the whole app run with no sandbox installed. It can also pretend a cloud sandbox was lost, to show the
+analyst the notice that follows.</div>
 </div>
 </section>
 <section class="summary">
@@ -124,6 +126,9 @@ It lets the whole app run with no sandbox installed.</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.time.Duration)" class="member-name-link">FakeSandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;delay)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.time.Duration,int)" class="member-name-link">FakeSandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;delay,
+ int&nbsp;cloudExpiryTurns)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -190,6 +195,20 @@ It lets the whole app run with no sandbox installed.</div>
 <h3>FakeSandboxAgent</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FakeSandboxAgent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;delay)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.time.Duration,int)">
+<h3>FakeSandboxAgent</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">FakeSandboxAgent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;delay,
+ int&nbsp;cloudExpiryTurns)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>cloudExpiryTurns</code> - after this many cloud turns in a session, the next cloud turn pretends the sandbox had
+                        gone and answers with the notice a real recovery shows; 0 never does</dd>
+</dl>
 </div>
 </section>
 </li>

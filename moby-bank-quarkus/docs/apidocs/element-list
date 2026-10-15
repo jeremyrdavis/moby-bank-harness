@@ -4,3 +4,4 @@ com.mobybank.harness.infrastructure
 com.mobybank.harness.infrastructure.graph
 com.mobybank.harness.infrastructure.sbx
 com.mobybank.harness.interfaces.rest
+com.mobybank.harness.interfaces.web

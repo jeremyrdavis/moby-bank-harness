@@ -5,8 +5,11 @@ Graph). Both sit behind domain ports, and the default fakes stand in for them. T
 adapter works, what it assumes, and what to check on a real system.
 
 > **What has and has not been verified.** The adapters are tested thoroughly against stand-ins: a fake
-> `CommandRunner` for `sbx` and an in-process HTTP server for Graph. Nothing here has been run against a real `sbx`
-> or a real Microsoft tenant. Treat the assumptions marked **(verify)** as the checklist for the first real run.
+> `CommandRunner` for `sbx` and an in-process HTTP server for Graph. The `sbx` commands, the agent's headless run and
+> stream, and both moves were run **by hand** on a real host (sbx 0.47/0.48, October 2026; results in
+> [`verification.md`](../../agent-os/specs/2026-10-14-0737-cloud-move-hardening/verification.md)). The app itself has not
+> yet been run end to end against real sandboxes, and nothing has been run against a real Microsoft tenant. Treat the
+> assumptions marked **(verify)** as the checklist for the first real run.
 
 ---
 
@@ -145,7 +148,13 @@ keeps only what the UI shows and ignores the rest, so unknown events, non-JSON n
 | anything else | compute | `<Tool> <first text input>` |
 | `TodoWrite` | *(skipped: bookkeeping)* | |
 
-Labels are cut to 140 characters. **(verify the flags and the event format against the installed agent version.)**
+Labels are cut to 140 characters. The flags and the stream were checked against the agent in a real local and cloud
+sandbox: the events seen were `system`/`init` (with `session_id`), `assistant`, `rate_limit_event` and `result` (with
+`result`, `is_error`, `session_id`, `terminal_reason`, `api_error_status`, cost). Two things worth knowing: resuming
+returns a **new** `session_id` each run (the adapter keeps the latest), and a cloud run prints a non-JSON warning line
+before the stream ("claude.ai connectors are disabled because ANTHROPIC_API_KEY…"), which the parser ignores. Local runs
+also load the host's claude.ai connectors unless `--strict-mcp-config` is passed, which is why it is in the default
+`harness.sbx.agent-args`.
 
 ### How the answer becomes paragraphs and a table
 

@@ -64,11 +64,13 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#clock()" tabindex="0">clock()</a></li>
-<li><a href="#sandboxAgent(java.lang.String,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" tabindex="0">sandboxAgent(String, long, SbxAdapters)</a></li>
-<li><a href="#sandboxTransfer(java.lang.String,long,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" tabindex="0">sandboxTransfer(String, long, long, SbxAdapters)</a></li>
+<li><a href="#sandboxAgent(java.lang.String,long,int,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" tabindex="0">sandboxAgent(String, long, int, SbxAdapters)</a></li>
+<li><a href="#sandboxTransfer(java.lang.String,long,long,java.lang.String,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" tabindex="0">sandboxTransfer(String, long, long, String, SbxAdapters)</a></li>
 <li><a href="#documentCatalog(java.lang.String,com.mobybank.harness.infrastructure.graph.GraphAdapters)" tabindex="0">documentCatalog(String, GraphAdapters)</a></li>
 <li><a href="#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" tabindex="0">selectAgent(String, Duration, Supplier)</a></li>
+<li><a href="#selectAgent(java.lang.String,java.time.Duration,int,java.util.function.Supplier)" tabindex="0">selectAgent(String, Duration, int, Supplier)</a></li>
 <li><a href="#selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,java.util.function.Supplier)" tabindex="0">selectTransfer(String, Duration, Duration, Supplier)</a></li>
+<li><a href="#selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure,java.util.function.Supplier)" tabindex="0">selectTransfer(String, Duration, Duration, FakeMoveFailure, Supplier)</a></li>
 <li><a href="#selectCatalog(java.lang.String,java.util.function.Supplier)" tabindex="0">selectCatalog(String, Supplier)</a></li>
 </ol>
 </li>
@@ -135,24 +137,39 @@ configuration stops the app with a message naming the property.</div>
  <a href="graph/GraphAdapters.html" title="class in com.mobybank.harness.infrastructure.graph">GraphAdapters</a>&nbsp;graph)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>(package private) <a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sandboxAgent(java.lang.String,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sandboxAgent(java.lang.String,long,int,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;agentDelayMs,
+ int&nbsp;cloudExpiryTurns,
  <a href="sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>(package private) <a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sandboxTransfer(java.lang.String,long,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sandboxTransfer(java.lang.String,long,long,java.lang.String,com.mobybank.harness.infrastructure.sbx.SbxAdapters)" class="member-name-link">sandboxTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;packagingMs,
  long&nbsp;transferMs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;moveFailure,
  <a href="sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectAgent(java.lang.String,java.time.Duration,int,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ int&nbsp;fakeCloudExpiryTurns,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectCatalog(java.lang.String,java.util.function.Supplier)" class="member-name-link">selectCatalog</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectAgent(java.lang.String,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectAgent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectCatalog(java.lang.String,java.util.function.Supplier)" class="member-name-link">selectCatalog</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&gt;&nbsp;graph)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure,java.util.function.Supplier)" class="member-name-link">selectTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakePackaging,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeTransferring,
+ <a href="FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a>&nbsp;fakeFailure,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a>&gt;&nbsp;sbx)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,java.util.function.Supplier)" class="member-name-link">selectTransfer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
@@ -204,19 +221,20 @@ configuration stops the app with a message naming the property.</div>
 </section>
 </li>
 <li>
-<section class="detail" id="sandboxAgent(java.lang.String,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)">
+<section class="detail" id="sandboxAgent(java.lang.String,long,int,com.mobybank.harness.infrastructure.sbx.SbxAdapters)">
 <h3>sandboxAgent</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Produces
 @ApplicationScoped
 </span><span class="return-type"><a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></span>&nbsp;<span class="element-name">sandboxAgent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;agentDelayMs,
+ int&nbsp;cloudExpiryTurns,
  <a href="sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</span></div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="sandboxTransfer(java.lang.String,long,long,com.mobybank.harness.infrastructure.sbx.SbxAdapters)">
+<section class="detail" id="sandboxTransfer(java.lang.String,long,long,java.lang.String,com.mobybank.harness.infrastructure.sbx.SbxAdapters)">
 <h3>sandboxTransfer</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Produces
@@ -224,6 +242,7 @@ configuration stops the app with a message naming the property.</div>
 </span><span class="return-type"><a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></span>&nbsp;<span class="element-name">sandboxTransfer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  long&nbsp;packagingMs,
  long&nbsp;transferMs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;moveFailure,
  <a href="sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a>&nbsp;sbx)</span></div>
 </div>
 </section>
@@ -250,12 +269,35 @@ configuration stops the app with a message naming the property.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="selectAgent(java.lang.String,java.time.Duration,int,java.util.function.Supplier)">
+<h3>selectAgent</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></span>&nbsp;<span class="element-name">selectAgent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeDelay,
+ int&nbsp;fakeCloudExpiryTurns,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&gt;&nbsp;sbx)</span></div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,java.util.function.Supplier)">
 <h3>selectTransfer</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></span>&nbsp;<span class="element-name">selectTransfer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakePackaging,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeTransferring,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a>&gt;&nbsp;sbx)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="selectTransfer(java.lang.String,java.time.Duration,java.time.Duration,com.mobybank.harness.infrastructure.FakeMoveFailure,java.util.function.Supplier)">
+<h3>selectTransfer</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></span>&nbsp;<span class="element-name">selectTransfer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mode,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakePackaging,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;fakeTransferring,
+ <a href="FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a>&nbsp;fakeFailure,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a>&gt;&nbsp;sbx)</span></div>
 </div>
 </section>

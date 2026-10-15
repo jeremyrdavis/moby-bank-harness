@@ -68,6 +68,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" tabindex="0">set(SessionId, SandboxRegistry.Handle)</a></li>
 <li><a href="#agentSession(com.mobybank.harness.domain.SessionId)" tabindex="0">agentSession(SessionId)</a></li>
 <li><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" tabindex="0">setAgentSession(SessionId, String)</a></li>
+<li><a href="#bareName(java.lang.String)" tabindex="0">bareName(String)</a></li>
 <li><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" tabindex="0">forgetAgentSession(SessionId)</a></li>
 <li><a href="#baseName(com.mobybank.harness.domain.SessionId)" tabindex="0">baseName(SessionId)</a></li>
 <li><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" tabindex="0">nameFor(SessionId, int)</a></li>
@@ -142,35 +143,40 @@ generation, which lets the adapters find a session's sandbox again after a resta
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#agentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">agentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#baseName(com.mobybank.harness.domain.SessionId)" class="member-name-link">baseName</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#bareName(java.lang.String)" class="member-name-link">bareName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">A sandbox's name without the agent prefix <code>sbx --cloud ls</code> adds (<code>claude/name</code>).</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#baseName(com.mobybank.harness.domain.SessionId)" class="member-name-link">baseName</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">The name prefix shared by every generation of a session's sandbox.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#current(com.mobybank.harness.domain.SessionId)" class="member-name-link">current</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#current(com.mobybank.harness.domain.SessionId)" class="member-name-link">current</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
  <a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Reads the generation out of a name listed by <code>sbx ls</code>, which may carry an <code>agent/</code> prefix and, for
 cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  int&nbsp;generation)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -235,6 +241,17 @@ cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</co
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setAgentSession</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="bareName(java.lang.String)">
+<h3>bareName</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">bareName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName)</span></div>
+<div class="block">A sandbox's name without the agent prefix <code>sbx --cloud ls</code> adds (<code>claude/name</code>). The bare name is what
+later commands are given: it is the form that was run against a real host, and it is what a listing is compared
+with.</div>
 </div>
 </section>
 </li>

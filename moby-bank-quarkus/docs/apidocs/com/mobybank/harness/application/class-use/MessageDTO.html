@@ -62,6 +62,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The use cases.</div>
 </div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.web">com.mobybank.harness.interfaces.web</a></div>
+<div class="col-last odd-row-color">
+<div class="block">The HTML endpoints behind <code>index.html</code>, the htmx page served at <code>/</code>.</div>
+</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -128,6 +132,52 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRefDTO.html" title="class in com.mobybank.harness.application">FileRefDTO</a>&gt;&nbsp;files)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Creates an instance of a <code>SessionDTO</code> record class.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.interfaces.web">
+<h2>Uses of <a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a> in <a href="../../interfaces/web/package-summary.html">com.mobybank.harness.interfaces.web</a></h2>
+<div class="caption"><span>Methods in <a href="../../interfaces/web/package-summary.html">com.mobybank.harness.interfaces.web</a> that return types with arguments of type <a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionWaiter.</span><code><a href="../../interfaces/web/SessionWaiter.html#awaitReply(java.lang.String,java.lang.Runnable)" class="member-name-link">awaitReply</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sessionId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;start)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Runs <code>start</code> (which sends the message), then waits for the agent's reply; empty if it takes too long.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../interfaces/web/package-summary.html">com.mobybank.harness.interfaces.web</a> with parameters of type <a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TemplateExtensions.</span><code><a href="../../interfaces/web/TemplateExtensions.html#stepSummary(com.mobybank.harness.application.MessageDTO)" class="member-name-link">stepSummary</a><wbr>(<a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a>&nbsp;message)</code></div>
+<div class="col-last even-row-color">
+<div class="block">"Read 2 files, ran 1 calculation": the one-line summary of an agent message's steps.</div>
+</div>
+</div>
+<div class="caption"><span>Method parameters in <a href="../../interfaces/web/package-summary.html">com.mobybank.harness.interfaces.web</a> with type arguments of type <a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>(package private) static io.quarkus.qute.TemplateInstance</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Templates.</span><code><a href="../../interfaces/web/Templates.html#messages(java.util.List)" class="member-name-link">messages</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a>&gt;&nbsp;messages)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Messages to append to the thread.</div>
+</div>
+<div class="col-first odd-row-color"><code>(package private) static io.quarkus.qute.TemplateInstance</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Templates.</span><code><a href="../../interfaces/web/Templates.html#sent(com.mobybank.harness.application.SessionDTO,java.util.List)" class="member-name-link">sent</a><wbr>(<a href="../SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a>&nbsp;session,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a>&gt;&nbsp;messages)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
+heading (the first message gives it its title).</div>
 </div>
 </div>
 </section>

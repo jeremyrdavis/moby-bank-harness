@@ -63,12 +63,16 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration)" tabindex="0">create(Location, String, String, Duration)</a></li>
+<li><a href="#create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration,java.lang.String)" tabindex="0">create(Location, String, String, Duration, String)</a></li>
 <li><a href="#listNames(com.mobybank.harness.domain.Location)" tabindex="0">listNames(Location)</a></li>
 <li><a href="#makeDirectory(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String)" tabindex="0">makeDirectory(Location, String, String)</a></li>
 <li><a href="#copyIn(com.mobybank.harness.domain.Location,java.nio.file.Path,java.lang.String,java.lang.String)" tabindex="0">copyIn(Location, Path, String, String)</a></li>
 <li><a href="#exec(com.mobybank.harness.domain.Location,java.lang.String,java.util.List,java.time.Duration,java.util.function.Consumer)" tabindex="0">exec(Location, String, List, Duration, Consumer)</a></li>
-<li><a href="#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.time.Duration)" tabindex="0">move(String, Location, String, Duration, Duration)</a></li>
+<li><a href="#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.lang.String,java.time.Duration)" tabindex="0">move(String, Location, String, Duration, String, Duration)</a></li>
+<li><a href="#version()" tabindex="0">version()</a></li>
+<li><a href="#diagnose(com.mobybank.harness.domain.Location)" tabindex="0">diagnose(Location)</a></li>
+<li><a href="#secrets(com.mobybank.harness.domain.Location)" tabindex="0">secrets(Location)</a></li>
+<li><a href="#remove(com.mobybank.harness.domain.Location,java.lang.String)" tabindex="0">remove(Location, String)</a></li>
 <li><a href="#requireSuccess(com.mobybank.harness.infrastructure.sbx.CommandResult,java.lang.String)" tabindex="0">requireSuccess(CommandResult, String)</a></li>
 <li><a href="#formatDuration(java.time.Duration)" tabindex="0">formatDuration(Duration)</a></li>
 </ol>
@@ -127,51 +131,74 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;remotePath)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration)" class="member-name-link">create</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration,java.lang.String)" class="member-name-link">create</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agent,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Creates a sandbox without a workspace mount.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#exec(com.mobybank.harness.domain.Location,java.lang.String,java.util.List,java.time.Duration,java.util.function.Consumer)" class="member-name-link">exec</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#diagnose(com.mobybank.harness.domain.Location)" class="member-name-link">diagnose</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Runs <code>sbx diagnose</code> (with <code>--cloud</code> for the cloud).</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#exec(com.mobybank.harness.domain.Location,java.lang.String,java.util.List,java.time.Duration,java.util.function.Consumer)" class="member-name-link">exec</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;inside,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;onStdoutLine)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Runs a command inside a sandbox.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#formatDuration(java.time.Duration)" class="member-name-link">formatDuration</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#formatDuration(java.time.Duration)" class="member-name-link">formatDuration</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;duration)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">sbx accepts durations such as 30m and 2h; this renders whole hours, minutes or seconds that way.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listNames(com.mobybank.harness.domain.Location)" class="member-name-link">listNames</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listNames(com.mobybank.harness.domain.Location)" class="member-name-link">listNames</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The names of the sandboxes at a location, exactly as <code>sbx ls -q</code> prints them.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#makeDirectory(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String)" class="member-name-link">makeDirectory</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#makeDirectory(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String)" class="member-name-link">makeDirectory</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;directory)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.time.Duration)" class="member-name-link">move</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.lang.String,java.time.Duration)" class="member-name-link">move</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
  <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;to,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Moves a sandbox to the other location with <code>sbx move</code>, which captures the sandbox's filesystem and starts a
 new sandbox from it at the destination.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#remove(com.mobybank.harness.domain.Location,java.lang.String)" class="member-name-link">remove</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Deletes a sandbox.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#requireSuccess(com.mobybank.harness.infrastructure.sbx.CommandResult,java.lang.String)" class="member-name-link">requireSuccess</a><wbr>(<a href="CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a>&nbsp;result,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;what)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#secrets(com.mobybank.harness.domain.Location)" class="member-name-link">secrets</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">The output of <code>sbx secret ls</code>: one line per stored secret, with the service name in it.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#version()" class="member-name-link">version</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">What <code>sbx --version</code> prints, for example <code>v0.48.0 &lt;commit&gt;</code>; fails if sbx cannot be started.</div>
+</div>
 </div>
 </div>
 </div>
@@ -208,14 +235,16 @@ new sandbox from it at the destination.</div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration)">
+<section class="detail" id="create(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String,java.time.Duration,java.lang.String)">
 <h3>create</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agent,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl)</span></div>
-<div class="block">Creates a sandbox without a workspace mount. Cloud sandboxes can be given a time-to-live.</div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout)</span></div>
+<div class="block">Creates a sandbox without a workspace mount. A cloud sandbox can be given a time-to-live and told what to do
+when it runs out (<code>stop</code>, <code>delete</code> or <code>restart</code>); neither applies locally.</div>
 </div>
 </section>
 </li>
@@ -263,17 +292,56 @@ new sandbox from it at the destination.</div>
 </section>
 </li>
 <li>
-<section class="detail" id="move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.time.Duration)">
+<section class="detail" id="move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.lang.String,java.time.Duration)">
 <h3>move</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">move</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
  <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;to,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</span></div>
 <div class="block">Moves a sandbox to the other location with <code>sbx move</code>, which captures the sandbox's filesystem and starts a
 new sandbox from it at the destination. The destination gets a new id; <code>newName</code> is the name requested
-for it (a cloud destination always appends a short suffix).</div>
+for it (a cloud destination may be listed with an agent prefix, and the service may add a suffix).</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="version()">
+<h3>version</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">version</span>()</div>
+<div class="block">What <code>sbx --version</code> prints, for example <code>v0.48.0 &lt;commit&gt;</code>; fails if sbx cannot be started.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="diagnose(com.mobybank.harness.domain.Location)">
+<h3>diagnose</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></span>&nbsp;<span class="element-name">diagnose</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</span></div>
+<div class="block">Runs <code>sbx diagnose</code> (with <code>--cloud</code> for the cloud). The caller reads the result: a healthy host exits
+0 and prints <code>✓</code> lines and a summary such as <code>14 passed</code>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="secrets(com.mobybank.harness.domain.Location)">
+<h3>secrets</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">secrets</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</span></div>
+<div class="block">The output of <code>sbx secret ls</code>: one line per stored secret, with the service name in it.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="remove(com.mobybank.harness.domain.Location,java.lang.String)">
+<h3>remove</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">remove</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox)</span></div>
+<div class="block">Deletes a sandbox.</div>
 </div>
 </section>
 </li>

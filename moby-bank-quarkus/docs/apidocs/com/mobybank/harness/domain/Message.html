@@ -59,6 +59,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#user(com.mobybank.harness.domain.MessageId,java.lang.String,java.util.List,java.time.Instant)" tabindex="0">user(MessageId, String, List, Instant)</a></li>
 <li><a href="#assistant(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.AgentReply,java.time.Instant)" tabindex="0">assistant(MessageId, AgentReply, Instant)</a></li>
+<li><a href="#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.util.Optional,java.time.Instant)" tabindex="0">rehydrate(MessageId, MessageRole, String, List, List, List, Optional, Optional, Instant)</a></li>
 <li><a href="#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.time.Instant)" tabindex="0">rehydrate(MessageId, MessageRole, String, List, List, List, Optional, Instant)</a></li>
 <li><a href="#id()" tabindex="0">id()</a></li>
 <li><a href="#role()" tabindex="0">role()</a></li>
@@ -67,6 +68,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#steps()" tabindex="0">steps()</a></li>
 <li><a href="#paragraphs()" tabindex="0">paragraphs()</a></li>
 <li><a href="#table()" tabindex="0">table()</a></li>
+<li><a href="#notice()" tabindex="0">notice()</a></li>
 <li><a href="#createdAt()" tabindex="0">createdAt()</a></li>
 <li><a href="#equals(java.lang.Object)" tabindex="0">equals(Object)</a></li>
 <li><a href="#hashCode()" tabindex="0">hashCode()</a></li>
@@ -124,19 +126,37 @@ text and attached files; an assistant message carries the agent's trace, prose a
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#id()" class="member-name-link">id</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#paragraphs()" class="member-name-link">paragraphs</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#notice()" class="member-name-link">notice</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">A note to the analyst about the environment this answer came from, such as a sandbox that was started again.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#paragraphs()" class="member-name-link">paragraphs</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The agent's prose; empty for user messages.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.time.Instant)" class="member-name-link">rehydrate</a><wbr>(<a href="MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.time.Instant)" class="member-name-link">rehydrate</a><wbr>(<a href="MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
  <a href="MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a>&nbsp;role,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Step.html" title="class in com.mobybank.harness.domain">Step</a>&gt;&nbsp;steps,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;paragraphs,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Reconstruction path for a message without a notice.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.util.Optional,java.time.Instant)" class="member-name-link">rehydrate</a><wbr>(<a href="MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
+ <a href="MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Step.html" title="class in com.mobybank.harness.domain">Step</a>&gt;&nbsp;steps,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;paragraphs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;notice,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Reconstruction path for the persistence layer.</div>
@@ -200,6 +220,23 @@ text and attached files; an assistant message carries the agent's trace, prose a
 </section>
 </li>
 <li>
+<section class="detail" id="rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.util.Optional,java.time.Instant)">
+<h3>rehydrate</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></span>&nbsp;<span class="element-name">rehydrate</span><wbr><span class="parameters">(<a href="MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a>&nbsp;id,
+ <a href="MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Step.html" title="class in com.mobybank.harness.domain">Step</a>&gt;&nbsp;steps,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;paragraphs,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;notice,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</span></div>
+<div class="block">Reconstruction path for the persistence layer. Domain code builds messages through <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="rehydrate(com.mobybank.harness.domain.MessageId,com.mobybank.harness.domain.MessageRole,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.Optional,java.time.Instant)">
 <h3>rehydrate</h3>
 <div class="horizontal-scroll">
@@ -211,7 +248,7 @@ text and attached files; an assistant message carries the agent's trace, prose a
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;paragraphs,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;&nbsp;table,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt)</span></div>
-<div class="block">Reconstruction path for the persistence layer. Domain code builds messages through <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
+<div class="block">Reconstruction path for a message without a notice.</div>
 </div>
 </section>
 </li>
@@ -270,6 +307,16 @@ text and attached files; an assistant message carries the agent's trace, prose a
 <h3>table</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a>&gt;</span>&nbsp;<span class="element-name">table</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="notice()">
+<h3>notice</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">notice</span>()</div>
+<div class="block">A note to the analyst about the environment this answer came from, such as a sandbox that was started again.
+Empty for user messages and for most answers. It is not part of the conversation the agent sees.</div>
 </div>
 </section>
 </li>
