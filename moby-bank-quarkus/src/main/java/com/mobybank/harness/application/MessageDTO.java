@@ -15,5 +15,9 @@ public record MessageDTO(
         List<String> paragraphs,
         @Schema(description = "A financial table, or null when the agent returned none", nullable = true)
         TableDTO table,
+        @Schema(description = "A note to the analyst about the environment this answer came from, for example that the "
+                + "sandbox was no longer there and a new one was started from the conversation history; null on most "
+                + "messages. Show it; it is not part of the conversation the agent sees", nullable = true)
+        String notice,
         Instant createdAt) {
 }

@@ -81,6 +81,12 @@ Fragments tell the page what to do through `HX-Trigger` response headers (JSON, 
 A move that cannot start, fails, or outlasts the wait answers `200` with `HX-Reswap: none` and a `toast` using the id
 `move-cloud` and variant `error`, so the page's loading toast does not spin forever.
 
+## Notices
+
+An assistant message may carry a `notice` (see [api.md](api.md)). `message.html` shows it as a note above the steps and
+reply (`<div class="notice" role="note">`), escaped like all text. `MessageTemplateTest` covers showing, hiding and
+escaping it.
+
 ## Known limits
 
 - The page offers **Move to cloud** only. A cloud session shows a disabled "Running in cloud" button. Moving back is

@@ -50,6 +50,7 @@ final class Dtos {
                 message.steps().stream().map(Dtos::step).toList(),
                 message.paragraphs(),
                 message.table().map(Dtos::table).orElse(null),
+                message.notice().orElse(null),
                 message.createdAt());
     }
 

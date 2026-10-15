@@ -37,6 +37,7 @@ classDiagram
         List~Step~ steps
         List~String~ paragraphs
         ResultTable table
+        String notice
     }
     class ConnectedFolders {
         UserId userId
@@ -129,8 +130,8 @@ All are records, validate in the constructor, and are immutable.
 | `Step` | A `StepKind` (`READ` or `COMPUTE`) and a label | Label not blank |
 | `ResultTable` | Column names and rows | At least one column; every row has one cell per column; defensively copied |
 | `SessionTitle` | The display title | Trimmed; not blank; cut to 48 code points (`MAX_LENGTH`) without splitting a surrogate pair |
-| `AgentReply` | Steps, paragraphs, an optional table | At least one paragraph |
-| `AgentTurn` | What the agent is given: session id, location, history, the new user message | The last must be a user message; history is copied |
+| `AgentReply` | Steps, paragraphs, an optional table and an optional notice for the analyst | At least one paragraph; a blank notice is no notice |
+| `AgentTurn` | What the agent is given: session id, location, history, the new user message, and every file shared so far | The last must be a user message; history and files are copied |
 | `MoveRequest`, `MoveProgress`, `MoveStage` | What a transfer is given, and what it reports | `MoveRequest` needs different locations |
 | `Folder`, `CatalogFile` | A catalog folder and a document in it | Names not blank; counts not negative |
 | `RecencyGroup` | `TODAY`, `PREVIOUS_7_DAYS`, `EARLIER` | `of(updatedAt, now, zone)` compares calendar days in the given zone; a future time counts as today |

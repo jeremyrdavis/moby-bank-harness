@@ -55,6 +55,7 @@ class OpenApiContractTest {
                 .body("components.schemas.SessionDTO.properties.location.enum", hasItems("local", "cloud"))
                 .body("components.schemas.SessionDTO.properties.status.enum", hasItems("idle", "running", "moving"))
                 .body("components.schemas.MessageDTO.properties.role.enum", hasItems("user", "assistant"))
+                .body("components.schemas.MessageDTO.properties.notice.type", hasItems("string", "null"))
                 .body("components.schemas.StepDTO.properties.kind.enum", hasItems("read", "compute"))
                 .body("components.schemas.FileRefDTO.properties.source.enum", hasItems("upload", "onedrive"))
                 .body("components.schemas.MoveSessionRequest.properties.target.enum", hasItems("local", "cloud"));
