@@ -63,6 +63,8 @@ UI and event stream with shorter waits than the defaults, use about `300` each (
 | `harness.sbx.turn-timeout` | `10m` | Timeout for one agent turn |
 | `harness.sbx.move-timeout` | `1h` | Timeout for one `sbx move`. Moving to the cloud took about half a minute on a real host, moving back took 5 to 17 minutes |
 | `harness.sbx.cloud-ttl` | `8h` | How long a cloud sandbox lives before it times out. Passed to `create` and `move` for cloud sandboxes only |
+| `harness.sbx.preflight-cache` | `5m` | How long the host check behind `/q/health/ready` is reused, so the endpoint does not run `sbx` on every call |
+| `harness.sbx.preflight-probe` | `false` | Also run one trivial agent turn in a throwaway cloud sandbox when the app starts, to prove the cloud credential works (a listed secret can still be stale). It costs a few cents and about half a minute, and the sandbox is removed afterwards |
 | `harness.sbx.cloud-on-timeout` | `stop` | What the service does when that time runs out: `stop` (the next turn starts it again), `delete` or `restart`. Blank leaves it to the service |
 
 Durations accept `30s`, `10m`, `2h`. Prerequisites and what to check on a real host are in

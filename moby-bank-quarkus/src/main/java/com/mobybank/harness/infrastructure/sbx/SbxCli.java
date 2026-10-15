@@ -87,6 +87,37 @@ public final class SbxCli {
         requireSuccess(runner.run(command, timeout), "Moving " + source + " to " + to.name().toLowerCase());
     }
 
+    /** What {@code sbx --version} prints, for example {@code v0.48.0 <commit>}; fails if sbx cannot be started. */
+    public String version() {
+        CommandResult result = requireSuccess(runner.run(List.of(binary, "--version"), commandTimeout),
+                "Asking sbx for its version");
+        return result.stdout().lines().map(String::strip).filter(line -> !line.isEmpty()).findFirst().orElse("");
+    }
+
+    /**
+     * Runs {@code sbx diagnose} (with {@code --cloud} for the cloud). The caller reads the result: a healthy host exits
+     * 0 and prints {@code ✓} lines and a summary such as {@code 14 passed}.
+     */
+    public CommandResult diagnose(Location target) {
+        List<String> command = base(target);
+        command.add("diagnose");
+        return runner.run(command, commandTimeout);
+    }
+
+    /** The output of {@code sbx secret ls}: one line per stored secret, with the service name in it. */
+    public String secrets(Location target) {
+        List<String> command = base(target);
+        command.addAll(List.of("secret", "ls"));
+        return requireSuccess(runner.run(command, commandTimeout), "Listing secrets").stdout();
+    }
+
+    /** Deletes a sandbox. */
+    public void remove(Location target, String sandbox) {
+        List<String> command = base(target);
+        command.addAll(List.of("rm", sandbox));
+        requireSuccess(runner.run(command, commandTimeout), "Removing sandbox " + sandbox);
+    }
+
     private static void addCloudLifetime(List<String> command, Duration ttl, String onTimeout) {
         if (ttl != null) {
             command.addAll(List.of("--ttl", formatDuration(ttl)));

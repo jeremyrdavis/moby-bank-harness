@@ -170,6 +170,24 @@ else is split on blank lines into paragraphs. A second table stays inside the pa
 A failed move leaves the registry unchanged, and the application service aborts the move so the session stays
 where it was (`MoveFailed`).
 
+### Checking the host before the first turn (`SbxPreflight`)
+
+In `sbx` mode the app checks, without changing anything, what a demo needs: `sbx --version` (0.45.0 or newer for the
+cloud), `sbx diagnose` and `sbx --cloud diagnose`, and that `sbx secret ls` / `sbx --cloud secret ls` list an
+`anthropic` secret. It never stops the app:
+
+- **At startup** the result is logged in the background (`sbx preflight passed`, or one `WARN` per problem, each saying
+  what to do).
+- **`/q/health/ready`** shows it as the check `sbx`, with one data entry per step. It is **down** only when the local
+  side cannot work (sbx missing, `sbx diagnose` failing); a missing cloud credential or a failing cloud diagnosis is a
+  `warning n` entry, because a host without a cloud subscription still runs local sandboxes. In the other modes the
+  check is up and says `mode: fake`. The result is cached for `harness.sbx.preflight-cache`.
+- **`harness.sbx.preflight-probe=true`** adds one trivial agent turn in a throwaway cloud sandbox (once per start),
+  because a stale secret is listed but gives `401`. The probe sandbox is removed with `sbx --cloud rm <name>`, which has
+  not been run on a real host yet **(verify)**; if the removal fails the log names the sandbox to delete by hand.
+
+`sbx --cloud diagnose` has not been run on a real host yet **(verify)**; `sbx diagnose` exits 0 with a `14 passed` summary.
+
 ### Failure messages (`SbxErrors`)
 
 `SbxErrors` recognises what `sbx` or the agent prints for the failures a demo actually hits and puts a sentence about

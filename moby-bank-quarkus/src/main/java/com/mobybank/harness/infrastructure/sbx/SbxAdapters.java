@@ -30,6 +30,7 @@ public class SbxAdapters {
     private final UploadStore uploads;
     private final DocumentCatalog catalog;
     private final SbxSettings settings;
+    private final SbxPreflight preflight;
 
     @Inject
     public SbxAdapters(
@@ -44,7 +45,9 @@ public class SbxAdapters {
             @ConfigProperty(name = "harness.sbx.turn-timeout", defaultValue = "10m") Duration turnTimeout,
             @ConfigProperty(name = "harness.sbx.move-timeout", defaultValue = "1h") Duration moveTimeout,
             @ConfigProperty(name = "harness.sbx.cloud-ttl", defaultValue = "8h") Duration cloudTtl,
-            @ConfigProperty(name = "harness.sbx.cloud-on-timeout", defaultValue = "stop") String cloudOnTimeout) {
+            @ConfigProperty(name = "harness.sbx.cloud-on-timeout", defaultValue = "stop") String cloudOnTimeout,
+            @ConfigProperty(name = "harness.sbx.preflight-cache", defaultValue = "5m") Duration preflightCache,
+            @ConfigProperty(name = "harness.sbx.preflight-probe", defaultValue = "false") boolean preflightProbe) {
         this.cli = new SbxCli(new ProcessCommandRunner(), binary, commandTimeout);
         this.registry = registry;
         this.uploads = uploads;
@@ -52,6 +55,12 @@ public class SbxAdapters {
         this.settings = new SbxSettings(agent, agentArgs.isBlank() ? java.util.List.of()
                 : Arrays.asList(agentArgs.trim().split("\\s+")), workspaceDir, turnTimeout, moveTimeout,
                 cloudTtl, cloudOnTimeout);
+        this.preflight = new SbxPreflight(cli, settings, preflightCache, preflightProbe, java.time.Clock.systemUTC());
+    }
+
+    /** The host checks behind {@code /q/health/ready} and the warning logged at startup. */
+    public SbxPreflight preflight() {
+        return preflight;
     }
 
     public SandboxAgent agent() {

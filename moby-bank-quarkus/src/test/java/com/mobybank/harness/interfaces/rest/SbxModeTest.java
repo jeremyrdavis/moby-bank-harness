@@ -45,6 +45,15 @@ class SbxModeTest {
     }
 
     @Test
+    void readinessReportsThatSbxIsMissingInsteadOfTheAppFailingToStart() {
+        given().get("/q/health/ready").then().statusCode(503)
+                .body("checks.find { it.name == 'sbx' }.status", equalTo("DOWN"))
+                .body("checks.find { it.name == 'sbx' }.data.sbx", containsString("not available"))
+                .body("checks.find { it.name == 'sbx' }.data.sbx", containsString("sbx-binary-that-is-not-installed"));
+        given().get("/q/health/live").then().statusCode(200);
+    }
+
+    @Test
     void aTurnThatCannotReachSbxExplainsWhyAndFreesTheSession() throws Exception {
         String id = createSession("local");
         given().contentType(ContentType.JSON).body(Map.of("text", "Summarize the filing"))
