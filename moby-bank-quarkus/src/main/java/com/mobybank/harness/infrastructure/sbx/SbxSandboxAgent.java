@@ -62,8 +62,26 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
     @Override
     public AgentReply runTurn(AgentTurn turn, Consumer<Step> onStep) {
-        Handle sandbox = sandboxFor(turn);
-        stage(turn, sandbox);
+        Sandbox sandbox = sandboxFor(turn);
+        try {
+            return attempt(turn, sandbox.handle(), sandbox.created() ? turn.sessionFiles() : turn.userMessage().files(),
+                    onStep);
+        } catch (SandboxFailureException failure) {
+            if (!isMissing(sandbox.handle(), failure)) {
+                throw failure;
+            }
+            LOG.warnf("Sandbox %s for session %s is gone; starting a new one from the conversation history",
+                    sandbox.handle().name(), turn.sessionId().value());
+            registry.forgetAgentSession(turn.sessionId());
+            Handle replacement = createSandbox(turn.sessionId(), turn.location(), sandbox.handle().generation() + 1);
+            AgentReply reply = attempt(turn, replacement, turn.sessionFiles(), onStep);
+            return reply.withNotice(recreatedNotice(turn.location(), turn.sessionFiles()));
+        }
+    }
+
+    /** One try at the turn in a given sandbox: copy files in, run, and fall back to the prompt when resuming fails. */
+    private AgentReply attempt(AgentTurn turn, Handle sandbox, List<FileRef> filesToStage, Consumer<Step> onStep) {
+        stage(turn, sandbox, filesToStage);
 
         Optional<String> resume = registry.agentSession(turn.sessionId());
         ParsedRun run = run(turn, sandbox, resume, onStep);
@@ -78,6 +96,30 @@ public final class SbxSandboxAgent implements SandboxAgent {
         }
         run.parser().sessionId().ifPresent(id -> registry.setAgentSession(turn.sessionId(), id));
         return ReplyFormatter.toReply(run.answer(), run.parser().steps());
+    }
+
+    /**
+     * Whether a failure is because the sandbox no longer exists, judged by listing the location: that is the answer
+     * the service gives, whatever the error text says. If the listing itself fails the original failure stands.
+     */
+    private boolean isMissing(Handle sandbox, SandboxFailureException failure) {
+        try {
+            return cli.listNames(sandbox.location()).stream()
+                    .noneMatch(listed -> SandboxRegistry.bareName(listed).equals(SandboxRegistry.bareName(sandbox.name())));
+        } catch (SandboxFailureException listing) {
+            failure.addSuppressed(listing);
+            return false;
+        }
+    }
+
+    private static String recreatedNotice(Location location, List<FileRef> files) {
+        String where = location == Location.CLOUD ? "cloud" : "local";
+        String why = location == Location.CLOUD
+                ? "The cloud sandbox was no longer there (cloud sandboxes can time out or be deleted)"
+                : "The local sandbox was no longer there";
+        String copied = files.isEmpty() ? "" : " Files you attached earlier were copied in again.";
+        return why + ", so a new " + where + " sandbox was started from the conversation history." + copied
+                + " Anything the agent installed or created in the old one is gone.";
     }
 
     private ParsedRun run(AgentTurn turn, Handle sandbox, Optional<String> resume, Consumer<Step> onStep) {
@@ -114,21 +156,29 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
     // --- sandbox ----------------------------------------------------------------------------------------------
 
+    /** A sandbox for a turn, and whether this call had to create it (so its files must be copied in). */
+    private record Sandbox(Handle handle, boolean created) {
+    }
+
     /** The session's sandbox at the turn's location: known, rediscovered after a restart, or newly created. */
-    private Handle sandboxFor(AgentTurn turn) {
+    private Sandbox sandboxFor(AgentTurn turn) {
         SessionId session = turn.sessionId();
         Location location = turn.location();
 
         Optional<Handle> known = registry.current(session).filter(handle -> handle.location() == location);
         if (known.isPresent()) {
-            return known.get();
+            return new Sandbox(known.get(), false);
         }
         Optional<Handle> existing = findExisting(session, location);
         if (existing.isPresent()) {
             registry.set(session, existing.get());
-            return existing.get();
+            return new Sandbox(existing.get(), false);
         }
         int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
+        return new Sandbox(createSandbox(session, location, generation), true);
+    }
+
+    private Handle createSandbox(SessionId session, Location location, int generation) {
         String name = SandboxRegistry.nameFor(session, generation);
         cli.create(location, name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
         Handle created = new Handle(location, name, generation);
@@ -141,7 +191,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
         for (String listed : cli.listNames(location)) {
             Optional<Integer> generation = SandboxRegistry.generationOf(listed, session);
             if (generation.isPresent() && (best == null || generation.get() >= best.generation())) {
-                best = new Handle(location, listed, generation.get());
+                best = new Handle(location, SandboxRegistry.bareName(listed), generation.get());
             }
         }
         return Optional.ofNullable(best);
@@ -149,8 +199,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
     // --- files ------------------------------------------------------------------------------------------------
 
-    private void stage(AgentTurn turn, Handle sandbox) {
-        List<FileRef> files = turn.userMessage().files();
+    private void stage(AgentTurn turn, Handle sandbox, List<FileRef> files) {
         if (files.isEmpty()) {
             return;
         }

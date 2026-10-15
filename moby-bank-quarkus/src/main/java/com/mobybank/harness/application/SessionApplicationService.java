@@ -95,7 +95,8 @@ public class SessionApplicationService {
         events.publish(new MessageAdded(Dtos.id(id), stored));
         events.publish(new Thinking(Dtos.id(id), thinkingLabel(session.location(), files.size())));
 
-        AgentTurn turn = new AgentTurn(id, session.location(), history, userMessage);
+        AgentTurn turn = new AgentTurn(id, session.location(), history, userMessage,
+                session.filesShared());
         runner.run(() -> runTurn(turn));
         return stored;
     }

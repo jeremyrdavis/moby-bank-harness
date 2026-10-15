@@ -80,8 +80,8 @@ harness-<first 12 hex digits of the session id>-g<generation>          e.g. harn
 Every move creates the **next generation** (`…-g1`, `…-g2`), because `sbx move` makes a new sandbox at the destination.
 The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/harness-0a1b2c3d4e5f-g1` (an
 agent prefix; a move destination kept exactly the requested name with no suffix on a real host, but the adapter still
-accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms, and the full listed string
-is what is passed to later commands.
+accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms. Later commands are given
+the **bare name** (the agent prefix is dropped), the form that was run against a real host.
 
 The registry is in memory. After a restart it is empty, so both adapters **rediscover** a session's sandbox by
 listing names at the right location and taking the highest generation that matches. Sandboxes therefore survive an
@@ -90,7 +90,7 @@ app restart even though the app's state does not.
 ### A turn (`SbxSandboxAgent.runTurn`)
 
 1. **Find the sandbox.** Use the registry; else list and pick the highest generation; else create generation 0.
-2. **Stage files** (only if the message has any): `mkdir -p <workspace-dir>/files`, then for each file read its bytes
+2. **Stage files** (the message's files, or every file shared so far when this turn had to create the sandbox):`mkdir -p <workspace-dir>/files`, then for each file read its bytes
    (`UploadStore` for uploads, `DocumentCatalog.fetch(name)` for OneDrive), write them to a temporary directory and
    `sbx cp` each in. The temporary directory is deleted afterwards. A file that is no longer available fails the
    turn with its name, before the agent runs. A name containing a path is refused.
@@ -108,6 +108,16 @@ history (the agent has it). If there is no id (a new sandbox, a rediscovered one
 exists in this app, such as the demo conversations), the prompt includes the earlier conversation, each message
 clipped to 1500 characters. **If a resumed run fails with no answer, it is retried once without `--resume`**, with
 the history in the prompt.
+
+**A sandbox that is gone.** If the turn fails and the sandbox is no longer in `sbx ls -q` (deleted, or removed by
+`--on-timeout delete`), the adapter creates the next generation, forgets the old agent conversation id, copies in
+**every** file shared in the conversation, and runs the turn again with the history in the prompt. The reply carries a
+`notice` for the analyst ("The cloud sandbox was no longer there… Anything the agent installed or created in the old
+one is gone."). The listing is the test, not the error text, so a sandbox that exists but fails for another reason
+(not signed in, no credential) is **not** replaced. If the listing itself fails, the original failure is reported. A
+sandbox that merely *timed out* with `--on-timeout stop` is still listed: `exec` starts it again in about a second
+and the analyst sees nothing. A move whose source is gone is not a failure either: the session switches location and
+the next turn starts a fresh sandbox there, as above.
 
 **What counts as failure.** A run fails the turn (becoming a failure message in the conversation) if the agent's
 `result` says it errored, or if the process exited non-zero *and* produced no answer. A non-zero exit *after* an

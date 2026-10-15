@@ -38,6 +38,15 @@ public class SandboxRegistry {
         agentSessions.put(session, agentSessionId);
     }
 
+    /**
+     * A sandbox's name without the agent prefix {@code sbx --cloud ls} adds ({@code claude/name}). The bare name is what
+     * later commands are given: it is the form that was run against a real host, and it is what a listing is compared
+     * with.
+     */
+    static String bareName(String listedName) {
+        return listedName.substring(listedName.lastIndexOf('/') + 1).strip();
+    }
+
     public void forgetAgentSession(SessionId session) {
         agentSessions.remove(session);
     }
@@ -56,7 +65,7 @@ public class SandboxRegistry {
      * cloud sandboxes, a suffix the service added after {@code -g<generation>}.
      */
     static Optional<Integer> generationOf(String listedName, SessionId session) {
-        String name = listedName.substring(listedName.lastIndexOf('/') + 1).strip();
+        String name = bareName(listedName);
         String prefix = baseName(session) + "-g";
         if (!name.startsWith(prefix)) {
             return Optional.empty();

@@ -18,10 +18,11 @@ public final class Message {
     private final List<Step> steps;
     private final List<String> paragraphs;
     private final ResultTable table;
+    private final String notice;
     private final Instant createdAt;
 
     private Message(MessageId id, MessageRole role, String text, List<FileRef> files, List<Step> steps,
-                    List<String> paragraphs, ResultTable table, Instant createdAt) {
+                    List<String> paragraphs, ResultTable table, String notice, Instant createdAt) {
         this.id = Objects.requireNonNull(id, "message id required");
         this.role = Objects.requireNonNull(role, "role required");
         this.text = Objects.requireNonNull(text, "text required");
@@ -29,23 +30,32 @@ public final class Message {
         this.steps = List.copyOf(steps);
         this.paragraphs = List.copyOf(paragraphs);
         this.table = table;
+        this.notice = notice;
         this.createdAt = Objects.requireNonNull(createdAt, "created-at required");
     }
 
     static Message user(MessageId id, String text, List<FileRef> files, Instant at) {
-        return new Message(id, MessageRole.USER, text, files, List.of(), List.of(), null, at);
+        return new Message(id, MessageRole.USER, text, files, List.of(), List.of(), null, null, at);
     }
 
     static Message assistant(MessageId id, AgentReply reply, Instant at) {
         return new Message(id, MessageRole.ASSISTANT, "", List.of(), reply.steps(), reply.paragraphs(),
-                reply.table().orElse(null), at);
+                reply.table().orElse(null), reply.notice().orElse(null), at);
     }
 
     /** Reconstruction path for the persistence layer. Domain code builds messages through {@link Session}. */
     public static Message rehydrate(MessageId id, MessageRole role, String text, List<FileRef> files,
                                     List<Step> steps, List<String> paragraphs, Optional<ResultTable> table,
+                                    Optional<String> notice, Instant createdAt) {
+        return new Message(id, role, text, files, steps, paragraphs, table.orElse(null), notice.orElse(null),
+                createdAt);
+    }
+
+    /** Reconstruction path for a message without a notice. */
+    public static Message rehydrate(MessageId id, MessageRole role, String text, List<FileRef> files,
+                                    List<Step> steps, List<String> paragraphs, Optional<ResultTable> table,
                                     Instant createdAt) {
-        return new Message(id, role, text, files, steps, paragraphs, table.orElse(null), createdAt);
+        return rehydrate(id, role, text, files, steps, paragraphs, table, Optional.empty(), createdAt);
     }
 
     public MessageId id() {
@@ -76,6 +86,14 @@ public final class Message {
 
     public Optional<ResultTable> table() {
         return Optional.ofNullable(table);
+    }
+
+    /**
+     * A note to the analyst about the environment this answer came from, such as a sandbox that was started again.
+     * Empty for user messages and for most answers. It is not part of the conversation the agent sees.
+     */
+    public Optional<String> notice() {
+        return Optional.ofNullable(notice);
     }
 
     public Instant createdAt() {
