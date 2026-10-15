@@ -43,8 +43,15 @@ while the next request is already waiting. `SessionWaiter` takes only an outcome
 message that was not in the conversation before the send, a move that ends at the location it was asked to move to,
 and a move failure only once the session is no longer moving.
 
-If the wait runs out, the page gets what it can (the user's own message) and a toast saying the agent is still working.
-The work carries on; opening the conversation again later shows the reply.
+If a message's wait runs out, the page gets what it can (the user's own message) and a toast saying the agent is still
+working. The work carries on; opening the conversation again later shows the reply.
+
+**A move that outlasts the wait** is expected: moving a session back to local took 5 to 17 minutes on a real host.
+The page then gets the conversation pane in its busy state ("Moving the session…", buttons disabled) and the toast stays
+a loading one ("Still moving the session…"). A busy pane carries a hidden `data-poll` element
+(`hx-get` of the conversation, `every 5s`), so the pane refreshes itself until the session is idle. When a settled pane
+arrives, the page finishes the loading toast itself by comparing the header's `data-location` with where the move was
+going: a success toast if they match, otherwise an error toast.
 
 The result is that a message and the agent's steps appear together after the reply, not as the agent works.
 
@@ -59,7 +66,7 @@ Paths are as the page writes them. Served under `/ui`.
 | `POST /api/conversations` | `#main` | A new empty conversation (always a new session). Raises `conversations-changed` |
 | `GET /api/conversations` (on load, `conversations-changed`) | `#history` | The history grouped Today, Previous 7 days, Earlier; the open one has `aria-current="true"` |
 | `POST /api/conversations/{id}/messages` (multipart: `text`, `files`, `onedrive`) | `#messages`, beforeend | The user's message and the agent's reply; removes `#empty-state` and replaces the `#conversation-title` heading out of band (the first message sets the title); raises `conversations-changed` |
-| `POST /api/conversations/{id}/move?to=cloud` | `#main` | The pane at the new location, and a success toast replacing the page's loading toast `move-cloud` |
+| `POST /api/conversations/{id}/move?to=cloud` or `?to=local` | `#main` | The pane at the new location, and a success toast replacing the page's loading toast `move-cloud`. If the wait runs out: the busy pane (which polls) and a still-loading toast. The header's *Move to cloud* and *Move to local* buttons (`data-move-cloud`, `data-move-local`) send these |
 | `GET /api/onedrive/folders` (on load, `folders-changed`) | `#folders` | The connected folders with their file counts |
 | `GET /api/onedrive/picker?mode=connect` or `mode=attach` | `#dialog` | A dialog: every folder, or the files in the connected folders |
 | `POST /api/onedrive/connect` (form field `folder`) | nothing | Connects them; raises `folders-changed`, `close-dialog` and a toast |
@@ -89,9 +96,8 @@ escaping it.
 
 ## Known limits
 
-- The page offers **Move to cloud** only. A cloud session shows a disabled "Running in cloud" button. Moving back is
-  available through the JSON API.
-- The page has no error styling for a toast; the variant `error` currently shows with the success icon.
+- Only a move is followed to its end after the wait runs out. A slow agent turn still ends with "The agent is still
+  working" and the reply appears when the conversation is opened again.
 - Errors other than moves show the page's generic "Request failed" toast.
 - Not checked in a browser: swaps, the dialog and toasts need a look on a machine with one (the tests assert the HTML
   and headers, not the rendering).

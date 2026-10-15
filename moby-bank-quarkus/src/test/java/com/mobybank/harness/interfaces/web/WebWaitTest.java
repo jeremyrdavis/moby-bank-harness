@@ -2,7 +2,6 @@ package com.mobybank.harness.interfaces.web;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -69,16 +68,23 @@ class WebWaitTest {
     }
 
     @Test
-    void aSlowMoveGivesAToastAndTheOpenedPaneShowsItBusy() throws Exception {
+    void aSlowMoveAnswersWithTheBusyPaneThatPollsAndAToastThatKeepsLoading() throws Exception {
         String id = createSession();
 
         given().post("/ui/conversations/" + id + "/move?to=cloud").then().statusCode(200)
-                .header("HX-Reswap", equalTo("none"))
-                .header("HX-Trigger", containsString("The move is still running"));
+                .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
+                .header("HX-Trigger", containsString("\"variant\":\"loading\""))
+                .header("HX-Trigger", containsString("Still moving the session"))
+                .body(containsString("Moving the session"))
+                .body(containsString("data-poll"))
+                .body(containsString("hx-trigger=\"every 5s\""))
+                .body(containsString("data-location=\"local\""));
 
         given().get("/ui/conversations/" + id).then().body(containsString("Moving the session"))
                 .body(containsString("disabled"));
         awaitIdle(id);
+        given().get("/ui/conversations/" + id).then().body(not(containsString("data-poll")))
+                .body(containsString("data-location=\"cloud\""));
     }
 
     @Test

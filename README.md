@@ -23,7 +23,7 @@ cd moby-bank-quarkus && ./mvnw quarkus:dev
 cd moby-bank-prototype && npm start
 ```
 
-Open <http://localhost:8080> for the htmx page, or <http://localhost:4173> for the prototype. Pick a conversation, send a message with an attached file, and use **Move to cloud** in the header (the htmx page offers that direction; the prototype also has **Move to local**).
+Open <http://localhost:8080> for the htmx page, or <http://localhost:4173> for the prototype. Pick a conversation, send a message with an attached file, and use **Move to cloud** in the header, then **Move to local** to bring it back (both pages offer both).
 
 To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.md`](moby-bank-quarkus/README.md): `-Dharness.sandbox.mode=sbx` and `-Dharness.documents.mode=graph`.
 

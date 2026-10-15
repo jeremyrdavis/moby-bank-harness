@@ -1,11 +1,11 @@
 {@com.mobybank.harness.application.SessionDTO session}
-<header class="topbar">
+<header class="topbar" data-location="{session.location}">
   <h1 id="conversation-title" class="trunc">{session.title}</h1>
   {#if session.location == 'cloud'}
   <div class="status"><span class="dot cloud"></span>Cloud model · Moby Private Cloud</div>
-  <button class="btn btn-primary btn-sm" disabled>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg>
-    Running in cloud
+  <button class="btn btn-primary btn-sm" data-move-local hx-post="/api/conversations/{session.id}/move?to=local" hx-target="#main" hx-swap="innerHTML"{#if session.status != 'idle'} disabled{/if}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/><path d="M12 11v5M9.5 13.5L12 16l2.5-2.5"/></svg>
+    Move to local
   </button>
   {#else}
   <div class="status"><span class="dot"></span>Local model · on-prem</div>
@@ -15,6 +15,9 @@
   </button>
   {/if}
 </header>
+{#if session.status != 'idle'}
+<div data-poll hidden hx-get="/api/conversations/{session.id}" hx-trigger="every 5s" hx-target="#main" hx-swap="innerHTML"></div>
+{/if}
 <div class="thread" id="thread">
   <div class="thread-inner" id="messages">
     {#if session.messages}
