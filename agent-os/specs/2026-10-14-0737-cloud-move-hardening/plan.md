@@ -172,3 +172,10 @@ streaming partial agent text.
 4. On the sbx host (`-Dharness.sandbox.mode=sbx`): local turn → move to cloud → turn (agent remembers the earlier
    message and files) → force expiry with a short TTL → turn shows the notice and still answers → move to local → turn.
    `/q/health` reports each preflight failure when `sbx` is missing, signed out, or lacks the cloud secret.
+
+## Amendments after real-host verification (2026-10-15)
+
+- **Task 3:** also raise the `harness.sbx.move-timeout` default to 1h (cloud to local took 5m12s and 17m06s); no sliding TTL (`sbx ttl` has a maximum remaining lifetime).
+- **Task 4:** with `--on-timeout stop`, expiry stops the sandbox and `exec` restarts it (about 1 s), so no recovery is needed for expiry itself. Recovery covers a sandbox that is **gone** (`error: sandbox '<name>' not found`, exit 1). The notice wording says the sandbox was no longer there and was recreated from history; it does not mention expiry unless the cloud TTL is the likely cause (cloud location).
+- **Task 6:** `sbx diagnose` exits 0 when all checks pass; parse the `N passed` / `warnings` summary line when the exit code is non-zero.
+- **Task 8:** moves take minutes, so on a wait timeout the page returns the conversation pane in its moving state and refreshes it every 5 s until the move ends.
