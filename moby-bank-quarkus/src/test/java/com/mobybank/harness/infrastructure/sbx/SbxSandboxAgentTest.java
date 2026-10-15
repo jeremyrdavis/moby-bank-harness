@@ -476,4 +476,18 @@ class SbxSandboxAgentTest {
         assertEquals(List.of("--resume", "agent-1"), second.subList(second.size() - 2, second.size()));
         assertEquals(Optional.of("agent-2"), registry.agentSession(SESSION), "resuming returns a new id each time");
     }
+
+    @Test
+    void aRejectedCredentialInTheCloudSaysWhichSecretToSetAndKeepsWhatTheAgentSaid() {
+        runner.on(has("ls"), Response.ok(NAME));
+        agentPrints(INIT, "{\"type\":\"result\",\"is_error\":true,\"result\":\"Invalid API key · Fix external API key\"}");
+
+        SandboxFailureException e = assertThrows(SandboxFailureException.class,
+                () -> agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add));
+
+        assertTrue(e.getMessage().startsWith("The agent failed in " + NAME + ": The agent's credential was rejected (401)"),
+                e.getMessage());
+        assertTrue(e.getMessage().contains("`sbx --cloud secret set anthropic --oauth`"), e.getMessage());
+        assertTrue(e.getMessage().contains("(Invalid API key · Fix external API key)"), e.getMessage());
+    }
 }

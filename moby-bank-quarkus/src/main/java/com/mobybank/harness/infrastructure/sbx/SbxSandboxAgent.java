@@ -92,7 +92,9 @@ public final class SbxSandboxAgent implements SandboxAgent {
             run = run(turn, sandbox, Optional.empty(), onStep);
         }
         if (!run.succeeded()) {
-            throw new SandboxFailureException("The agent failed in " + sandbox.name() + ": " + run.failure());
+            String failure = run.failure();
+            throw new SandboxFailureException("The agent failed in " + sandbox.name() + ": "
+                    + SbxErrors.hint(failure, sandbox.location()).map(hint -> hint + " (" + failure + ")").orElse(failure));
         }
         run.parser().sessionId().ifPresent(id -> registry.setAgentSession(turn.sessionId(), id));
         return ReplyFormatter.toReply(run.answer(), run.parser().steps());

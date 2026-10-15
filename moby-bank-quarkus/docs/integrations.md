@@ -170,6 +170,20 @@ else is split on blank lines into paragraphs. A second table stays inside the pa
 A failed move leaves the registry unchanged, and the application service aborts the move so the session stays
 where it was (`MoveFailed`).
 
+### Failure messages (`SbxErrors`)
+
+`SbxErrors` recognises what `sbx` or the agent prints for the failures a demo actually hits and puts a sentence about
+what to do in front of the raw text (`… failed: <what to do> (exit 1: <what sbx said>)`). Anything else keeps the plain
+form. `SbxErrorsTest` is the table.
+
+| Recognised | Seen on a real host? | Says |
+|---|---|---|
+| `sandbox '<name>' not found` | yes (exit 1) | The sandbox no longer exists; start a new one |
+| `Invalid API key · Fix external API key` (401) | yes, in a cloud sandbox with a missing or stale secret | Set the secret (`sbx secret set anthropic` or `sbx --cloud secret set anthropic --oauth`), then start a new sandbox |
+| not authenticated / no secret | no | The agent has no credential; same command |
+| not signed in | no | Run `sbx login` |
+| platform mismatch, disk full, larger than the biggest cloud size, daemon not running | no (from Docker's documentation) | What to change |
+
 ### Things to watch on a real host
 
 - **The source sandbox is left behind** after every move (stopped, not deleted). Nothing cleans them up.

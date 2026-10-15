@@ -108,7 +108,10 @@ public final class SbxCli {
 
     static CommandResult requireSuccess(CommandResult result, String what) {
         if (!result.succeeded()) {
-            throw new SandboxFailureException(what + " failed (exit " + result.exitCode() + "): " + result.tail());
+            String detail = "exit " + result.exitCode() + ": " + result.tail();
+            throw new SandboxFailureException(SbxErrors.hint(result.tail(), null)
+                    .map(hint -> what + " failed: " + hint + " (" + detail + ")")
+                    .orElse(what + " failed (" + detail + ")"));
         }
         return result;
     }
