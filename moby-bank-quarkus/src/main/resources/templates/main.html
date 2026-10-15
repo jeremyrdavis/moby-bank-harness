@@ -1,5 +1,5 @@
 {@com.mobybank.harness.application.SessionDTO session}
-<header class="topbar" data-location="{session.location}">
+<header class="topbar" id="topbar" data-location="{session.location}">
   <h1 id="conversation-title" class="trunc">{session.title}</h1>
   {#if session.location == 'cloud'}
   <div class="status"><span class="dot cloud"></span>Cloud model · Moby Private Cloud</div>
@@ -14,10 +14,10 @@
     Move to cloud
   </button>
   {/if}
+  {#if session.status != 'idle'}
+  <div data-poll hidden hx-get="/api/conversations/{session.id}" hx-trigger="every 5s" hx-target="#thread" hx-swap="outerHTML" hx-select="#thread" hx-select-oob="#topbar"></div>
+  {/if}
 </header>
-{#if session.status != 'idle'}
-<div data-poll hidden hx-get="/api/conversations/{session.id}" hx-trigger="every 5s" hx-target="#main" hx-swap="innerHTML"></div>
-{/if}
 <div class="thread" id="thread">
   <div class="thread-inner" id="messages">
     {#if session.messages}

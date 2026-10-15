@@ -78,6 +78,10 @@ class WebWaitTest {
                 .body(containsString("Moving the session"))
                 .body(containsString("data-poll"))
                 .body(containsString("hx-trigger=\"every 5s\""))
+                .body(containsString("hx-target=\"#thread\""))
+                .body(containsString("hx-select=\"#thread\""))
+                .body(containsString("hx-select-oob=\"#topbar\""))
+                .body(not(containsString("hx-target=\"#main\" hx-swap=\"innerHTML\"></div>")))
                 .body(containsString("data-location=\"local\""));
 
         given().get("/ui/conversations/" + id).then().body(containsString("Moving the session"))

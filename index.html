@@ -274,7 +274,8 @@
 
   // Moving (to cloud or back to local): loading toast on request; the server finishes it with an HX-Trigger toast using
   // id "move-cloud". A move can outlast the server's wait (moving back takes minutes): the server then answers with the
-  // busy pane, which polls itself, and the toast stays "loading" until a settled pane shows how the move ended.
+  // busy pane, which polls itself (swapping only the thread and the header, so a draft in the composer survives), and
+  // the toast stays "loading" until a settled pane shows how the move ended.
   var moveTarget=null;
   document.body.addEventListener('htmx:beforeRequest',function(e){
     var t=e.target; if(!t||!t.matches) return;
@@ -288,7 +289,7 @@
   });
   document.body.addEventListener('htmx:afterSettle',function(e){
     var el=document.getElementById('move-cloud'),main=document.getElementById('main');
-    if(!el||el.dataset.variant!=='loading'||!moveTarget||!e.target||e.target.id!=='main'||main.querySelector('[data-poll]')) return;
+    if(!el||el.dataset.variant!=='loading'||!moveTarget||!e.target||['main','thread','topbar'].indexOf(e.target.id)<0||main.querySelector('[data-poll]')) return;
     var at=main.querySelector('[data-location]'); at=at&&at.dataset.location;
     if(at===moveTarget) toast({id:'move-cloud',variant:'success',title:moveTarget==='cloud'?'Session moved to cloud':'Session moved to local',description:'The session finished moving.'});
     else toast({id:'move-cloud',variant:'error',title:'Move failed',description:'The session is still '+(at==='cloud'?'in the cloud':'local')+'. The server log has the reason.'});

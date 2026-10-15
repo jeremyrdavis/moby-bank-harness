@@ -460,6 +460,26 @@ class SbxSandboxAgentTest {
     }
 
     @Test
+    void aSourceLeftBehindByAnEarlierMoveIsNotReusedAfterTheNewerSandboxWasDeleted() {
+        // local g0 moved to cloud g1, and g1 was deleted: g0 is still listed locally but is older than the session
+        uploads.put("a.pdf", "pdf text".getBytes(StandardCharsets.UTF_8));
+        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok(NAME));
+        Session session = sessionAt(Location.LOCAL);
+        session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
+        session.recordAgentReply(new AgentReply(List.of(), List.of("It is a 10-Q."), Optional.empty()), T0);
+        agentPrints(INIT, RESULT);
+
+        agent.runTurn(turn(session, "next"), streamed::add);
+
+        assertEquals("sbx create --name harness-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get("harness-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"));
+        assertTrue(agentRunLines().get(0).contains("harness-0a1b2c3d4e5f-g2"), agentRunLines().get(0));
+        assertTrue(agentRunLines().stream().noneMatch(line -> line.contains(" " + NAME + " ")),
+                "the stale local g0 is never used");
+    }
+
+    @Test
     void theAgentConversationIdIsReplacedByTheLatestOneEveryTurn() {
         Session session = sessionAt(Location.LOCAL);
         java.util.concurrent.atomic.AtomicInteger runs = new java.util.concurrent.atomic.AtomicInteger();

@@ -74,14 +74,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         if (known.isPresent()) {
             return known;
         }
-        Handle best = null;
-        for (String listed : cli.listNames(request.from())) {
-            Optional<Integer> generation = SandboxRegistry.generationOf(listed, request.sessionId());
-            if (generation.isPresent() && (best == null || generation.get() >= best.generation())) {
-                best = new Handle(request.from(), SandboxRegistry.bareName(listed), generation.get());
-            }
-        }
-        return Optional.ofNullable(best);
+        return registry.discover(cli, request.sessionId(), request.from());
     }
 
     /** True when the source is no longer listed. If it cannot be listed, the move's own failure stands. */

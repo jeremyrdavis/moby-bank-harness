@@ -49,7 +49,9 @@ working. The work carries on; opening the conversation again later shows the rep
 **A move that outlasts the wait** is expected: moving a session back to local took 5 to 17 minutes on a real host.
 The page then gets the conversation pane in its busy state ("Moving the session…", buttons disabled) and the toast stays
 a loading one ("Still moving the session…"). A busy pane carries a hidden `data-poll` element
-(`hx-get` of the conversation, `every 5s`), so the pane refreshes itself until the session is idle. When a settled pane
+in its header (`hx-get` of the conversation, `every 5s`). Each poll swaps only the thread (`hx-select="#thread"`) and the
+header (`hx-select-oob="#topbar"`), never the composer, so a draft or attached files survive; the header's replacement
+has no `data-poll`, which ends the polling once the session is idle. When a settled pane
 arrives, the page finishes the loading toast itself by comparing the header's `data-location` with where the move was
 going: a success toast if they match, otherwise an error toast.
 

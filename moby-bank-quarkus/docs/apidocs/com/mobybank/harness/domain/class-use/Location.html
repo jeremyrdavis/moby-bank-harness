@@ -301,57 +301,65 @@ the order they are declared.</div>
 <div class="col-last even-row-color">
 <div class="block">Runs <code>sbx diagnose</code> (with <code>--cloud</code> for the cloud).</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../infrastructure/sbx/CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#exec(com.mobybank.harness.domain.Location,java.lang.String,java.util.List,java.time.Duration,java.util.function.Consumer)" class="member-name-link">exec</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-first odd-row-color"><code>(package private) <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../../infrastructure/sbx/SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#discover(com.mobybank.harness.infrastructure.sbx.SbxCli,com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)" class="member-name-link">discover</a><wbr>(<a href="../../infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a>&nbsp;cli,
+ <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The newest generation of the session's sandbox listed at a location, for finding it again after a restart or
+when the registry points elsewhere.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../../infrastructure/sbx/CommandResult.html" title="class in com.mobybank.harness.infrastructure.sbx">CommandResult</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#exec(com.mobybank.harness.domain.Location,java.lang.String,java.util.List,java.time.Duration,java.util.function.Consumer)" class="member-name-link">exec</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;inside,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;onStdoutLine)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Runs a command inside a sandbox.</div>
 </div>
-<div class="col-first even-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SbxErrors.</span><code><a href="../../infrastructure/sbx/SbxErrors.html#hint(java.lang.String,com.mobybank.harness.domain.Location)" class="member-name-link">hint</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;output,
+<div class="col-first odd-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SbxErrors.</span><code><a href="../../infrastructure/sbx/SbxErrors.html#hint(java.lang.String,com.mobybank.harness.domain.Location)" class="member-name-link">hint</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;output,
  <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">A sentence saying what to do about this output, if it is a failure the harness recognises.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#listNames(com.mobybank.harness.domain.Location)" class="member-name-link">listNames</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#listNames(com.mobybank.harness.domain.Location)" class="member-name-link">listNames</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
+<div class="col-last even-row-color">
 <div class="block">The names of the sandboxes at a location, exactly as <code>sbx ls -q</code> prints them.</div>
 </div>
-<div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#makeDirectory(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String)" class="member-name-link">makeDirectory</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#makeDirectory(com.mobybank.harness.domain.Location,java.lang.String,java.lang.String)" class="member-name-link">makeDirectory</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;directory)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.lang.String,java.time.Duration)" class="member-name-link">move</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#move(java.lang.String,com.mobybank.harness.domain.Location,java.lang.String,java.time.Duration,java.lang.String,java.time.Duration)" class="member-name-link">move</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;source,
  <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;to,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newName,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;cloudTtl,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cloudOnTimeout,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Moves a sandbox to the other location with <code>sbx move</code>, which captures the sandbox's filesystem and starts a
 new sandbox from it at the destination.</div>
 </div>
-<div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SbxSandboxAgent.</span><code><a href="../../infrastructure/sbx/SbxSandboxAgent.html#recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)" class="member-name-link">recreatedNotice</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SbxSandboxAgent.</span><code><a href="../../infrastructure/sbx/SbxSandboxAgent.html#recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)" class="member-name-link">recreatedNotice</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">The note shown to the analyst when a turn had to start in a new sandbox.</div>
 </div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#remove(com.mobybank.harness.domain.Location,java.lang.String)" class="member-name-link">remove</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#remove(com.mobybank.harness.domain.Location,java.lang.String)" class="member-name-link">remove</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sandbox)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Deletes a sandbox.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#secrets(com.mobybank.harness.domain.Location)" class="member-name-link">secrets</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SbxCli.</span><code><a href="../../infrastructure/sbx/SbxCli.html#secrets(com.mobybank.harness.domain.Location)" class="member-name-link">secrets</a><wbr>(<a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">The output of <code>sbx secret ls</code>: one line per stored secret, with the service name in it.</div>
 </div>
 </div>

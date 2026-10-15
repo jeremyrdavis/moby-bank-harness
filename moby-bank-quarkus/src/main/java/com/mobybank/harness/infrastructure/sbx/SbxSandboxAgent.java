@@ -172,7 +172,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
         if (known.isPresent()) {
             return new Sandbox(known.get(), false);
         }
-        Optional<Handle> existing = findExisting(session, location);
+        Optional<Handle> existing = registry.discover(cli, session, location);
         if (existing.isPresent()) {
             registry.set(session, existing.get());
             return new Sandbox(existing.get(), false);
@@ -187,17 +187,6 @@ public final class SbxSandboxAgent implements SandboxAgent {
         Handle created = new Handle(location, name, generation);
         registry.set(session, created);
         return created;
-    }
-
-    private Optional<Handle> findExisting(SessionId session, Location location) {
-        Handle best = null;
-        for (String listed : cli.listNames(location)) {
-            Optional<Integer> generation = SandboxRegistry.generationOf(listed, session);
-            if (generation.isPresent() && (best == null || generation.get() >= best.generation())) {
-                best = new Handle(location, SandboxRegistry.bareName(listed), generation.get());
-            }
-        }
-        return Optional.ofNullable(best);
     }
 
     // --- files ------------------------------------------------------------------------------------------------

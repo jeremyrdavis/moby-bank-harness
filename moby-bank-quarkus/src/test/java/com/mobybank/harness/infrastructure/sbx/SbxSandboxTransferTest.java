@@ -162,6 +162,19 @@ class SbxSandboxTransferTest {
     }
 
     @Test
+    void anOlderSourceLeftByAnEarlierMoveIsNotMovedAgainAfterTheNewerSandboxWasDeleted() {
+        // the session is local again after cloud g1 vanished, but local g0 (the source of the first move) still exists
+        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
+                Response.ok("harness-0a1b2c3d4e5f-g0"));
+
+        transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
+
+        assertTrue(runner.linesWith("move").isEmpty(), "the stale g0 is not moved: " + runner.lines());
+        assertTrue(progress.get(0).detail().startsWith("Nothing to package"), progress.get(0).detail());
+    }
+
+    @Test
     void ifTheListingFailsTooTheMoveFailureIsReported() {
         registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
         runner.on(has("move"), Response.fail(1, "error: could not reach the service"));

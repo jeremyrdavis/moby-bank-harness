@@ -401,8 +401,9 @@ None is a secret; they are here so you learn to see them, and so you can decide 
    and there is no size budget beyond the 50M per-request limit.
 5. **File lookup is by name.** `FileRef` has no folder id, so `DocumentCatalog.fetch(fileName)` assumes names are unique
    and takes the first match.
-6. **The same loop twice.** "Pick the highest generation among listed sandboxes" is written in both `SbxSandboxAgent`
-   (`findExisting`) and `SbxSandboxTransfer` (`source`).
+6. **Rediscovery after a restart is by name only.** `SandboxRegistry.discover` picks the highest generation listed at the
+   location and, while the registry knows a sandbox, ignores older ones (a source an earlier move left behind). After a
+   restart the registry is empty, so if the newest sandbox was deleted meanwhile, an older retained one can be picked.
 7. **Stopped source sandboxes accumulate.** `sbx move` stops the source; nothing removes it.
 8. **No authentication, and one user.** Every caller is the same analyst; anyone who can reach the port can read and
    start conversations. CORS limits browsers, not other clients.
