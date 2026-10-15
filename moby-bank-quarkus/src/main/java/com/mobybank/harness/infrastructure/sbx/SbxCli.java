@@ -26,12 +26,15 @@ public final class SbxCli {
         this.commandTimeout = commandTimeout;
     }
 
-    /** Creates a sandbox without a workspace mount. Cloud sandboxes can be given a time-to-live. */
-    public void create(Location target, String name, String agent, Duration cloudTtl) {
+    /**
+     * Creates a sandbox without a workspace mount. A cloud sandbox can be given a time-to-live and told what to do
+     * when it runs out ({@code stop}, {@code delete} or {@code restart}); neither applies locally.
+     */
+    public void create(Location target, String name, String agent, Duration cloudTtl, String cloudOnTimeout) {
         List<String> command = base(target);
         command.addAll(List.of("create", "--name", name));
-        if (target == Location.CLOUD && cloudTtl != null) {
-            command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
+        if (target == Location.CLOUD) {
+            addCloudLifetime(command, cloudTtl, cloudOnTimeout);
         }
         command.add(agent);
         Log.debugf("Creating sandbox %s", name);
@@ -71,16 +74,26 @@ public final class SbxCli {
     /**
      * Moves a sandbox to the other location with {@code sbx move}, which captures the sandbox's filesystem and starts a
      * new sandbox from it at the destination. The destination gets a new id; {@code newName} is the name requested
-     * for it (a cloud destination always appends a short suffix).
+     * for it (a cloud destination may be listed with an agent prefix, and the service may add a suffix).
      */
-    public void move(String source, Location to, String newName, Duration cloudTtl, Duration timeout) {
+    public void move(String source, Location to, String newName, Duration cloudTtl, String cloudOnTimeout,
+                     Duration timeout) {
         List<String> command = new ArrayList<>(List.of(binary, "move", source, "--to", to == Location.CLOUD ? "cloud" : "local",
                 "--name", newName, "--force"));
-        if (to == Location.CLOUD && cloudTtl != null) {
-            command.addAll(List.of("--ttl", formatDuration(cloudTtl)));
+        if (to == Location.CLOUD) {
+            addCloudLifetime(command, cloudTtl, cloudOnTimeout);
         }
         Log.debugf("Moving %s to %s", source, to.name().toLowerCase());
         requireSuccess(runner.run(command, timeout), "Moving " + source + " to " + to.name().toLowerCase());
+    }
+
+    private static void addCloudLifetime(List<String> command, Duration ttl, String onTimeout) {
+        if (ttl != null) {
+            command.addAll(List.of("--ttl", formatDuration(ttl)));
+        }
+        if (onTimeout != null) {
+            command.addAll(List.of("--on-timeout", onTimeout));
+        }
     }
 
     private List<String> base(Location target) {

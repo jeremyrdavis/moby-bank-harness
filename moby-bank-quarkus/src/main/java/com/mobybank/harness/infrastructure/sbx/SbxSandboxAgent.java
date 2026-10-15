@@ -130,7 +130,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
         }
         int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
         String name = SandboxRegistry.nameFor(session, generation);
-        cli.create(location, name, settings.agent(), settings.cloudTtl());
+        cli.create(location, name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
         Handle created = new Handle(location, name, generation);
         registry.set(session, created);
         return created;

@@ -54,12 +54,13 @@ UI and event stream with shorter waits than the defaults, use about `300` each (
 |---|---|---|
 | `harness.sbx.binary` | `sbx` | The executable to run |
 | `harness.sbx.agent` | `claude` | The agent a sandbox is created for, and the command run inside it |
-| `harness.sbx.agent-args` | `--dangerously-skip-permissions` | Extra arguments on every agent run, split on whitespace. Empty means none |
+| `harness.sbx.agent-args` | `--dangerously-skip-permissions --model claude-opus-5-5 --strict-mcp-config` | Extra arguments on every agent run, split on whitespace. Empty means none. The defaults pin the model so a local and a cloud sandbox agree, and keep the host's claude.ai connectors out of a local sandbox (a cloud one has none) |
 | `harness.sbx.workspace-dir` | `/home/agent/workspace` | The sandbox's working directory; attached files are copied to `<dir>/files` |
 | `harness.sbx.command-timeout` | `2m` | Timeout for `create`, `cp`, `ls` and the `mkdir` run |
 | `harness.sbx.turn-timeout` | `10m` | Timeout for one agent turn |
-| `harness.sbx.move-timeout` | `30m` | Timeout for one `sbx move` |
-| `harness.sbx.cloud-ttl` | *(unset: the service's default)* | How long a cloud sandbox lives before it times out, for example `8h` |
+| `harness.sbx.move-timeout` | `1h` | Timeout for one `sbx move`. Moving to the cloud took about half a minute on a real host, moving back took 5 to 17 minutes |
+| `harness.sbx.cloud-ttl` | `8h` | How long a cloud sandbox lives before it times out. Passed to `create` and `move` for cloud sandboxes only |
+| `harness.sbx.cloud-on-timeout` | `stop` | What the service does when that time runs out: `stop` (the next turn starts it again), `delete` or `restart`. Blank leaves it to the service |
 
 Durations accept `30s`, `10m`, `2h`. Prerequisites and what to check on a real host are in
 [integrations.md](integrations.md#docker-sandboxes-through-sbx).

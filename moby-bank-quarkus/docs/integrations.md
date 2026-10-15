@@ -58,14 +58,16 @@ Exactly these, built in `SbxCli` and asserted by `SbxCliTest`:
 
 | Purpose | Command |
 |---|---|
-| Create a sandbox (no workspace mount) | `sbx [--cloud] create --name <name> [--ttl <t>] <agent>` (`--ttl` only for cloud, only if configured) |
+| Create a sandbox (no workspace mount) | `sbx [--cloud] create --name <name> [--ttl <t>] [--on-timeout <action>] <agent>` (the two flags only for cloud, only if configured) |
 | List sandbox names | `sbx [--cloud] ls -q` |
 | Make a folder inside a sandbox | `sbx [--cloud] exec <sandbox> mkdir -p <dir>` |
 | Copy a file in | `sbx [--cloud] cp <local file> <sandbox>:<remote path>` |
 | Run the agent | `sbx [--cloud] exec <sandbox> <agent> -p <prompt> --output-format stream-json --verbose <agent-args> [--resume <id>]` |
-| Move a sandbox | `sbx move <sandbox> --to local\|cloud --name <new name> --force [--ttl <t>]` |
+| Move a sandbox | `sbx move <sandbox> --to local\|cloud --name <new name> --force [--ttl <t>] [--on-timeout <action>]` (the two flags only towards the cloud) |
 
-`sbx move` takes no `--cloud` flag: the docs' examples address cloud sandboxes by id or name with `--to`. **(verify)**
+`sbx move` takes no `--cloud` flag: a cloud sandbox is addressed by name or id with `--to`. Both directions were run on a
+real host (sbx 0.47/0.48); the results are in
+[`verification.md`](../../agent-os/specs/2026-10-14-0737-cloud-move-hardening/verification.md).
 
 ### Sandbox names and generations
 
@@ -76,9 +78,10 @@ harness-<first 12 hex digits of the session id>-g<generation>          e.g. harn
 ```
 
 Every move creates the **next generation** (`…-g1`, `…-g2`), because `sbx move` makes a new sandbox at the destination.
-The service may decorate the name: a cloud sandbox can be listed as `claude/harness-0a1b2c3d4e5f-g1-k3j2x` (an agent
-prefix and a short suffix). `SandboxRegistry.generationOf` reads the generation out of any of these forms, and the
-full listed string is what is passed to later commands. **(verify how `sbx ls -q` prints cloud names.)**
+The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/harness-0a1b2c3d4e5f-g1` (an
+agent prefix; a move destination kept exactly the requested name with no suffix on a real host, but the adapter still
+accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms, and the full listed string
+is what is passed to later commands.
 
 The registry is in memory. After a restart it is empty, so both adapters **rediscover** a session's sandbox by
 listing names at the right location and taking the highest generation that matches. Sandboxes therefore survive an
@@ -160,7 +163,11 @@ where it was (`MoveFailed`).
 ### Things to watch on a real host
 
 - **The source sandbox is left behind** after every move (stopped, not deleted). Nothing cleans them up.
-- **Cloud sandboxes expire** (the service's default is about an hour). Set `harness.sbx.cloud-ttl` for a demo.
+- **Cloud sandboxes expire** after `harness.sbx.cloud-ttl` (default 8h; the service's own default is about an hour).
+  `harness.sbx.cloud-on-timeout=stop` (the default) stops them instead of deleting them, and the next `exec` starts a
+  stopped one again in about a second, so an idle demo comes back where it was.
+- **Moving to the cloud is quick (about 30 s), moving back is not** (5 to 17 minutes seen on a real host), hence the
+  1h `harness.sbx.move-timeout`.
 - **The agent runs with `--dangerously-skip-permissions`** (`harness.sbx.agent-args`) because nothing can answer a
   permission prompt in a headless run. That is acceptable only because the agent is inside a sandbox.
 - **Workspace paths:** cloud sandboxes have no host workspace, so nothing is mounted and files always go in by

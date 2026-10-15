@@ -36,7 +36,7 @@ class SbxSandboxTransferTest {
         runner = new FakeRunner();
         registry = new SandboxRegistry();
         SbxSettings settings = new SbxSettings("claude", List.of(), "/home/agent/workspace", Duration.ofMinutes(10),
-                Duration.ofMinutes(30), Duration.ofHours(8));
+                Duration.ofMinutes(30), Duration.ofHours(8), "stop");
         transfer = new SbxSandboxTransfer(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, settings);
     }
 
@@ -52,7 +52,7 @@ class SbxSandboxTransferTest {
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertEquals(List.of(
-                "sbx move harness-0a1b2c3d4e5f-g0 --to cloud --name harness-0a1b2c3d4e5f-g1 --force --ttl 8h",
+                "sbx move harness-0a1b2c3d4e5f-g0 --to cloud --name harness-0a1b2c3d4e5f-g1 --force --ttl 8h --on-timeout stop",
                 "sbx --cloud ls -q"), runner.lines());
         assertEquals(Optional.of(new Handle(Location.CLOUD, "claude/harness-0a1b2c3d4e5f-g1-k3j2x", 1)),
                 registry.current(SESSION));

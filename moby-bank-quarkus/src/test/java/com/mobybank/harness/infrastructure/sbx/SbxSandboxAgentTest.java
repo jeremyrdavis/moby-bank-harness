@@ -94,7 +94,7 @@ class SbxSandboxAgentTest {
             }
         };
         SbxSettings settings = new SbxSettings("claude", List.of("--dangerously-skip-permissions"),
-                "/home/agent/workspace", Duration.ofMinutes(10), Duration.ofMinutes(30), Duration.ofHours(8));
+                "/home/agent/workspace", Duration.ofMinutes(10), Duration.ofMinutes(30), Duration.ofHours(8), "stop");
         agent = new SbxSandboxAgent(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, store, catalog, settings);
 
         // Capture staged files while they still exist: sbx cp <local> <sandbox>:<remote>
@@ -180,7 +180,7 @@ class SbxSandboxAgentTest {
         agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add);
 
         assertEquals("sbx --cloud ls -q", runner.lines().get(0));
-        assertEquals("sbx --cloud create --name " + NAME + " --ttl 8h claude", runner.lines().get(1));
+        assertEquals("sbx --cloud create --name " + NAME + " --ttl 8h --on-timeout stop claude", runner.lines().get(1));
         assertTrue(runner.lines().get(2).startsWith("sbx --cloud exec " + NAME + " claude"), runner.lines().get(2));
         assertEquals(Location.CLOUD, registry.current(SESSION).orElseThrow().location());
     }

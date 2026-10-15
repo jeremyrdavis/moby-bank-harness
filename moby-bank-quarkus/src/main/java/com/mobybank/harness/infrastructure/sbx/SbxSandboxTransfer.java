@@ -47,7 +47,8 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         String summary = request.history().size() + " messages · " + request.files().size() + " files";
 
         onProgress.accept(new MoveProgress(MoveStage.PACKAGING, "Packaging the sandbox · " + summary));
-        cli.move(from.name(), request.to(), requested, settings.cloudTtl(), settings.moveTimeout());
+        cli.move(from.name(), request.to(), requested, settings.cloudTtl(), settings.cloudOnTimeout(),
+                settings.moveTimeout());
 
         onProgress.accept(new MoveProgress(MoveStage.TRANSFERRING, "Starting the session at the destination"));
         Handle moved = locate(session, request.to(), generation);
