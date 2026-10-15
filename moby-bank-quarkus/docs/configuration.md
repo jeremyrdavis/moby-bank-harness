@@ -35,15 +35,18 @@ Any other value stops the app at startup with a message naming the property and 
 | `harness.ui.wait-timeout` | `180s` | How long a request from the htmx page (send a message, move a session) waits for the agent or the move before giving up with a toast. The work carries on. See [ui-fragments.md](ui-fragments.md) |
 | `harness.seed-demo-data` | `true` | Load the five demo conversations at startup. Also connects the first three demo folders, but only when `harness.documents.mode` is `fake` |
 
-## The fakes' timing
+## The fakes' timing and faults
 
-The fake adapters imitate the prototype's timings. Values are milliseconds.
+The fake adapters imitate the prototype's timings (values are milliseconds) and can simulate the two things that go
+wrong with real sandboxes.
 
 | Property | Default | Meaning |
 |---|---|---|
 | `harness.fake.agent-delay-ms` | `1800` | How long a fake agent turn takes, spread across its steps |
 | `harness.fake.move-packaging-ms` | `1100` | The packaging stage of a fake move |
 | `harness.fake.move-transfer-ms` | `1500` | The transfer stage of a fake move |
+| `harness.fake.cloud-expiry-turns` | `0` (off) | After this many cloud turns in a session, the fake agent's next cloud turn answers with the notice a real recovery shows ("The cloud sandbox was no longer there…"), then counting starts again. For seeing the notice without waiting for a real sandbox to expire |
+| `harness.fake.move-failure` | `none` | `none`, `to-cloud` or `to-local`: the fake transfer refuses moves in that direction after the packaging stage, so a failed move can be seen in the page |
 
 `application.properties` sets all three to `0` for the `test` profile (`%test.…`) so tests don't wait. To watch the
 UI and event stream with shorter waits than the defaults, use about `300` each (the UI's live test does).

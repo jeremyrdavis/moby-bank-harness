@@ -112,7 +112,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
         }
     }
 
-    private static String recreatedNotice(Location location, List<FileRef> files) {
+    /** The note shown to the analyst when a turn had to start in a new sandbox. Public so the fake agent says the same. */
+    public static String recreatedNotice(Location location, List<FileRef> files) {
         String where = location == Location.CLOUD ? "cloud" : "local";
         String why = location == Location.CLOUD
                 ? "The cloud sandbox was no longer there (cloud sandboxes can time out or be deleted)"

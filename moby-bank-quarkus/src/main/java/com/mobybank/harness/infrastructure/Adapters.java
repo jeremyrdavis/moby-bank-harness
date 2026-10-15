@@ -41,8 +41,9 @@ public class Adapters {
     SandboxAgent sandboxAgent(
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
             @ConfigProperty(name = "harness.fake.agent-delay-ms", defaultValue = "1800") long agentDelayMs,
+            @ConfigProperty(name = "harness.fake.cloud-expiry-turns", defaultValue = "0") int cloudExpiryTurns,
             SbxAdapters sbx) {
-        return selectAgent(mode, Duration.ofMillis(agentDelayMs), sbx::agent);
+        return selectAgent(mode, Duration.ofMillis(agentDelayMs), cloudExpiryTurns, sbx::agent);
     }
 
     @Produces
@@ -52,8 +53,10 @@ public class Adapters {
             @ConfigProperty(name = "harness.sandbox.mode", defaultValue = "fake") String mode,
             @ConfigProperty(name = "harness.fake.move-packaging-ms", defaultValue = "1100") long packagingMs,
             @ConfigProperty(name = "harness.fake.move-transfer-ms", defaultValue = "1500") long transferMs,
+            @ConfigProperty(name = "harness.fake.move-failure", defaultValue = "none") String moveFailure,
             SbxAdapters sbx) {
-        return selectTransfer(mode, Duration.ofMillis(packagingMs), Duration.ofMillis(transferMs), sbx::transfer);
+        return selectTransfer(mode, Duration.ofMillis(packagingMs), Duration.ofMillis(transferMs),
+                FakeMoveFailure.parse(moveFailure), sbx::transfer);
     }
 
     @Produces
@@ -66,8 +69,13 @@ public class Adapters {
     }
 
     static SandboxAgent selectAgent(String mode, Duration fakeDelay, Supplier<SandboxAgent> sbx) {
+        return selectAgent(mode, fakeDelay, 0, sbx);
+    }
+
+    static SandboxAgent selectAgent(String mode, Duration fakeDelay, int fakeCloudExpiryTurns,
+                                    Supplier<SandboxAgent> sbx) {
         return switch (mode) {
-            case "fake" -> new FakeSandboxAgent(fakeDelay);
+            case "fake" -> new FakeSandboxAgent(fakeDelay, fakeCloudExpiryTurns);
             case "sbx" -> sbx.get();
             default -> throw unsupported("harness.sandbox.mode", mode, "fake, sbx");
         };
@@ -75,8 +83,13 @@ public class Adapters {
 
     static SandboxTransfer selectTransfer(String mode, Duration fakePackaging, Duration fakeTransferring,
                                           Supplier<SandboxTransfer> sbx) {
+        return selectTransfer(mode, fakePackaging, fakeTransferring, FakeMoveFailure.NONE, sbx);
+    }
+
+    static SandboxTransfer selectTransfer(String mode, Duration fakePackaging, Duration fakeTransferring,
+                                          FakeMoveFailure fakeFailure, Supplier<SandboxTransfer> sbx) {
         return switch (mode) {
-            case "fake" -> new FakeSandboxTransfer(fakePackaging, fakeTransferring);
+            case "fake" -> new FakeSandboxTransfer(fakePackaging, fakeTransferring, fakeFailure);
             case "sbx" -> sbx.get();
             default -> throw unsupported("harness.sandbox.mode", mode, "fake, sbx");
         };
