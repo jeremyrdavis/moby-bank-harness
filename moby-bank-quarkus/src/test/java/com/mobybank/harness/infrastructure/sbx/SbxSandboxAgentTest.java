@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 class SbxSandboxAgentTest {
 
     private static final SessionId SESSION = SandboxRegistryTest.SESSION;
-    private static final String NAME = "harness-0a1b2c3d4e5f-g0";
+    private static final String NAME = "moby-bank-0a1b2c3d4e5f-g0";
     private static final Instant T0 = Instant.parse("2026-09-30T12:00:00Z");
 
     private static final String INIT = "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"agent-1\"}";
@@ -242,14 +242,14 @@ class SbxSandboxAgentTest {
 
     @Test
     void aSandboxFromBeforeARestartIsFoundAgainByItsName() {
-        runner.on(has("ls"), Response.ok("claude/harness-0a1b2c3d4e5f-g0", "claude/harness-0a1b2c3d4e5f-g2-ab12",
-                "harness-ffffffffffff-g9", "unrelated"));
+        runner.on(has("ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g0", "claude/moby-bank-0a1b2c3d4e5f-g2-ab12",
+                "moby-bank-ffffffffffff-g9", "unrelated"));
         agentPrints(INIT, RESULT);
 
         agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add);
 
         assertTrue(runner.linesWith("create").isEmpty(), "reuses the newest generation instead of creating one");
-        assertTrue(runner.lines().get(1).startsWith("sbx --cloud exec harness-0a1b2c3d4e5f-g2-ab12 claude"),
+        assertTrue(runner.lines().get(1).startsWith("sbx --cloud exec moby-bank-0a1b2c3d4e5f-g2-ab12 claude"),
                 "the agent prefix is dropped: " + runner.lines().get(1));
         assertEquals(2, registry.current(SESSION).orElseThrow().generation());
     }
@@ -356,7 +356,7 @@ class SbxSandboxAgentTest {
 
     // --- a sandbox that is gone --------------------------------------------------------------------------------
 
-    private static final String NEXT = "harness-0a1b2c3d4e5f-g1";
+    private static final String NEXT = "moby-bank-0a1b2c3d4e5f-g1";
 
     /** A session that has already had a turn in {@code location}, with one attached file and the agent's own id. */
     private Session earlierTurnAt(Location location) {
@@ -446,7 +446,7 @@ class SbxSandboxAgentTest {
     @Test
     void aSessionThatMovedAwayFromAGoneSandboxStartsTheNextGenerationAtTheDestination() {
         uploads.put("a.pdf", "pdf text".getBytes(StandardCharsets.UTF_8));
-        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
         Session session = sessionAt(Location.LOCAL);
         session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
         session.recordAgentReply(new AgentReply(List.of(), List.of("It is a 10-Q."), Optional.empty()), T0);
@@ -454,8 +454,8 @@ class SbxSandboxAgentTest {
 
         agent.runTurn(turn(session, "next"), streamed::add);
 
-        assertEquals("sbx create --name harness-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
-        assertEquals("pdf text", copied.get("harness-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"),
+        assertEquals("sbx create --name moby-bank-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get("moby-bank-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"),
                 "a fresh sandbox gets every file shared so far, not only the new message's");
     }
 
@@ -463,7 +463,7 @@ class SbxSandboxAgentTest {
     void aSourceLeftBehindByAnEarlierMoveIsNotReusedAfterTheNewerSandboxWasDeleted() {
         // local g0 moved to cloud g1, and g1 was deleted: g0 is still listed locally but is older than the session
         uploads.put("a.pdf", "pdf text".getBytes(StandardCharsets.UTF_8));
-        registry.set(SESSION, new Handle(Location.CLOUD, "harness-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
         runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok(NAME));
         Session session = sessionAt(Location.LOCAL);
         session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
@@ -472,9 +472,9 @@ class SbxSandboxAgentTest {
 
         agent.runTurn(turn(session, "next"), streamed::add);
 
-        assertEquals("sbx create --name harness-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
-        assertEquals("pdf text", copied.get("harness-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"));
-        assertTrue(agentRunLines().get(0).contains("harness-0a1b2c3d4e5f-g2"), agentRunLines().get(0));
+        assertEquals("sbx create --name moby-bank-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get("moby-bank-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"));
+        assertTrue(agentRunLines().get(0).contains("moby-bank-0a1b2c3d4e5f-g2"), agentRunLines().get(0));
         assertTrue(agentRunLines().stream().noneMatch(line -> line.contains(" " + NAME + " ")),
                 "the stale local g0 is never used");
     }

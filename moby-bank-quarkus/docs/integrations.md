@@ -77,11 +77,11 @@ real host (sbx 0.47/0.48); the results are in
 A session gets one sandbox, created on its first turn, named:
 
 ```
-harness-<first 12 hex digits of the session id>-g<generation>          e.g. harness-0a1b2c3d4e5f-g0
+moby-bank-<first 12 hex digits of the session id>-g<generation>        e.g. moby-bank-0a1b2c3d4e5f-g0
 ```
 
 Every move creates the **next generation** (`…-g1`, `…-g2`), because `sbx move` makes a new sandbox at the destination.
-The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/harness-0a1b2c3d4e5f-g1` (an
+The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/moby-bank-0a1b2c3d4e5f-g1` (an
 agent prefix; a move destination kept exactly the requested name with no suffix on a real host, but the adapter still
 accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms. Later commands are given
 the **bare name** (the agent prefix is dropped), the form that was run against a real host.

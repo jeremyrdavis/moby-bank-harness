@@ -149,7 +149,7 @@ public final class SbxPreflight {
     }
 
     private String runProbe(Location location) {
-        String name = "harness-probe-" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        String name = "moby-bank-probe-" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         try {
             cli.create(location, name, settings.agent(), Duration.ofHours(1), "delete");
             List<String> command = new ArrayList<>(List.of(settings.agent(), "-p", "Reply with the single word OK",

@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * sandbox from it at the destination. The conversation files, the agent's own history and everything it installed
  * travel with it, so the next turn can carry on where the last one stopped.
  *
- * <p>Each move asks for the next generation's name ({@code harness-<session>-g<n>}); the service may add a suffix,
+ * <p>Each move asks for the next generation's name ({@code moby-bank-<session>-g<n>}); the service may add a suffix,
  * so the new sandbox is found afterwards by listing the destination. A session that has not started a sandbox yet has
  * nothing to transfer: it simply starts at the destination on its next turn.
  */

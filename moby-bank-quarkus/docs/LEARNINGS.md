@@ -28,7 +28,7 @@ Everything under "Observed" was seen on a real host (`sbx` v0.47.0 and v0.48.0, 
 - **`--on-timeout` is accepted on `create`** as well as `move`, so both get the cloud lifetime flags.
 - **Cloud names carry an agent prefix.** `sbx --cloud ls -q` prints `claude/vtest-cloud`; local prints plain names. `create` and `move` added **no random suffix**: the destination is exactly the `--name` asked for.
 - **The bare name works for commands.** `sbx --cloud exec vtest-cloud …` is accepted. The `claude/…` form was never run, so commands use the bare name (`SandboxRegistry.bareName`). **Unverified:** the prefixed form.
-- The local sandbox naming `harness-<12 hex>-g<n>` is confirmed by a leftover sandbox in `sbx ls -q`.
+- The local sandbox naming `harness-<12 hex>-g<n>` (since issue #11: `moby-bank-<12 hex>-g<n>`) is confirmed by a leftover sandbox in `sbx ls -q`.
 
 ### The agent's headless run
 

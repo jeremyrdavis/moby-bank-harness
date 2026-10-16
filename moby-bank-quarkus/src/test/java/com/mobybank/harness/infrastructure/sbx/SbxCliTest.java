@@ -20,28 +20,28 @@ class SbxCliTest {
 
     @Test
     void createsALocalSandboxWithoutAWorkspace() {
-        cli.create(Location.LOCAL, "harness-abc-g0", "claude", Duration.ofHours(8), "stop");
-        assertEquals(List.of("sbx create --name harness-abc-g0 claude"), runner.lines(),
+        cli.create(Location.LOCAL, "moby-bank-abc-g0", "claude", Duration.ofHours(8), "stop");
+        assertEquals(List.of("sbx create --name moby-bank-abc-g0 claude"), runner.lines(),
                 "no --ttl or --on-timeout for local sandboxes");
     }
 
     @Test
     void createsACloudSandboxWithTheCloudFlagATimeToLiveAndWhatToDoWhenItRunsOut() {
-        cli.create(Location.CLOUD, "harness-abc-g0", "claude", Duration.ofHours(8), "stop");
-        assertEquals(List.of("sbx --cloud create --name harness-abc-g0 --ttl 8h --on-timeout stop claude"),
+        cli.create(Location.CLOUD, "moby-bank-abc-g0", "claude", Duration.ofHours(8), "stop");
+        assertEquals(List.of("sbx --cloud create --name moby-bank-abc-g0 --ttl 8h --on-timeout stop claude"),
                 runner.lines());
     }
 
     @Test
     void aCloudSandboxWithoutALifetimeUsesTheServiceDefaults() {
-        cli.create(Location.CLOUD, "harness-abc-g0", "claude", null, null);
-        assertEquals(List.of("sbx --cloud create --name harness-abc-g0 claude"), runner.lines());
+        cli.create(Location.CLOUD, "moby-bank-abc-g0", "claude", null, null);
+        assertEquals(List.of("sbx --cloud create --name moby-bank-abc-g0 claude"), runner.lines());
     }
 
     @Test
     void listsSandboxNamesOneUnstrippedLinePerName() {
-        runner.on(FakeRunner.has("ls"), Response.ok("claude/harness-abc-g1-xy", "", "  other  "));
-        assertEquals(List.of("claude/harness-abc-g1-xy", "other"), cli.listNames(Location.CLOUD));
+        runner.on(FakeRunner.has("ls"), Response.ok("claude/moby-bank-abc-g1-xy", "", "  other  "));
+        assertEquals(List.of("claude/moby-bank-abc-g1-xy", "other"), cli.listNames(Location.CLOUD));
         assertEquals(List.of("sbx --cloud ls -q"), runner.lines());
         cli.listNames(Location.LOCAL);
         assertEquals("sbx ls -q", runner.lines().get(1));
@@ -86,25 +86,25 @@ class SbxCliTest {
 
     @Test
     void movesToTheCloudWithoutTheCloudFlagButWithForceTtlAndOnTimeout() {
-        cli.move("harness-abc-g0", Location.CLOUD, "harness-abc-g1", Duration.ofHours(8), "stop", Duration.ofMinutes(30));
-        assertEquals(List.of("sbx move harness-abc-g0 --to cloud --name harness-abc-g1 --force --ttl 8h --on-timeout stop"),
+        cli.move("moby-bank-abc-g0", Location.CLOUD, "moby-bank-abc-g1", Duration.ofHours(8), "stop", Duration.ofMinutes(30));
+        assertEquals(List.of("sbx move moby-bank-abc-g0 --to cloud --name moby-bank-abc-g1 --force --ttl 8h --on-timeout stop"),
                 runner.lines());
         assertEquals(Duration.ofMinutes(30), runner.calls.get(0).timeout());
     }
 
     @Test
     void movesBackToLocalWithoutALifetime() {
-        cli.move("claude/harness-abc-g1-xy", Location.LOCAL, "harness-abc-g2", Duration.ofHours(8), "stop",
+        cli.move("claude/moby-bank-abc-g1-xy", Location.LOCAL, "moby-bank-abc-g2", Duration.ofHours(8), "stop",
                 Duration.ofMinutes(30));
-        assertEquals(List.of("sbx move claude/harness-abc-g1-xy --to local --name harness-abc-g2 --force"), runner.lines());
+        assertEquals(List.of("sbx move claude/moby-bank-abc-g1-xy --to local --name moby-bank-abc-g2 --force"), runner.lines());
     }
 
     @Test
     void aFailingCommandBecomesASandboxFailureWithTheReason() {
         runner.on(FakeRunner.has("create"), Response.fail(1, "Error: name already in use"));
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.create(Location.LOCAL, "harness-abc-g0", "claude", null, null));
-        assertTrue(e.getMessage().contains("harness-abc-g0"), e.getMessage());
+                () -> cli.create(Location.LOCAL, "moby-bank-abc-g0", "claude", null, null));
+        assertTrue(e.getMessage().contains("moby-bank-abc-g0"), e.getMessage());
         assertTrue(e.getMessage().contains("exit 1"), e.getMessage());
         assertTrue(e.getMessage().contains("name already in use"), e.getMessage());
     }
