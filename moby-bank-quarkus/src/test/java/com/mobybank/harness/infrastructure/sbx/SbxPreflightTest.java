@@ -181,7 +181,7 @@ class SbxPreflightTest {
         assertEquals(List.of(), report.warnings());
         List<String> creates = runner.linesWith("create");
         assertEquals(1, creates.size());
-        assertTrue(creates.get(0).matches("sbx --cloud create --name harness-probe-[0-9a-f]{8} --ttl 1h --on-timeout delete claude"),
+        assertTrue(creates.get(0).matches("sbx --cloud create --name moby-bank-probe-[0-9a-f]{8} --ttl 1h --on-timeout delete claude"),
                 creates.get(0));
         String name = creates.get(0).split(" ")[4];
         assertEquals(List.of("sbx --cloud rm " + name), runner.linesWith("rm"), "the throwaway sandbox is removed");

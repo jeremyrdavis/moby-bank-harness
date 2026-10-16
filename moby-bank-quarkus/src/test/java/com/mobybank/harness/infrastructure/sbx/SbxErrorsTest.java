@@ -55,15 +55,15 @@ class SbxErrorsTest {
     @Test
     void aFailingCommandKeepsTheRawTextBesideTheHint() {
         FakeRunner runner = new FakeRunner();
-        runner.on(has("exec"), Response.fail(1, "error: sandbox 'harness-abc-g0' not found\n  try: sbx ls"));
+        runner.on(has("exec"), Response.fail(1, "error: sandbox 'moby-bank-abc-g0' not found\n  try: sbx ls"));
         SbxCli cli = new SbxCli(runner, "sbx", Duration.ofSeconds(30));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.makeDirectory(Location.LOCAL, "harness-abc-g0", "/home/agent/workspace/files"));
+                () -> cli.makeDirectory(Location.LOCAL, "moby-bank-abc-g0", "/home/agent/workspace/files"));
 
-        assertTrue(e.getMessage().startsWith("Creating /home/agent/workspace/files in harness-abc-g0 failed: The sandbox no longer exists"),
+        assertTrue(e.getMessage().startsWith("Creating /home/agent/workspace/files in moby-bank-abc-g0 failed: The sandbox no longer exists"),
                 e.getMessage());
-        assertTrue(e.getMessage().contains("(exit 1: error: sandbox 'harness-abc-g0' not found"), e.getMessage());
+        assertTrue(e.getMessage().contains("(exit 1: error: sandbox 'moby-bank-abc-g0' not found"), e.getMessage());
     }
 
     @Test
@@ -73,8 +73,8 @@ class SbxErrorsTest {
         SbxCli cli = new SbxCli(runner, "sbx", Duration.ofSeconds(30));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.create(Location.LOCAL, "harness-abc-g0", "claude", null, null));
+                () -> cli.create(Location.LOCAL, "moby-bank-abc-g0", "claude", null, null));
 
-        assertEquals("Creating sandbox harness-abc-g0 failed (exit 2: kaboom)", e.getMessage());
+        assertEquals("Creating sandbox moby-bank-abc-g0 failed (exit 2: kaboom)", e.getMessage());
     }
 }
