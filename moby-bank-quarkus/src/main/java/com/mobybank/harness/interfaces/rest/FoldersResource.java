@@ -4,6 +4,7 @@ import com.mobybank.harness.application.CatalogFileDTO;
 import com.mobybank.harness.application.ConnectFoldersCommand;
 import com.mobybank.harness.application.FolderApplicationService;
 import com.mobybank.harness.application.FolderDTO;
+import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -36,6 +37,7 @@ public class FoldersResource {
             description = "Every folder that can be connected, each flagged with whether it already is. "
                     + "Filter on `connected` for the sidebar list.")
     public List<FolderDTO> library() {
+        Log.debug("GET /api/folders");
         return folders.library();
     }
 
@@ -49,6 +51,8 @@ public class FoldersResource {
     @APIResponse(responseCode = "404", description = "One of the folders does not exist",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public List<FolderDTO> connect(ConnectFoldersRequest request) {
+        Log.debugf("POST /api/folders/connect (%d folders)",
+                request == null || request.folderIds() == null ? 0 : request.folderIds().size());
         return folders.connect(new ConnectFoldersCommand(request == null ? null : request.folderIds()));
     }
 
@@ -57,6 +61,7 @@ public class FoldersResource {
     @Operation(summary = "Documents in the connected folders",
             description = "What the attach dialog offers: each document with its folder's name and path.")
     public List<CatalogFileDTO> connectedFiles() {
+        Log.debug("GET /api/folders/connected/files");
         return folders.connectedFiles();
     }
 }

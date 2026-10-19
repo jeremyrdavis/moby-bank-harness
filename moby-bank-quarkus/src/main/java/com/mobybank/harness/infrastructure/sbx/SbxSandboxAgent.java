@@ -13,6 +13,7 @@ import com.mobybank.harness.domain.SandboxFailureException;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.Step;
 import com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle;
+import io.quarkus.logging.Log;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import org.jboss.logging.Logger;
 
 /**
  * Runs each turn by driving the agent (the Claude Code CLI) inside a Docker Sandbox through the {@code sbx} CLI,
@@ -36,8 +36,6 @@ import org.jboss.logging.Logger;
  * this app), the earlier conversation is included in the prompt instead.
  */
 public final class SbxSandboxAgent implements SandboxAgent {
-
-    private static final Logger LOG = Logger.getLogger(SbxSandboxAgent.class);
 
     private static final String PREAMBLE = """
             You are a credit-research assistant helping a bank analyst. Work from the attached files when there are \
@@ -63,6 +61,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
     @Override
     public AgentReply runTurn(AgentTurn turn, Consumer<Step> onStep) {
         Sandbox sandbox = sandboxFor(turn);
+        Log.debugf("Turn for session %s uses %s (%s, %s)", turn.sessionId().value(), sandbox.handle().name(),
+                turn.location(), sandbox.created() ? "new" : "existing");
         try {
             return attempt(turn, sandbox.handle(), sandbox.created() ? turn.sessionFiles() : turn.userMessage().files(),
                     onStep);
@@ -70,7 +70,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
             if (!isMissing(sandbox.handle(), failure)) {
                 throw failure;
             }
-            LOG.warnf("Sandbox %s for session %s is gone; starting a new one from the conversation history",
+            Log.warnf("Sandbox %s for session %s is gone; starting a new one from the conversation history",
                     sandbox.handle().name(), turn.sessionId().value());
             registry.forgetAgentSession(turn.sessionId());
             Handle replacement = createSandbox(turn.sessionId(), turn.location(), sandbox.handle().generation() + 1);
@@ -84,19 +84,24 @@ public final class SbxSandboxAgent implements SandboxAgent {
         stage(turn, sandbox, filesToStage);
 
         Optional<String> resume = registry.agentSession(turn.sessionId());
+        Log.debugf("Running the agent in %s: %s", sandbox.name(), resume.isPresent() ? "resuming its conversation"
+                : "a new conversation with the history in the prompt");
         ParsedRun run = run(turn, sandbox, resume, onStep);
         if (!run.succeeded() && resume.isPresent()) {
-            LOG.warnf("Resuming the agent session failed for %s; retrying with the conversation in the prompt",
+            Log.warnf("Resuming the agent session failed for %s; retrying with the conversation in the prompt",
                     turn.sessionId().value());
             registry.forgetAgentSession(turn.sessionId());
             run = run(turn, sandbox, Optional.empty(), onStep);
         }
         if (!run.succeeded()) {
             String failure = run.failure();
+            Log.debugf("The agent failed in %s: %s", sandbox.name(), failure);
             throw new SandboxFailureException("The agent failed in " + sandbox.name() + ": "
                     + SbxErrors.hint(failure, sandbox.location()).map(hint -> hint + " (" + failure + ")").orElse(failure));
         }
         run.parser().sessionId().ifPresent(id -> registry.setAgentSession(turn.sessionId(), id));
+        Log.debugf("The agent answered in %s: %d steps, %d chars", sandbox.name(), run.parser().steps().size(),
+                run.answer().length());
         return ReplyFormatter.toReply(run.answer(), run.parser().steps());
     }
 
@@ -134,6 +139,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
         CommandResult result = cli.exec(sandbox.location(), sandbox.name(), command, settings.turnTimeout(),
                 parser::accept);
+        Log.debugf("Agent process in %s exited %d; parser: error=%s, result=%s", sandbox.name(), result.exitCode(),
+                parser.isError(), parser.resultText().isPresent());
         return new ParsedRun(parser, result);
     }
 
@@ -170,14 +177,17 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
         Optional<Handle> known = registry.current(session).filter(handle -> handle.location() == location);
         if (known.isPresent()) {
+            Log.debugf("Session %s: reusing the known sandbox %s", session.value(), known.get().name());
             return new Sandbox(known.get(), false);
         }
         Optional<Handle> existing = registry.discover(cli, session, location);
         if (existing.isPresent()) {
+            Log.debugf("Session %s: found sandbox %s again by listing", session.value(), existing.get().name());
             registry.set(session, existing.get());
             return new Sandbox(existing.get(), false);
         }
         int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
+        Log.debugf("Session %s: no sandbox at %s, creating generation %d", session.value(), location, generation);
         return new Sandbox(createSandbox(session, location, generation), true);
     }
 
@@ -193,8 +203,10 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
     private void stage(AgentTurn turn, Handle sandbox, List<FileRef> files) {
         if (files.isEmpty()) {
+            Log.debugf("No files to copy into %s", sandbox.name());
             return;
         }
+        Log.debugf("Copying %d files into %s", files.size(), sandbox.name());
         cli.makeDirectory(sandbox.location(), sandbox.name(), settings.filesDir());
         Path dir;
         try {
@@ -223,6 +235,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
             case UPLOAD -> uploads.find(session, file.name());
             case ONEDRIVE -> catalog.fetch(file.name());
         };
+        Log.debugf("Content of an attached file (%s) for session %s: %s", file.source(), session.value(),
+                content.map(bytes -> bytes.length + " bytes").orElse("not available"));
         return content.orElseThrow(() -> new SandboxFailureException(
                 "The attached file " + file.name() + " is no longer available (" + file.source().name().toLowerCase() + ")"));
     }
@@ -237,13 +251,15 @@ public final class SbxSandboxAgent implements SandboxAgent {
                 }
             });
         } catch (IOException | UncheckedIOException e) {
-            LOG.debugf("Could not clean up %s: %s", dir, e.getMessage());
+            Log.debugf("Could not clean up %s: %s", dir, e.getMessage());
         }
     }
 
     // --- prompt -----------------------------------------------------------------------------------------------
 
     private String prompt(AgentTurn turn, boolean includeHistory) {
+        Log.debugf("Building the prompt: %d earlier messages %s, %d attached files", (Object) turn.history().size(),
+                includeHistory ? "included" : "left to the agent's own conversation", turn.userMessage().files().size());
         StringBuilder prompt = new StringBuilder(PREAMBLE).append("\n\n");
         if (includeHistory && !turn.history().isEmpty()) {
             prompt.append("Earlier in this conversation:\n");

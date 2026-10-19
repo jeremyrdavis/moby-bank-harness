@@ -3,6 +3,7 @@ package com.mobybank.harness.infrastructure.graph;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobybank.harness.domain.DocumentSourceException;
+import io.quarkus.logging.Log;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -43,12 +44,15 @@ public final class GraphTokenProvider {
 
     public synchronized String token() {
         if (settings.accessToken().filter(token -> !token.isBlank()).isPresent()) {
+            Log.trace("Using the configured access token");
             return settings.accessToken().get().strip();
         }
         Instant now = clock.instant();
         if (cachedToken != null && now.isBefore(cachedUntil.minus(EARLY_REFRESH))) {
+            Log.tracef("Reusing the cached token, valid until %s", cachedUntil);
             return cachedToken;
         }
+        Log.debugf("Requesting a new token from %s", URI.create(settings.tokenUrl()).getHost());
         JsonNode response = requestToken();
         String token = response.path("access_token").asText("");
         if (token.isBlank()) {
@@ -56,6 +60,7 @@ public final class GraphTokenProvider {
         }
         cachedToken = token;
         cachedUntil = now.plusSeconds(response.path("expires_in").asLong(3600));
+        Log.debugf("Got a token, valid until %s", cachedUntil);
         return token;
     }
 
@@ -72,6 +77,7 @@ public final class GraphTokenProvider {
         try {
             HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
             JsonNode body = JSON.readTree(response.body().isBlank() ? "{}" : response.body());
+            Log.debugf("The token endpoint answered HTTP %d", response.statusCode());
             if (response.statusCode() / 100 != 2) {
                 String why = body.path("error_description").asText(body.path("error").asText("HTTP " + response.statusCode()));
                 throw new DocumentSourceException("Could not get a Microsoft Graph token: " + firstLine(why));

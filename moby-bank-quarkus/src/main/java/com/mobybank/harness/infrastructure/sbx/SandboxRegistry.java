@@ -2,6 +2,7 @@ package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SessionId;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +28,8 @@ public class SandboxRegistry {
     }
 
     public void set(SessionId session, Handle handle) {
+        Log.debugf("Session %s now runs in %s (%s, generation %d)", session.value(), handle.name(), handle.location(),
+                handle.generation());
         handles.put(session, handle);
     }
 
@@ -35,6 +38,7 @@ public class SandboxRegistry {
     }
 
     public void setAgentSession(SessionId session, String agentSessionId) {
+        Log.debugf("Session %s keeps agent conversation %s", session.value(), agentSessionId);
         agentSessions.put(session, agentSessionId);
     }
 
@@ -63,10 +67,13 @@ public class SandboxRegistry {
                 best = new Handle(location, bareName(listed), generation.get());
             }
         }
+        Log.debugf("Discovery for session %s at %s (newer than generation %d): %s", session.value(), location,
+                newerThan, best == null ? "nothing" : best.name());
         return Optional.ofNullable(best);
     }
 
     public void forgetAgentSession(SessionId session) {
+        Log.debugf("Forgetting the agent conversation of session %s", session.value());
         agentSessions.remove(session);
     }
 

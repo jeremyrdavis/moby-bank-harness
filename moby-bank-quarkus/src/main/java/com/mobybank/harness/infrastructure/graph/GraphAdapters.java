@@ -1,6 +1,7 @@
 package com.mobybank.harness.infrastructure.graph;
 
 import com.mobybank.harness.domain.DocumentCatalog;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.net.http.HttpClient;
@@ -43,6 +44,7 @@ public class GraphAdapters {
     }
 
     public DocumentCatalog catalog() {
+        Log.infof("Using OneDrive through Microsoft Graph (%s, drive %s)", settings.baseUrl(), settings.drive());
         HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10))
                 .followRedirects(HttpClient.Redirect.NEVER).build();
         return new GraphDocumentCatalog(settings, new GraphTokenProvider(settings, http, clock), http);

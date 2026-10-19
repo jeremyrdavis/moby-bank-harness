@@ -6,6 +6,7 @@ import com.mobybank.harness.domain.MoveRequest;
 import com.mobybank.harness.domain.MoveStage;
 import com.mobybank.harness.domain.SandboxFailureException;
 import com.mobybank.harness.domain.SandboxTransfer;
+import io.quarkus.logging.Log;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -33,12 +34,15 @@ public final class FakeSandboxTransfer implements SandboxTransfer {
 
     @Override
     public void move(MoveRequest request, Consumer<MoveProgress> onProgress) {
+        Log.debugf("Fake transfer: session %s %s -> %s", request.sessionId().value(), request.from(), request.to());
         String summary = count(request.history().size(), "message") + " · " + count(request.files().size(), "file");
 
         onProgress.accept(new MoveProgress(MoveStage.PACKAGING, "Packaging context · " + summary));
         Pauses.sleep(packaging);
 
         if (failure.refuses(request.to())) {
+            Log.debugf("Fake transfer: refusing the move of session %s to %s (harness.fake.move-failure=%s)",
+                    request.sessionId().value(), request.to(), failure);
             throw new SandboxFailureException("The fake sandbox service refused the move to "
                     + (request.to() == Location.CLOUD ? "the cloud" : "local") + " (harness.fake.move-failure)");
         }

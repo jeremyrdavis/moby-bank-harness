@@ -5,6 +5,7 @@ import com.mobybank.harness.domain.SandboxAgent;
 import com.mobybank.harness.domain.SandboxTransfer;
 import com.mobybank.harness.infrastructure.graph.GraphAdapters;
 import com.mobybank.harness.infrastructure.sbx.SbxAdapters;
+import io.quarkus.logging.Log;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -43,6 +44,7 @@ public class Adapters {
             @ConfigProperty(name = "harness.fake.agent-delay-ms", defaultValue = "1800") long agentDelayMs,
             @ConfigProperty(name = "harness.fake.cloud-expiry-turns", defaultValue = "0") int cloudExpiryTurns,
             SbxAdapters sbx) {
+        Log.infof("Sandbox agent: harness.sandbox.mode=%s", mode);
         return selectAgent(mode, Duration.ofMillis(agentDelayMs), cloudExpiryTurns, sbx::agent);
     }
 
@@ -55,6 +57,7 @@ public class Adapters {
             @ConfigProperty(name = "harness.fake.move-transfer-ms", defaultValue = "1500") long transferMs,
             @ConfigProperty(name = "harness.fake.move-failure", defaultValue = "none") String moveFailure,
             SbxAdapters sbx) {
+        Log.infof("Sandbox transfer: harness.sandbox.mode=%s", mode);
         return selectTransfer(mode, Duration.ofMillis(packagingMs), Duration.ofMillis(transferMs),
                 FakeMoveFailure.parse(moveFailure), sbx::transfer);
     }
@@ -65,6 +68,7 @@ public class Adapters {
     DocumentCatalog documentCatalog(
             @ConfigProperty(name = "harness.documents.mode", defaultValue = "fake") String mode,
             GraphAdapters graph) {
+        Log.infof("Document catalog: harness.documents.mode=%s", mode);
         return selectCatalog(mode, graph::catalog);
     }
 
@@ -104,6 +108,7 @@ public class Adapters {
     }
 
     private static IllegalStateException unsupported(String property, String mode, String supported) {
+        Log.errorf("Unsupported %s=%s (supported: %s)", property, mode, supported);
         return new IllegalStateException("Unsupported " + property + "=" + mode + " (supported: " + supported + ")");
     }
 }
