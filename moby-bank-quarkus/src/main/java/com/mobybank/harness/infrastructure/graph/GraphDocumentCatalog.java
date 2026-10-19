@@ -46,7 +46,8 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         this.tokens = tokens;
         this.http = http;
         this.graphOrigin = URI.create(settings.baseUrl());
-        Log.debugf("GraphDocumentCatalog: %s", this.graphOrigin);
+        Log.debugf("Graph catalog for %s (drive %s, folders root %s)", this.graphOrigin, settings.driveUrl(),
+                settings.foldersRoot().orElse("<drive root>"));
     }
 
     @Override
@@ -61,6 +62,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
             throw new DocumentSourceException("The folder '" + settings.foldersRoot().orElse("") + "' set in "
                     + "harness.graph.folders-root was not found in OneDrive");
         }
+        Log.debugf("Folder listing returned %d items", items.size());
         List<Folder> folders = new ArrayList<>();
         for (JsonNode item : items) {
             if (item.has("folder")) {
@@ -68,6 +70,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
                         logicalPath(item), item.path("folder").path("childCount").asInt(0)));
             }
         }
+        Log.debugf("Found %d folders", folders.size());
         return List.copyOf(folders);
     }
 
@@ -76,19 +79,24 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         String url = settings.driveUrl() + "/items/" + encodeSegment(folderId.value())
                 + "/children?$select=id,name,file&$orderby=name&$top=" + PAGE_SIZE;
         try {
-            return pages(url).stream()
+            List<CatalogFile> files = pages(url).stream()
                     .filter(item -> item.has("file"))
                     .map(item -> new CatalogFile(folderId, item.path("name").asText()))
                     .toList();
+            Log.debugf("Folder %s holds %d files", folderId.value(), files.size());
+            return files;
         } catch (NotFound e) {
+            Log.debugf("Folder %s was not found in OneDrive; treating it as empty", folderId.value());
             return List.of();
         }
     }
 
     @Override
     public Optional<byte[]> fetch(String fileName) {
+        Log.debugf("Fetching a document (name of %d chars)", fileName.length());
         Optional<JsonNode> hit = search(fileName);
         if (hit.isEmpty()) {
+            Log.debug("No document by that name in OneDrive");
             return Optional.empty();
         }
         String id = hit.get().path("id").asText();
@@ -97,9 +105,11 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
             item = get(URI.create(settings.driveUrl() + "/items/" + encodeSegment(id)
                     + "?$select=id,name,size"));
         } catch (NotFound e) {
+            Log.debugf("Item %s disappeared between the search and the lookup", id);
             return Optional.empty();
         }
         long size = item.path("size").asLong(0);
+        Log.debugf("Item %s is %d bytes (limit %d)", id, size, settings.maxDownloadBytes());
         if (size > settings.maxDownloadBytes()) {
             throw new DocumentSourceException(fileName + " is " + size + " bytes, over the limit of "
                     + settings.maxDownloadBytes());
@@ -117,6 +127,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         List<JsonNode> matches = pages(url).stream()
                 .filter(item -> item.has("file") && fileName.equals(item.path("name").asText()))
                 .toList();
+        Log.debugf("Search returned %d exact matches", matches.size());
         if (matches.isEmpty()) {
             return Optional.empty();
         }
@@ -135,6 +146,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         for (int page = 0; next != null && page < MAX_PAGES; page++) {
             JsonNode body = get(next);
             body.path("value").forEach(items::add);
+            Log.debugf("Page %d: %d items so far", page + 1, items.size());
             next = body.hasNonNull("@odata.nextLink") ? sameHostOrFail(body.get("@odata.nextLink").asText()) : null;
         }
         return items;
@@ -146,6 +158,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
                 && uri.getHost() != null && uri.getHost().equalsIgnoreCase(graphOrigin.getHost())
                 && effectivePort(uri) == effectivePort(graphOrigin);
         if (!sameOrigin) {
+            Log.warnf("Refusing a paging link to %s (expected %s)", uri.getHost(), graphOrigin.getHost());
             throw new DocumentSourceException("Refusing to follow a paging link to another host: " + uri.getHost());
         }
         return uri;
@@ -165,7 +178,9 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
+        Log.debugf("GET from %s", uri.getHost());
         HttpResponse<String> response = send(request, HttpResponse.BodyHandlers.ofString(), "OneDrive");
+        Log.debugf("OneDrive answered HTTP %d (%d chars)", response.statusCode(), response.body().length());
         checkStatus(response.statusCode(), response.body());
         try {
             return JSON.readTree(response.body());
@@ -187,7 +202,9 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
                 .header("Authorization", "Bearer " + tokens.token())
                 .GET()
                 .build();
+        Log.debugf("Requesting the download link for item %s", itemId);
         HttpResponse<Void> response = send(request, HttpResponse.BodyHandlers.discarding(), "OneDrive");
+        Log.debugf("The download link request answered HTTP %d", response.statusCode());
         if (response.statusCode() / 100 == 3) {
             return response.headers().firstValue("Location").map(uri::resolve)
                     .orElseThrow(() -> new DocumentSourceException("OneDrive gave no download link for " + fileName));
@@ -198,7 +215,9 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
 
     private byte[] download(URI uri, String fileName) {
         HttpRequest request = HttpRequest.newBuilder(uri).timeout(settings.requestTimeout()).GET().build();
+        Log.debugf("Downloading from %s", uri.getHost());
         HttpResponse<byte[]> response = send(request, HttpResponse.BodyHandlers.ofByteArray(), "the OneDrive download");
+        Log.debugf("The download answered HTTP %d (%d bytes)", response.statusCode(), response.body().length);
         if (response.statusCode() / 100 != 2) {
             throw new DocumentSourceException("Downloading " + fileName + " failed (HTTP " + response.statusCode() + ")");
         }
@@ -221,8 +240,10 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
             return;
         }
         if (status == 404) {
+            Log.debug("OneDrive answered 404");
             throw new NotFound();
         }
+        Log.warnf("OneDrive answered HTTP %d", status);
         String detail = "";
         try {
             detail = JSON.readTree(body.isBlank() ? "{}" : body).path("error").path("message").asText("");

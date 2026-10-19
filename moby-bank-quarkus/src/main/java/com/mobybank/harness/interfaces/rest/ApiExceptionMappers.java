@@ -7,7 +7,7 @@ import com.mobybank.harness.domain.InvalidMoveException;
 import com.mobybank.harness.domain.SandboxFailureException;
 import com.mobybank.harness.domain.SessionBusyException;
 import com.mobybank.harness.domain.StaleAggregateException;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
@@ -18,15 +18,16 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
  */
 public class ApiExceptionMappers {
 
-    private static final Logger LOG = Logger.getLogger(ApiExceptionMappers.class);
 
     @ServerExceptionMapper
     public RestResponse<ApiError> notFound(ResourceNotFoundException e) {
+        Log.debugf("404: %s", e.getMessage());
         return RestResponse.status(RestResponse.Status.NOT_FOUND, new ApiError("not_found", e.getMessage()));
     }
 
     @ServerExceptionMapper
     public RestResponse<ApiError> badInput(IllegalArgumentException e) {
+        Log.debugf("400: %s", e.getMessage());
         return RestResponse.status(RestResponse.Status.BAD_REQUEST, new ApiError("bad_request", e.getMessage()));
     }
 
@@ -47,22 +48,24 @@ public class ApiExceptionMappers {
 
     @ServerExceptionMapper
     public RestResponse<ApiError> sandboxFailure(SandboxFailureException e) {
-        LOG.warn("Sandbox failure reached the API", e);
+        Log.warn("Sandbox failure reached the API", e);
         return RestResponse.status(RestResponse.Status.BAD_GATEWAY, new ApiError("sandbox_failure", e.getMessage()));
     }
 
     @ServerExceptionMapper
     public RestResponse<ApiError> documentSourceFailure(DocumentSourceException e) {
-        LOG.warn("Document source failure reached the API", e);
+        Log.warn("Document source failure reached the API", e);
         return RestResponse.status(RestResponse.Status.BAD_GATEWAY, new ApiError("document_source_failure", e.getMessage()));
     }
 
     @ServerExceptionMapper
     public RestResponse<ApiError> otherDomainFailure(DomainException e) {
+        Log.debugf("400 (%s): %s", e.getClass().getSimpleName(), e.getMessage());
         return RestResponse.status(RestResponse.Status.BAD_REQUEST, new ApiError("bad_request", e.getMessage()));
     }
 
     private static RestResponse<ApiError> conflict(DomainException e) {
+        Log.debugf("409 (%s): %s", e.getClass().getSimpleName(), e.getMessage());
         return RestResponse.status(RestResponse.Status.CONFLICT, new ApiError("conflict", e.getMessage()));
     }
 }

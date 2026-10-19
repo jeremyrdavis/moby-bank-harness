@@ -4,6 +4,7 @@ import com.mobybank.harness.domain.ConnectedFolders;
 import com.mobybank.harness.domain.ConnectedFoldersRepository;
 import com.mobybank.harness.domain.StaleAggregateException;
 import com.mobybank.harness.domain.UserId;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +26,14 @@ public class InMemoryConnectedFoldersRepository implements ConnectedFoldersRepos
         ConnectedFolders existing = stored.get(folders.userId());
         long storedVersion = existing == null ? 0L : existing.version();
         if (storedVersion != folders.version()) {
+            Log.debugf("Rejected a stale write of connected folders for %s: holds version %d, store has %d",
+                    folders.userId().value(), folders.version(), storedVersion);
             throw new StaleAggregateException("connected folders", folders.userId().value(), folders.version(),
                     storedVersion);
         }
         stored.put(folders.userId(), copy(folders, folders.version() + 1));
+        Log.debugf("Persisted connected folders for %s: version %d -> %d, %d folders", folders.userId().value(),
+                folders.version(), folders.version() + 1, folders.folderIds().size());
     }
 
     private static ConnectedFolders copy(ConnectedFolders folders, long version) {

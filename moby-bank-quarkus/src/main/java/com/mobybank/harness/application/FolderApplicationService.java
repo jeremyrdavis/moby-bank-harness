@@ -7,6 +7,7 @@ import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.Folder;
 import com.mobybank.harness.domain.FolderId;
 import com.mobybank.harness.domain.UserId;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -33,9 +34,11 @@ public class FolderApplicationService {
     /** Every folder that can be connected, flagged with whether it already is. */
     public List<FolderDTO> library() {
         Set<FolderId> connected = Set.copyOf(current().folderIds());
-        return catalog.folders().stream()
+        List<FolderDTO> library = catalog.folders().stream()
                 .map(folder -> toDto(folder, connected.contains(folder.id())))
                 .toList();
+        Log.debugf("Folder library: %d folders, %d connected", library.size(), connected.size());
+        return library;
     }
 
     /** Only the folders that are connected, in library order. */
@@ -48,13 +51,16 @@ public class FolderApplicationService {
         List<String> requested = command.folderIds() == null ? List.of() : command.folderIds();
         Set<FolderId> known = catalog.folders().stream().map(Folder::id).collect(Collectors.toSet());
         List<FolderId> ids = requested.stream().map(FolderId::new).toList();
+        Log.debugf("Connecting %d folders (%d known in the catalog)", ids.size(), known.size());
         ids.stream().filter(id -> !known.contains(id)).findFirst().ifPresent(unknown -> {
+            Log.debugf("Folder %s is not in the catalog", unknown.value());
             throw new ResourceNotFoundException("folder", unknown.value());
         });
 
         ConnectedFolders folders = current();
         folders.connect(ids);
         connectedFolders.persist(folders);
+        Log.debugf("Connected folders are now: %d", folders.folderIds().size());
         return library();
     }
 
@@ -63,11 +69,13 @@ public class FolderApplicationService {
         Map<FolderId, Folder> byId = catalog.folders().stream()
                 .collect(Collectors.toMap(Folder::id, Function.identity(), (a, b) -> a));
         Set<FolderId> connected = Set.copyOf(current().folderIds());
-        return catalog.folders().stream()
+        List<CatalogFileDTO> files = catalog.folders().stream()
                 .filter(folder -> connected.contains(folder.id()))
                 .flatMap(folder -> catalog.files(folder.id()).stream())
                 .map(file -> toDto(file, byId.get(file.folderId())))
                 .toList();
+        Log.debugf("Listed %d files across %d connected folders", files.size(), connected.size());
+        return files;
     }
 
     private ConnectedFolders current() {
