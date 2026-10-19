@@ -162,6 +162,13 @@ test('while a session moves both buttons are disabled and the one it is moving t
   assert.deepEqual([vals.localVariant, vals.cloudVariant], ['secondary', 'secondary']);
 });
 
+test('both move buttons are disabled while the agent is working', () => {
+  const { c } = withSession(DETAIL('s1', { location: 'local', status: 'running' }),
+    { working: { s1: { label: 'Working on local model…' } } });
+  const vals = c.renderVals();
+  assert.deepEqual([vals.localDisabled, vals.cloudDisabled, vals.movingToCloud, vals.movingToLocal], [true, true, false, false]);
+});
+
 test('the connect dialog marks connected folders and the attach dialog lists their documents', () => {
   const { c } = withSession(DETAIL('s1'), {
     library: [{ id: 'f1', name: 'Earnings', path: 'A / B', fileCount: 24, connected: true }, { id: 'f2', name: 'Peers', path: 'C', fileCount: 5, connected: false }],

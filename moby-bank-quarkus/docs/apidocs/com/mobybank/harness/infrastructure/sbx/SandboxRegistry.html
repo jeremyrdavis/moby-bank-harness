@@ -67,7 +67,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#current(com.mobybank.harness.domain.SessionId)" tabindex="0">current(SessionId)</a></li>
 <li><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" tabindex="0">set(SessionId, SandboxRegistry.Handle)</a></li>
 <li><a href="#expectFiles(com.mobybank.harness.domain.SessionId)" tabindex="0">expectFiles(SessionId)</a></li>
-<li><a href="#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" tabindex="0">takeExpectedFiles(SessionId)</a></li>
+<li><a href="#expectsFiles(com.mobybank.harness.domain.SessionId)" tabindex="0">expectsFiles(SessionId)</a></li>
+<li><a href="#filesCopied(com.mobybank.harness.domain.SessionId)" tabindex="0">filesCopied(SessionId)</a></li>
 <li><a href="#agentSession(com.mobybank.harness.domain.SessionId)" tabindex="0">agentSession(SessionId)</a></li>
 <li><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" tabindex="0">setAgentSession(SessionId, String)</a></li>
 <li><a href="#bareName(java.lang.String)" tabindex="0">bareName(String)</a></li>
@@ -172,6 +173,16 @@ when the registry points elsewhere.</div>
 <div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
 into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#expectsFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectsFiles</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Whether <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a> was called and the shared files have not been copied in yet.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filesCopied(com.mobybank.harness.domain.SessionId)" class="member-name-link">filesCopied</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Clears the note once the shared files are in the sandbox.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -194,11 +205,6 @@ cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</co
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">takeExpectedFiles</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">True once, after <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
-</div>
 </div>
 </div>
 </div>
@@ -260,11 +266,20 @@ into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 </section>
 </li>
 <li>
-<section class="detail" id="takeExpectedFiles(com.mobybank.harness.domain.SessionId)">
-<h3>takeExpectedFiles</h3>
+<section class="detail" id="expectsFiles(com.mobybank.harness.domain.SessionId)">
+<h3>expectsFiles</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">takeExpectedFiles</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
-<div class="block">True once, after <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">expectsFiles</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
+<div class="block">Whether <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a> was called and the shared files have not been copied in yet.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="filesCopied(com.mobybank.harness.domain.SessionId)">
+<h3>filesCopied</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">filesCopied</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
+<div class="block">Clears the note once the shared files are in the sandbox. A failed copy leaves it, so the next turn retries.</div>
 </div>
 </section>
 </li>

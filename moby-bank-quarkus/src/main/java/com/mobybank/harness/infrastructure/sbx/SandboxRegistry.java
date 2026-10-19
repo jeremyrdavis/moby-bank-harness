@@ -40,9 +40,14 @@ public class SandboxRegistry {
         awaitingFiles.add(session);
     }
 
-    /** True once, after {@link #expectFiles}: the next turn should copy the shared files in. */
-    public boolean takeExpectedFiles(SessionId session) {
-        return awaitingFiles.remove(session);
+    /** Whether {@link #expectFiles} was called and the shared files have not been copied in yet. */
+    public boolean expectsFiles(SessionId session) {
+        return awaitingFiles.contains(session);
+    }
+
+    /** Clears the note once the shared files are in the sandbox. A failed copy leaves it, so the next turn retries. */
+    public void filesCopied(SessionId session) {
+        awaitingFiles.remove(session);
     }
 
     public Optional<String> agentSession(SessionId session) {

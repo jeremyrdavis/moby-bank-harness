@@ -82,6 +82,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
     /** One try at the turn in a given sandbox: copy files in, run, and fall back to the prompt when resuming fails. */
     private AgentReply attempt(AgentTurn turn, Handle sandbox, List<FileRef> filesToStage, Consumer<Step> onStep) {
         stage(turn, sandbox, filesToStage);
+        registry.filesCopied(turn.sessionId()); // only now: a failed copy above leaves the note for the next turn
 
         Optional<String> resume = registry.agentSession(turn.sessionId());
         ParsedRun run = run(turn, sandbox, resume, onStep);
@@ -170,8 +171,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
         Optional<Handle> known = registry.current(session).filter(handle -> handle.location() == location);
         if (known.isPresent()) {
-            // A sandbox a move created empty has not had the session's files copied in yet
-            return new Sandbox(known.get(), registry.takeExpectedFiles(session));
+            // A sandbox a move created empty has not had the session's files copied in yet (see attempt)
+            return new Sandbox(known.get(), registry.expectsFiles(session));
         }
         Optional<Handle> existing = registry.discover(cli, session, location);
         if (existing.isPresent()) {

@@ -163,8 +163,8 @@ class WebTest {
     void sendingAlsoUpdatesTheConversationHeadingWithTheNewTitle() {
         String body = send(createSession(), "Summarise the Q2 filing").asString();
 
-        assertTrue(body.contains("<h1 id=\"conversation-title\" class=\"trunc\" hx-swap-oob=\"true\">Summarise the Q2 filing</h1>"),
-                body);
+        assertTrue(body.matches("(?s).*id=\"topbar\"[^>]*hx-swap-oob=\"true\".*"), body);
+        assertTrue(body.contains("<h1 id=\"conversation-title\" class=\"trunc\">Summarise the Q2 filing</h1>"), body);
     }
 
     @Test
@@ -302,7 +302,13 @@ class WebTest {
     @Test
     void sendingAMessageAlsoStartsTheConversation() {
         String id = createSession();
-        send(id, "Hello").then().statusCode(200);
+
+        // the reply itself refreshes the header out of band, so the Run buttons give way without reopening the chat
+        String reply = send(id, "Hello").then().statusCode(200).extract().asString();
+        assertTrue(reply.matches("(?s).*id=\"topbar\"[^>]*hx-swap-oob=\"true\".*"), reply);
+        assertTrue(reply.contains("data-move-cloud") && reply.contains("data-move-local"), reply);
+        assertTrue(!reply.contains("data-run-cloud") && !reply.contains("data-run-local"), reply);
+        assertTrue(reply.contains("id=\"conversation-title\"") && reply.contains("Hello"), "the title is still refreshed");
 
         given().get("/ui/conversations/" + id).then().body(containsString("data-move-cloud"))
                 .body(not(containsString("data-run-cloud")));

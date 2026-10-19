@@ -306,6 +306,16 @@ when the registry points elsewhere.</div>
 <div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
 into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 </div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#expectsFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectsFiles</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Whether <a href="../../infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)"><code>SandboxRegistry.expectFiles(SessionId)</code></a> was called and the shared files have not been copied in yet.</div>
+</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#filesCopied(com.mobybank.harness.domain.SessionId)" class="member-name-link">filesCopied</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Clears the note once the shared files are in the sandbox.</div>
+</div>
 <div class="col-first odd-row-color"><code>void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
@@ -328,11 +338,6 @@ cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</co
 <div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">takeExpectedFiles</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color">
-<div class="block">True once, after <a href="../../infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)"><code>SandboxRegistry.expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
-</div>
 </div>
 </section>
 </li>

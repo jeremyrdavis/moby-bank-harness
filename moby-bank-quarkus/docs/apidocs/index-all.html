@@ -796,6 +796,10 @@ when the registry points elsewhere.</div>
 <div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
 into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 </dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectsFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectsFiles(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block">Whether <a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)"><code>SandboxRegistry.expectFiles(SessionId)</code></a> was called and the shared files have not been copied in yet.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
@@ -907,6 +911,10 @@ waits between them, in either direction.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/graph/GraphDocumentCatalog.html#files(com.mobybank.harness.domain.FolderId)" class="member-name-link">files(FolderId)</a> - Method in class com.mobybank.harness.infrastructure.graph.<a href="com/mobybank/harness/infrastructure/graph/GraphDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure.graph">GraphDocumentCatalog</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#filesCopied(com.mobybank.harness.domain.SessionId)" class="member-name-link">filesCopied(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block">Clears the note once the shared files are in the sandbox.</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html#filesDir()" class="member-name-link">filesDir()</a> - Method in record class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/domain/FileSource.html" class="type-name-link" title="enum class in com.mobybank.harness.domain">FileSource</a> - Enum Class in <a href="com/mobybank/harness/domain/package-summary.html">com.mobybank.harness.domain</a></dt>
@@ -2175,8 +2183,8 @@ credential shows up in the log before the first turn fails.</div>
 </dd>
 <dt><a href="com/mobybank/harness/interfaces/web/Templates.html#sent(com.mobybank.harness.application.SessionDTO,java.util.List)" class="member-name-link">sent(SessionDTO, List)</a> - Static method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/Templates.html" title="class in com.mobybank.harness.interfaces.web">Templates</a></dt>
 <dd>
-<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
-heading (the first message gives it its title).</div>
+<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the header (the first
+message gives the conversation its title and starts it, which turns the Run buttons into Move buttons).</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/Dtos.html#session(com.mobybank.harness.domain.Session,java.lang.String)" class="member-name-link">session(Session, String)</a> - Static method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/Dtos.html" title="class in com.mobybank.harness.application">Dtos</a></dt>
 <dd>&nbsp;</dd>
@@ -2528,10 +2536,6 @@ between the local and cloud sandbox.</div>
 <dd>
 <div class="block">The end of stderr (or stdout if stderr is empty), trimmed, for error messages.</div>
 </dd>
-<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">takeExpectedFiles(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
-<dd>
-<div class="block">True once, after <a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)"><code>SandboxRegistry.expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
-</dd>
 <dt><a href="com/mobybank/harness/application/MoveSessionCommand.html#target()" class="member-name-link">target()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/MoveSessionCommand.html" title="class in com.mobybank.harness.application">MoveSessionCommand</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>target</code> record component.</div>
@@ -2607,6 +2611,10 @@ between the local and cloud sandbox.</div>
 <dt><a href="com/mobybank/harness/infrastructure/graph/GraphSettings.html#tokenUrl()" class="member-name-link">tokenUrl()</a> - Method in record class com.mobybank.harness.infrastructure.graph.<a href="com/mobybank/harness/infrastructure/graph/GraphSettings.html" title="class in com.mobybank.harness.infrastructure.graph">GraphSettings</a></dt>
 <dd>
 <div class="block">Returns the value of the <a href="./com/mobybank/harness/infrastructure/graph/GraphSettings.html#param-tokenUrl"><code>tokenUrl</code></a> record component.</div>
+</dd>
+<dt><a href="com/mobybank/harness/interfaces/web/Templates.html#topbar(com.mobybank.harness.application.SessionDTO,boolean)" class="member-name-link">topbar(SessionDTO, boolean)</a> - Static method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/Templates.html" title="class in com.mobybank.harness.interfaces.web">Templates</a></dt>
+<dd>
+<div class="block">The header: title, location, and the Run or Move buttons.</div>
 </dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html#toReply(java.lang.String,java.util.List)" class="member-name-link">toReply(String, List)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html" title="class in com.mobybank.harness.infrastructure.sbx">ReplyFormatter</a></dt>
 <dd>&nbsp;</dd>

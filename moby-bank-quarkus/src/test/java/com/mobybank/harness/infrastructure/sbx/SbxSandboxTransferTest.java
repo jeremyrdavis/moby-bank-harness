@@ -91,7 +91,7 @@ class SbxSandboxTransferTest {
         assertTrue(progress.get(0).detail().startsWith("No sandbox to package yet"), progress.get(0).detail());
         assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g0-k3j2x", 0)),
                 registry.current(SESSION));
-        assertTrue(registry.takeExpectedFiles(SESSION), "the next turn copies the shared files in");
+        assertTrue(registry.expectsFiles(SESSION), "the next turn copies the shared files in");
     }
 
     @Test

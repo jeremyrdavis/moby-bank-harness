@@ -136,8 +136,14 @@ responses.</div>
 <div class="col-second odd-row-color"><span class="type-name-label">Templates.</span><code><a href="../../interfaces/web/Templates.html#sent(com.mobybank.harness.application.SessionDTO,java.util.List)" class="member-name-link">sent</a><wbr>(<a href="../SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a>&nbsp;session,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a>&gt;&nbsp;messages)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
-heading (the first message gives it its title).</div>
+<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the header (the first
+message gives the conversation its title and starts it, which turns the Run buttons into Move buttons).</div>
+</div>
+<div class="col-first even-row-color"><code>(package private) static io.quarkus.qute.TemplateInstance</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Templates.</span><code><a href="../../interfaces/web/Templates.html#topbar(com.mobybank.harness.application.SessionDTO,boolean)" class="member-name-link">topbar</a><wbr>(<a href="../SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a>&nbsp;session,
+ boolean&nbsp;oob)</code></div>
+<div class="col-last even-row-color">
+<div class="block">The header: title, location, and the Run or Move buttons.</div>
 </div>
 </div>
 </section>
