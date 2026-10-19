@@ -295,6 +295,41 @@ class SessionApplicationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.launch(new LaunchSessionCommand(created.id(), null)));
     }
 
+    // --- recovery after a restart -------------------------------------------------------------------------------
+
+    @Test
+    void aRestartReleasesSessionsLeftRunningOrMoving() {
+        SessionDTO working = service.create(new CreateSessionCommand("local"));
+        service.sendMessage(new SendMessageCommand(working.id(), "Summarize", List.of())); // the turn is queued, never run
+        SessionDTO moving = service.create(new CreateSessionCommand("local"));
+        service.move(new MoveSessionCommand(moving.id(), "cloud")); // the move is queued, never run
+        SessionDTO idle = service.create(new CreateSessionCommand("local"));
+        assertEquals("running", service.get(working.id()).status());
+        assertEquals("moving", service.get(moving.id()).status());
+
+        int released = service.recoverInterruptedWork();
+
+        assertEquals(2, released);
+        SessionDTO recovered = service.get(working.id());
+        assertEquals("idle", recovered.status());
+        assertEquals(2, recovered.messages().size());
+        assertTrue(recovered.messages().get(1).paragraphs().get(0).contains("restarted"), recovered.messages().toString());
+        SessionDTO stayed = service.get(moving.id());
+        assertEquals("idle", stayed.status());
+        assertEquals("local", stayed.location(), "the abandoned move leaves the session where it was");
+        assertEquals("idle", service.get(idle.id()).status());
+        // and the sessions work again
+        service.sendMessage(new SendMessageCommand(working.id(), "Try again", List.of()));
+        service.move(new MoveSessionCommand(moving.id(), "cloud"));
+    }
+
+    @Test
+    void recoveryWithNothingInterruptedChangesNothing() {
+        service.create(new CreateSessionCommand("local"));
+
+        assertEquals(0, service.recoverInterruptedWork());
+    }
+
     // --- moves -------------------------------------------------------------------------------------------------
 
     @Test

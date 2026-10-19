@@ -13,9 +13,9 @@ import java.time.Clock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
- * Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), and connects its
- * first three demo folders too, but only when the document catalog is the fake one: a real OneDrive has no such
- * folders.
+ * Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), but only into an
+ * empty database, so a restart does not add them again. It also connects the first three demo folders, but only when
+ * the document catalog is the fake one: a real OneDrive has no such folders.
  */
 @ApplicationScoped
 public class DemoDataSeeder {
@@ -46,6 +46,10 @@ public class DemoDataSeeder {
     }
 
     void seed() {
+        if (!sessions.findAllByMostRecentlyUpdated().isEmpty()) {
+            Log.debug("The database already has conversations; not seeding the demo data");
+            return;
+        }
         Log.debugf("Seeding the demo data (harness.documents.mode=%s)", documentsMode);
         DemoData.sessions(clock).forEach(sessions::persist);
         if ("fake".equals(documentsMode)) {

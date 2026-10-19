@@ -5,7 +5,6 @@ import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.StaleAggregateException;
 import io.quarkus.logging.Log;
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Keeps sessions in memory. It stores a private copy and hands out fresh copies, so callers never share mutable
+ * A test double for the PostgreSQL repository: keeps sessions in memory. It stores a private copy and hands out fresh copies, so callers never share mutable
  * aggregates, and it enforces the optimistic-version contract of {@link SessionRepository#persist(Session)}. State
  * is lost on restart.
  */
-@ApplicationScoped
 public class InMemorySessionRepository implements SessionRepository {
 
     private final Map<SessionId, Session> stored = new HashMap<>();

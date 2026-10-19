@@ -36,8 +36,9 @@ Three facts to keep in your head:
 1. **Everything external has a fake.** The agent, the sandboxes and OneDrive are simulated by default, so the app
    runs with nothing installed. Real ones are switched on by configuration. Most of your work will not need `sbx` or
    Microsoft.
-2. **There is no database.** State is in memory. The code is shaped as if there were one (copies on read, optimistic
-   versioning), so persistence can be added without touching the domain.
+2. **State is in PostgreSQL.** Dev mode and the tests start one for you with Quarkus Dev Services, so Docker must be
+   running. The domain does not know about it: the repository ports (copies on read, optimistic versioning) are
+   implemented in `infrastructure/persistence`. See [persistence.md](persistence.md).
 3. **The layering is enforced by tests.** Four layers, one direction of dependency. A wrong import fails the build.
 
 Skim [architecture.md](architecture.md) now (15 minutes): the diagram and the three flows are enough for this step.
@@ -209,14 +210,16 @@ ends with the session idle again.
 2. What happens to `{"name": null, "source": "upload"}` sent as an attachment? Which test proves it?
 3. `SessionEvent` is a sealed interface of records. What does each record's `type()` return, and where is that used?
 
-### Stop 6: `infrastructure/InMemorySessionRepository.java` — 15 min
+### Stop 6: `infrastructure/persistence/PostgresSessionRepository.java` — 15 min
 
-*Look for:* `synchronized`; stores a copy and returns copies (`copy(session, version)`); the version check in `persist`.
+*Look for:* `@Transactional` on each method (and why not on the application service); the row lock and the version check
+in `persist`; `SessionMapper`, which converts between the aggregate and `SessionEntity`.
 
 *Answer:*
 1. Walk through two threads loading the same session, both changing it, both saving. Who wins? What does the loser
    get, and what does the API turn that into?
-2. What would need to change to back this with a real database? What would *not* need to change?
+2. The repository is already database-backed. What would need to change to move to another database? What would *not*
+   need to change?
 
 ### Stop 7: wiring and the fakes (`infrastructure/Adapters.java`, `FakeSandboxAgent`, `DemoData`, `DemoDataSeeder`) — 25 min
 

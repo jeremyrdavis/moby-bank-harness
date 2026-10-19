@@ -4,15 +4,14 @@ import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SessionId;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import java.util.Map;
+import jakarta.inject.Inject;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Remembers which sandbox currently backs each session, and the agent's own conversation id inside it so the next
  * turn can resume. Sandbox names follow {@code moby-bank-<session>-g<generation>}; each move creates the next
- * generation, which lets the adapters find a session's sandbox again after a restart by listing sandboxes.
+ * generation. The records are kept in a {@link SandboxRecordStore} (PostgreSQL in the application), so they survive a
+ * restart; when a record is missing the adapters still find a session's sandbox again by listing sandboxes.
  */
 @ApplicationScoped
 public class SandboxRegistry {
@@ -21,48 +20,57 @@ public class SandboxRegistry {
     public record Handle(Location location, String name, int generation) {
     }
 
-    private final Map<SessionId, Handle> handles = new ConcurrentHashMap<>();
-    private final Map<SessionId, String> agentSessions = new ConcurrentHashMap<>();
-    private final Set<SessionId> awaitingFiles = ConcurrentHashMap.newKeySet();
+    private final SandboxRecordStore store;
 
-    public Optional<Handle> current(SessionId session) {
-        return Optional.ofNullable(handles.get(session));
+    @Inject
+    public SandboxRegistry(SandboxRecordStore store) {
+        this.store = store;
     }
 
-    public void set(SessionId session, Handle handle) {
+    public synchronized Optional<Handle> current(SessionId session) {
+        return Optional.ofNullable(record(session).handle());
+    }
+
+    public synchronized void set(SessionId session, Handle handle) {
         Log.debugf("Session %s now runs in %s (%s, generation %d)", session.value(), handle.name(), handle.location(),
                 handle.generation());
-        handles.put(session, handle);
+        store.save(session, record(session).withHandle(handle));
     }
 
     /**
      * Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
      * into it (a sandbox the turn creates itself gets them as part of the turn).
      */
-    public void expectFiles(SessionId session) {
+    public synchronized void expectFiles(SessionId session) {
         Log.debugf("Session %s: its new sandbox still needs the shared files", session.value());
-        awaitingFiles.add(session);
+        store.save(session, record(session).withAwaitingFiles(true));
     }
 
     /** Whether {@link #expectFiles} was called and the shared files have not been copied in yet. */
-    public boolean expectsFiles(SessionId session) {
-        return awaitingFiles.contains(session);
+    public synchronized boolean expectsFiles(SessionId session) {
+        return record(session).awaitingFiles();
     }
 
     /** Clears the note once the shared files are in the sandbox. A failed copy leaves it, so the next turn retries. */
-    public void filesCopied(SessionId session) {
-        if (awaitingFiles.remove(session)) {
+    public synchronized void filesCopied(SessionId session) {
+        SandboxRecord record = record(session);
+        if (record.awaitingFiles()) {
+            store.save(session, record.withAwaitingFiles(false));
             Log.debugf("Session %s: the shared files are in its sandbox", session.value());
         }
     }
 
-    public Optional<String> agentSession(SessionId session) {
-        return Optional.ofNullable(agentSessions.get(session));
+    public synchronized Optional<String> agentSession(SessionId session) {
+        return Optional.ofNullable(record(session).agentSession());
     }
 
-    public void setAgentSession(SessionId session, String agentSessionId) {
+    public synchronized void setAgentSession(SessionId session, String agentSessionId) {
         Log.debugf("Session %s keeps agent conversation %s", session.value(), agentSessionId);
-        agentSessions.put(session, agentSessionId);
+        store.save(session, record(session).withAgentSession(agentSessionId));
+    }
+
+    private SandboxRecord record(SessionId session) {
+        return store.find(session).orElse(SandboxRecord.NONE);
     }
 
     /**
@@ -95,9 +103,11 @@ public class SandboxRegistry {
         return Optional.ofNullable(best);
     }
 
-    public void forgetAgentSession(SessionId session) {
+    public synchronized void forgetAgentSession(SessionId session) {
         Log.debugf("Forgetting the agent conversation of session %s", session.value());
-        agentSessions.remove(session);
+        if (record(session).agentSession() != null) {
+            store.save(session, record(session).withAgentSession(null));
+        }
     }
 
     /** The name prefix shared by every generation of a session's sandbox. */

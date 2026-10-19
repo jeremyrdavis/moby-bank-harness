@@ -95,4 +95,4 @@ Packages follow the `ddd-foundations` layering under `com.mobybank.harness`: `do
 ## Notes
 
 - Generated with the Quarkus CLI 3.40.1 (`--no-code`), extensions: `rest-jackson`, `rest-qute`, `rest-client-jackson`, `smallrye-openapi`, `smallrye-health`.
-- There is no database. State is held in memory.
+- State is stored in PostgreSQL (see `docs/persistence.md`). Dev mode and the tests start a database with Quarkus Dev Services, so Docker must be running; elsewhere set `QUARKUS_DATASOURCE_JDBC_URL`, `QUARKUS_DATASOURCE_USERNAME` and `QUARKUS_DATASOURCE_PASSWORD`.

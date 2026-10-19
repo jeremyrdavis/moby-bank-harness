@@ -21,7 +21,7 @@ A demo for engineering/platform teams of a custom agent harness: a chat UI for a
 ## Commands
 
 ```bash
-# Backend (Java 25, Maven wrapper; no database, state is in memory)
+# Backend (Java 25, Maven wrapper; PostgreSQL via Quarkus Dev Services, so Docker must be running)
 cd moby-bank-quarkus
 ./mvnw quarkus:dev                      # http://localhost:8080 (the htmx page), Dev UI at /q/dev
 ./mvnw resources:copy-resources@copy-index-page   # after editing ../index.html in dev mode
@@ -48,7 +48,7 @@ Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Depend
 
 - **`domain`** (flat package, plain Java): `Session` aggregate (owns `Message`s; a status machine IDLE/RUNNING/MOVING; moves to the *other* location, so both directions work), `ConnectedFolders` aggregate, value-object records, events, and the **ports**: `SessionRepository`, `ConnectedFoldersRepository`, `SandboxAgent`, `SandboxTransfer`, `DocumentCatalog`. Aggregates have private constructors, a factory, and `rehydrate()` for the persistence side; they carry a plain `long version`.
 - **`application`**: `*ApplicationService` classes plus DTOs/commands (API types only: lower-case strings like `"local"`, `"assistant"`). Agent turns and moves run in the background (`BackgroundRunner`) and report through `SessionEventStream`; `SessionEvent` is the list of events the UI receives.
-- **`infrastructure`**: in-memory repositories (copy on read, optimistic version check → `StaleAggregateException`), the fakes, the demo-data seeder, and two real adapter families: `sbx/` (Docker Sandboxes via the `sbx` CLI) and `graph/` (OneDrive via Microsoft Graph). `Adapters` picks each port's implementation from `harness.sandbox.mode` (`fake|sbx`) and `harness.documents.mode` (`fake|graph`) and fails fast on anything else.
+- **`infrastructure`**: `persistence/`: PostgreSQL repositories with Hibernate ORM and Panache (separate JPA entities and mappers, row lock plus optimistic version check → `StaleAggregateException`, one short transaction per repository method, never around an agent turn), the fakes, the demo-data seeder, and two real adapter families: `sbx/` (Docker Sandboxes via the `sbx` CLI) and `graph/` (OneDrive via Microsoft Graph). `Adapters` picks each port's implementation from `harness.sandbox.mode` (`fake|sbx`) and `harness.documents.mode` (`fake|graph`) and fails fast on anything else.
 - **`interfaces.web`**: the HTML endpoints and Qute templates behind `index.html` (see "The htmx page" below). Depends on `application` only (`WebLayeringTest`).
 - **`interfaces.rest`**: resources, `ApiExceptionMappers` (400 bad input, 404, 409 busy/invalid move/stale, 502 sandbox or document source), and an SSE stream per session.
 

@@ -53,6 +53,15 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
         </dependency>
+        <!-- PostgreSQL: Hibernate ORM with Panache repositories (infrastructure/persistence only); Dev Services starts a database in dev and tests -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-postgresql</artifactId>
+        </dependency>
         <!-- Browser assets for index.html, served from the classpath at /webjars/... and /_static/... -->
         <dependency>
             <groupId>org.webjars.npm</groupId>

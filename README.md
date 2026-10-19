@@ -35,7 +35,7 @@ To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.
  UI (Trident, React) ── HTTP + server-sent events ──▶  backend ──▶ SandboxAgent ──▶ sbx exec claude …   (local or --cloud)
                                                           │    ├─▶ SandboxTransfer ─▶ sbx move --to cloud|local
                                                           │    └─▶ DocumentCatalog ─▶ Microsoft Graph (OneDrive)
-                                                          └── in-memory state; fakes stand in for all three by default
+                                                          └── PostgreSQL; fakes stand in for the agent, sandboxes and OneDrive by default
 ```
 
 ## Status

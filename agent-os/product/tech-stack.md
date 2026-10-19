@@ -18,7 +18,7 @@ Both run or drive agents in Docker Sandboxes (local and cloud).
 
 ## Database
 
-None. The Quarkus backend keeps sessions and connected folders in memory behind repository interfaces (with an optimistic version check), so state is lost on restart. Adding persistence means a new repository implementation; the domain does not change.
+PostgreSQL, through Hibernate ORM with Panache (no migration tool: Hibernate creates and updates the tables). The Quarkus backend stores sessions and their messages, connected folders, uploaded files and the sandbox bookkeeping behind repository interfaces (with an optimistic version check), so state survives a restart. Quarkus Dev Services starts the database in dev mode and in tests, which needs Docker; elsewhere the connection comes from `QUARKUS_DATASOURCE_*` environment variables. The domain does not know about the database.
 
 ## Other
 

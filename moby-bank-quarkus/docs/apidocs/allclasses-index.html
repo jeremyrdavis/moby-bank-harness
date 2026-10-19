@@ -124,6 +124,14 @@ the new user message and every file shared anywhere in the conversation.</div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The document folders one analyst has connected, in the order they were connected.</div>
 </div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/ConnectedFoldersEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">ConnectedFoldersEntity</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The stored form of a user's <code>ConnectedFolders</code>: the folder ids in the order they were connected.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/ConnectedFoldersJpaRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">ConnectedFoldersJpaRepository</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The Panache queries for <a href="com/mobybank/harness/infrastructure/persistence/ConnectedFoldersEntity.html" title="class in com.mobybank.harness.infrastructure.persistence"><code>ConnectedFoldersEntity</code></a>.</div>
+</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/ConnectedFoldersRepository.html" title="interface in com.mobybank.harness.domain">ConnectedFoldersRepository</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Stores each user's <a href="com/mobybank/harness/domain/ConnectedFolders.html" title="class in com.mobybank.harness.domain"><code>ConnectedFolders</code></a>.</div>
@@ -153,53 +161,60 @@ message and moving the session.</div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Describes the signed-in analyst for the sidebar.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/DemoData.html" title="class in com.mobybank.harness.infrastructure">DemoData</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/DatabaseErrors.html" title="class in com.mobybank.harness.infrastructure.persistence">DatabaseErrors</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Tells apart the database failures the repositories treat specially.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/DemoData.html" title="class in com.mobybank.harness.infrastructure">DemoData</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The demo content from the prototype: the OneDrive folder library and five seeded conversations.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), and connects its
-first three demo folders too, but only when the document catalog is the fake one: a real OneDrive has no such
-folders.</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), but only into an
+empty database, so a restart does not add them again.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">The document source analysts connect folders from (OneDrive in production).</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/DocumentSourceException.html" title="class in com.mobybank.harness.domain">DocumentSourceException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/DocumentSourceException.html" title="class in com.mobybank.harness.domain">DocumentSourceException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
 <div class="block">The document source (OneDrive) could not be reached or refused the request.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/DomainEvent.html" title="interface in com.mobybank.harness.domain">DomainEvent</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/DomainEvent.html" title="interface in com.mobybank.harness.domain">DomainEvent</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Marker for facts raised by aggregates.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/DomainException.html" title="class in com.mobybank.harness.domain">DomainException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/DomainException.html" title="class in com.mobybank.harness.domain">DomainException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
 <div class="block">Base type for rule violations and port failures raised by the domain.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/application/Dtos.html" title="class in com.mobybank.harness.application">Dtos</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/application/Dtos.html" title="class in com.mobybank.harness.application">Dtos</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Translates between domain types and API types.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure">FakeDocumentCatalog</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure">FakeDocumentCatalog</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">A stand-in for OneDrive that serves the prototype's folder library, so the app runs with no Microsoft account.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/infrastructure/FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/infrastructure/FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Which direction the fake transfer refuses (<code>harness.fake.move-failure</code>), to see a failed move in the page.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeSandboxAgent.html" title="class in com.mobybank.harness.infrastructure">FakeSandboxAgent</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeSandboxAgent.html" title="class in com.mobybank.harness.infrastructure">FakeSandboxAgent</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">A stand-in for the sandbox agent that answers with the same canned reply as the prototype: it "reads" each
 attached file, "computes" one calculation, and returns a short summary plus a table when files were attached.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeSandboxTransfer.html" title="class in com.mobybank.harness.infrastructure">FakeSandboxTransfer</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/FakeSandboxTransfer.html" title="class in com.mobybank.harness.infrastructure">FakeSandboxTransfer</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">A stand-in transfer that reports the two stages the prototype shows ("Packaging context", then the transfer) and
 waits between them, in either direction.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/persistence/FileJson.html" title="class in com.mobybank.harness.infrastructure.persistence">FileJson</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="block">A file reference as stored in a message's JSON column.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab4">
@@ -264,21 +279,13 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/interfaces/web/Hx.Triggers.html" title="class in com.mobybank.harness.interfaces.web">Hx.Triggers</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InMemoryConnectedFoldersRepository.html" title="class in com.mobybank.harness.infrastructure">InMemoryConnectedFoldersRepository</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionEventStream</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Keeps each user's connected folders in memory, with the same copy-and-version rules as the session store.</div>
-</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionEventStream</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Delivers session events to the listeners subscribed to that session, on the publishing thread.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InMemorySessionRepository.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionRepository</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Keeps sessions in memory.</div>
-</div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InMemoryUploadStore.html" title="class in com.mobybank.harness.infrastructure">InMemoryUploadStore</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Keeps uploaded files in memory, keyed by session and file name.</div>
+<div class="block">Releases the sessions a restart interrupted, as soon as the application starts.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/InvalidMoveException.html" title="class in com.mobybank.harness.domain">InvalidMoveException</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab5">
@@ -304,153 +311,194 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">A message as the API exposes it.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/MessageEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">MessageEntity</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">One message of a session.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MessageId.html" title="class in com.mobybank.harness.domain">MessageId</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Identifies a <a href="com/mobybank/harness/domain/Message.html" title="class in com.mobybank.harness.domain"><code>Message</code></a> within its <a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/MessageRole.html" title="enum class in com.mobybank.harness.domain">MessageRole</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Who wrote a <a href="com/mobybank/harness/domain/Message.html" title="class in com.mobybank.harness.domain"><code>Message</code></a>: the analyst or the agent.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MoveProgress.html" title="class in com.mobybank.harness.domain">MoveProgress</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MoveProgress.html" title="class in com.mobybank.harness.domain">MoveProgress</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">A progress report emitted by a transfer while it moves a session.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MoveRequest.html" title="class in com.mobybank.harness.domain">MoveRequest</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/MoveRequest.html" title="class in com.mobybank.harness.domain">MoveRequest</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Everything a transfer needs to carry a session from one location to the other.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/MoveSessionCommand.html" title="class in com.mobybank.harness.application">MoveSessionCommand</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/MoveSessionCommand.html" title="class in com.mobybank.harness.application">MoveSessionCommand</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block"><code>target</code> is <code>local</code> or <code>cloud</code>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/interfaces/rest/MoveSessionRequest.html" title="class in com.mobybank.harness.interfaces.rest">MoveSessionRequest</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/interfaces/rest/MoveSessionRequest.html" title="class in com.mobybank.harness.interfaces.rest">MoveSessionRequest</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Request body for moving a session; <code>target</code> must differ from where the session runs now.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/MoveStage.html" title="enum class in com.mobybank.harness.domain">MoveStage</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/MoveStage.html" title="enum class in com.mobybank.harness.domain">MoveStage</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
 <div class="block">The stages of a move that a <a href="com/mobybank/harness/domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain"><code>SandboxTransfer</code></a> reports through <a href="com/mobybank/harness/domain/MoveProgress.html" title="class in com.mobybank.harness.domain"><code>MoveProgress</code></a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/interfaces/web/OneDriveResource.html" title="class in com.mobybank.harness.interfaces.web">OneDriveResource</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/interfaces/web/OneDriveResource.html" title="class in com.mobybank.harness.interfaces.web">OneDriveResource</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The OneDrive fragments for <code>index.html</code>: connected folders in the sidebar and the connect and attach dialogs.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Sleeping that the fake adapters use to imitate real work.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/ProcessCommandRunner.html" title="class in com.mobybank.harness.infrastructure.sbx">ProcessCommandRunner</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/PostgresConnectedFoldersRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">PostgresConnectedFoldersRepository</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Stores each user's <a href="com/mobybank/harness/domain/ConnectedFolders.html" title="class in com.mobybank.harness.domain"><code>ConnectedFolders</code></a> in PostgreSQL, under the same version contract as the sessions.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/PostgresSandboxRecordStore.html" title="class in com.mobybank.harness.infrastructure.persistence">PostgresSandboxRecordStore</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Keeps the sandbox bookkeeping in PostgreSQL, so a restart does not have to rediscover it by listing sandboxes.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/PostgresSessionRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">PostgresSessionRepository</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Stores <a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>s in PostgreSQL.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/PostgresUploadStore.html" title="class in com.mobybank.harness.infrastructure.persistence">PostgresUploadStore</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Keeps uploaded files in PostgreSQL, keyed by session and file name.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/ProcessCommandRunner.html" title="class in com.mobybank.harness.infrastructure.sbx">ProcessCommandRunner</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Runs commands as operating-system processes.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/RecencyGroup.html" title="enum class in com.mobybank.harness.domain">RecencyGroup</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/RecencyGroup.html" title="enum class in com.mobybank.harness.domain">RecencyGroup</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
 <div class="block">How recently a session was active, used to group the conversation history.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html" title="class in com.mobybank.harness.infrastructure.sbx">ReplyFormatter</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html" title="class in com.mobybank.harness.infrastructure.sbx">ReplyFormatter</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Turns the agent's Markdown answer into what the UI shows: paragraphs, plus the first Markdown table (if any)
 as a structured table.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/application/ResourceNotFoundException.html" title="class in com.mobybank.harness.application">ResourceNotFoundException</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/application/ResourceNotFoundException.html" title="class in com.mobybank.harness.application">ResourceNotFoundException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
 <div class="block">The session or folder the caller asked for does not exist.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/ResultTable.html" title="class in com.mobybank.harness.domain">ResultTable</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">A financial table returned by the agent.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">The agent running in a Docker Sandbox.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/SandboxFailureException.html" title="class in com.mobybank.harness.domain">SandboxFailureException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/SandboxFailureException.html" title="class in com.mobybank.harness.domain">SandboxFailureException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">A sandbox port (agent or transfer) could not complete its work.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRecord</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="block">What is known about one session's sandbox: the sandbox itself (null when none), the agent's own conversation id
+inside it (null when none), and whether the sandbox still needs the session's shared files copied in.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/SandboxRecordEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">SandboxRecordEntity</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Which sandbox backs a session, and the agent's conversation id inside it.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/SandboxRecordJpaRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">SandboxRecordJpaRepository</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The Panache queries for <a href="com/mobybank/harness/infrastructure/persistence/SandboxRecordEntity.html" title="class in com.mobybank.harness.infrastructure.persistence"><code>SandboxRecordEntity</code></a>.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx">SandboxRecordStore</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="block">Where <a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx"><code>SandboxRegistry</code></a> keeps its <a href="com/mobybank/harness/infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx"><code>SandboxRecord</code></a>s.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Remembers which sandbox currently backs each session, and the agent's own conversation id inside it so the next
 turn can resume.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">The sandbox a session runs in now.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Carries a session's context and files from one location to the other.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Builds the sbx-backed adapters from configuration (<code>harness.sbx.*</code>).</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The few <code>sbx</code> commands the harness needs, built as argument lists.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxErrors.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxErrors</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxErrors.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxErrors</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Turns what <code>sbx</code> (or the agent inside a sandbox) printed into a sentence that says what to do.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Checks, without changing anything the demo depends on, that this host can run what the adapters will ask of it: sbx
 is installed and new enough for the cloud, the local daemon is healthy, and the agent has a credential in each
 location.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SbxPreflight.Report.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight.Report</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SbxPreflight.Report.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxPreflight.Report</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">What the checks found.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxReadiness.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxReadiness</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxReadiness.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxReadiness</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Reports whether this host can run real sandboxes (<code>/q/health/ready</code>), using <a href="com/mobybank/harness/infrastructure/sbx/SbxPreflight.html" title="class in com.mobybank.harness.infrastructure.sbx"><code>SbxPreflight</code></a>.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxAgent.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxAgent</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxAgent.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxAgent</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Runs each turn by driving the agent (the Claude Code CLI) inside a Docker Sandbox through the <code>sbx</code> CLI,
 locally or in the cloud according to the turn's location.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxTransfer.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxTransfer</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxTransfer.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxTransfer</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Moves a session with <code>sbx move</code>, which captures the whole sandbox filesystem as an image and starts a new
 sandbox from it at the destination.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Settings for the sbx adapters.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxStartupCheck.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxStartupCheck</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/sbx/SbxStartupCheck.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxStartupCheck</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Logs what is wrong with this host's sandbox setup when the app starts in <code>sbx</code> mode, so a missing cloud
 credential shows up in the log before the first turn fails.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Asks to send a message in a session.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/interfaces/rest/SendMessageRequest.html" title="class in com.mobybank.harness.interfaces.rest">SendMessageRequest</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/interfaces/rest/SendMessageRequest.html" title="class in com.mobybank.harness.interfaces.rest">SendMessageRequest</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Request body for sending a message.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">A conversation between an analyst and the agent, and the aggregate root for its messages.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/application/SessionApplicationService.html" title="class in com.mobybank.harness.application">SessionApplicationService</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/application/SessionApplicationService.html" title="class in com.mobybank.harness.application">SessionApplicationService</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Orchestrates the session use cases: start a conversation, send a message, attach an upload, and move a session
 between the local and cloud sandbox.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/SessionBusyException.html" title="class in com.mobybank.harness.domain">SessionBusyException</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab5"><a href="com/mobybank/harness/domain/SessionBusyException.html" title="class in com.mobybank.harness.domain">SessionBusyException</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab5">
 <div class="block">The session is running a turn or moving, so it cannot accept the requested operation right now.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">A whole conversation.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/SessionEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">SessionEntity</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The stored form of a <code>Session</code>.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/application/SessionEvent.html" title="interface in com.mobybank.harness.application">SessionEvent</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
@@ -489,6 +537,14 @@ between the local and cloud sandbox.</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">Identifies a <a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/SessionJpaRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">SessionJpaRepository</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The Panache queries for <a href="com/mobybank/harness/infrastructure/persistence/SessionEntity.html" title="class in com.mobybank.harness.infrastructure.persistence"><code>SessionEntity</code></a>.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/SessionMapper.html" title="class in com.mobybank.harness.infrastructure.persistence">SessionMapper</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Converts a <a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a> to and from its <a href="com/mobybank/harness/infrastructure/persistence/SessionEntity.html" title="class in com.mobybank.harness.infrastructure.persistence"><code>SessionEntity</code></a>.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/domain/SessionMovedEvent.html" title="class in com.mobybank.harness.domain">SessionMovedEvent</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
@@ -538,13 +594,21 @@ between the local and cloud sandbox.</div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab4">
 <div class="block">One entry of an agent trace.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/StepKind.html" title="enum class in com.mobybank.harness.domain">StepKind</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/persistence/StepJson.html" title="class in com.mobybank.harness.infrastructure.persistence">StepJson</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
+<div class="block">One agent step as stored in a message's JSON column.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="com/mobybank/harness/domain/StepKind.html" title="enum class in com.mobybank.harness.domain">StepKind</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">The two kinds of <a href="com/mobybank/harness/domain/Step.html" title="class in com.mobybank.harness.domain"><code>Step</code></a> in an agent's trace: reading a file, or running a calculation.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/TableDTO.html" title="class in com.mobybank.harness.application">TableDTO</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/application/TableDTO.html" title="class in com.mobybank.harness.application">TableDTO</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab4">
 <div class="block">A financial table the agent returned: column headings and rows of cells, one cell per column.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab4"><a href="com/mobybank/harness/infrastructure/persistence/TableJson.html" title="class in com.mobybank.harness.infrastructure.persistence">TableJson</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab4">
+<div class="block">A result table as stored in a message's JSON column.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/interfaces/web/TemplateExtensions.html" title="class in com.mobybank.harness.interfaces.web">TemplateExtensions</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
@@ -553,6 +617,14 @@ between the local and cloud sandbox.</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/interfaces/web/Templates.html" title="class in com.mobybank.harness.interfaces.web">Templates</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">The fragments <code>index.html</code> swaps into itself.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/UploadEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">UploadEntity</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">A file the analyst uploaded for a session.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="com/mobybank/harness/infrastructure/persistence/UploadJpaRepository.html" title="class in com.mobybank.harness.infrastructure.persistence">UploadJpaRepository</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">The Panache queries for <a href="com/mobybank/harness/infrastructure/persistence/UploadEntity.html" title="class in com.mobybank.harness.infrastructure.persistence"><code>UploadEntity</code></a>.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="com/mobybank/harness/application/UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
