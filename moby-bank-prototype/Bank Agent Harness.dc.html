@@ -94,21 +94,23 @@
           <span style="width:8px; height:8px; border-radius:999px; background:var(--tri-primary);"></span>
           Cloud model · Moby Private Cloud
         </div>
-        <x-import component-from-global-scope="Trident.Button" variant="outline" size="sm" loading="{{ moving }}" on-click="{{ moveToLocal }}" hint-size="130px,28px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path><path d="M12 11v5M9.5 13.5L12 16l2.5-2.5"></path></svg>
-          Move to local
-        </x-import>
       </sc-if>
       <sc-if value="{{ isLocal }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--tri-muted-foreground);">
           <span style="width:8px; height:8px; border-radius:999px; background:var(--tri-success);"></span>
           Local model · on-prem
         </div>
-        <x-import component-from-global-scope="Trident.Button" size="sm" loading="{{ moving }}" on-click="{{ moveToCloud }}" hint-size="130px,28px">
+      </sc-if>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <x-import component-from-global-scope="Trident.Button" variant="{{ localVariant }}" size="sm" disabled="{{ localDisabled }}" loading="{{ movingToLocal }}" on-click="{{ moveToLocal }}" hint-size="120px,28px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path><path d="M12 11v5M9.5 13.5L12 16l2.5-2.5"></path></svg>
+          Move to local
+        </x-import>
+        <x-import component-from-global-scope="Trident.Button" variant="{{ cloudVariant }}" size="sm" disabled="{{ cloudDisabled }}" loading="{{ movingToCloud }}" on-click="{{ moveToCloud }}" hint-size="130px,28px">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"></path><path d="M12 16v-5M9.5 13.5L12 11l2.5 2.5"></path></svg>
           Move to cloud
         </x-import>
-      </sc-if>
+      </div>
     </header>
 
     <sc-if value="{{ hasApiError }}" hint-placeholder-val="{{ false }}">
@@ -630,6 +632,7 @@ class Component extends DCLogic {
     const cloud = c.location === 'cloud';
     const work = s.working[c.id];
     const moving = !!s.moving[c.id];
+    const busy = !!work || moving;
     const groups = GROUPS.map(label => ({
       label,
       items: s.convos.filter(x => x.group === label).map(x => ({
@@ -671,6 +674,10 @@ class Component extends DCLogic {
       hasApiError: !!s.apiError, apiError: s.apiError, retry: this.retry,
       newChat: this.newChat, historyGroups: groups, folders, openConnect: this.openConnect, openAttach: this.openAttach,
       activeTitle: c.title, isCloud: cloud, isLocal: !cloud, moving, moveToCloud: this.moveToCloud, moveToLocal: this.moveToLocal,
+      // Both move buttons are always shown (disabled while the agent works or a move runs, as moveTo() ignores clicks then): the one for where the session runs is disabled, the other is the action.
+      cloudVariant: cloud || moving ? 'secondary' : 'default', localVariant: !cloud || moving ? 'secondary' : 'default',
+      cloudDisabled: cloud || busy, localDisabled: !cloud || busy,
+      movingToCloud: moving && this.moveTargets[c.id] === 'cloud', movingToLocal: moving && this.moveTargets[c.id] === 'local',
       scrollRef: this.scrollRef, fileRef: this.fileRef, isEmpty: s.loaded && !c.messages.length, messages,
       thinking: !!work, thinkingLabel: work ? (work.step ? `${work.label} · ${work.step}` : work.label) : '',
       hasPending: s.pending.length > 0,

@@ -25,12 +25,18 @@ final class Templates {
     /** The sidebar's conversation history, grouped by recency. */
     static native TemplateInstance history(List<HistoryGroup> groups);
 
+    /**
+     * The header: title, location, and the Run or Move buttons. {@code oob} makes it replace the one on the page, so a
+     * reply can refresh it.
+     */
+    static native TemplateInstance topbar(SessionDTO session, boolean oob);
+
     /** Messages to append to the thread. */
     static native TemplateInstance messages(List<MessageDTO> messages);
 
     /**
-     * The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
-     * heading (the first message gives it its title).
+     * The reply to sending a message: the new messages, removal of the empty-thread prompt, and the header (the first
+     * message gives the conversation its title and starts it, which turns the Run buttons into Move buttons).
      */
     static native TemplateInstance sent(SessionDTO session, List<MessageDTO> messages);
 

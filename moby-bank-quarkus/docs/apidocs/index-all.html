@@ -593,6 +593,10 @@ when the registry points elsewhere.</div>
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
+<dd>
+<div class="block">Indicates whether some other object is "equal to" this one.</div>
+</dd>
 <dt><a href="com/mobybank/harness/application/MessageDTO.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></dt>
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
@@ -787,6 +791,15 @@ when the registry points elsewhere.</div>
 <dd>
 <div class="block">Returns the value of the <code>exitCode</code> record component.</div>
 </dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectFiles(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
+into it (a sandbox the turn creates itself gets them as part of the turn).</div>
+</dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectsFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectsFiles(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block">Whether <a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#expectFiles(com.mobybank.harness.domain.SessionId)"><code>SandboxRegistry.expectFiles(SessionId)</code></a> was called and the shared files have not been copied in yet.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
@@ -898,6 +911,10 @@ waits between them, in either direction.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/graph/GraphDocumentCatalog.html#files(com.mobybank.harness.domain.FolderId)" class="member-name-link">files(FolderId)</a> - Method in class com.mobybank.harness.infrastructure.graph.<a href="com/mobybank/harness/infrastructure/graph/GraphDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure.graph">GraphDocumentCatalog</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#filesCopied(com.mobybank.harness.domain.SessionId)" class="member-name-link">filesCopied(SessionId)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block">Clears the note once the shared files are in the sandbox.</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html#filesDir()" class="member-name-link">filesDir()</a> - Method in record class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/domain/FileSource.html" class="type-name-link" title="enum class in com.mobybank.harness.domain">FileSource</a> - Enum Class in <a href="com/mobybank/harness/domain/package-summary.html">com.mobybank.harness.domain</a></dt>
@@ -1105,6 +1122,10 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/FolderDTO.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/FolderDTO.html" title="class in com.mobybank.harness.application">FolderDTO</a></dt>
+<dd>
+<div class="block">Returns a hash code value for this object.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
@@ -1455,6 +1476,22 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 <dd>
 <div class="block">The text of the agent's most recent message, for when no result event arrived.</div>
 </dd>
+<dt><a href="com/mobybank/harness/application/SessionApplicationService.html#launch(com.mobybank.harness.application.LaunchSessionCommand)" class="member-name-link">launch(LaunchSessionCommand)</a> - Method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionApplicationService.html" title="class in com.mobybank.harness.application">SessionApplicationService</a></dt>
+<dd>
+<div class="block">Chooses where a session that has not started yet runs.</div>
+</dd>
+<dt><a href="com/mobybank/harness/domain/Session.html#launchAt(com.mobybank.harness.domain.Location,java.time.Instant)" class="member-name-link">launchAt(Location, Instant)</a> - Method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
+<dd>
+<div class="block">Chooses where a session that has not started yet will run.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html" class="type-name-link" title="class in com.mobybank.harness.application">LaunchSessionCommand</a> - Record Class in <a href="com/mobybank/harness/application/package-summary.html">com.mobybank.harness.application</a></dt>
+<dd>
+<div class="block"><code>location</code> is <code>local</code> or <code>cloud</code>: where a session that has not started yet will run.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">LaunchSessionCommand(String, String)</a> - Constructor for record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
+<dd>
+<div class="block">Creates an instance of a <code>LaunchSessionCommand</code> record class.</div>
+</dd>
 <dt><a href="com/mobybank/harness/application/FolderApplicationService.html#library()" class="member-name-link">library()</a> - Method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/FolderApplicationService.html" title="class in com.mobybank.harness.application">FolderApplicationService</a></dt>
 <dd>
 <div class="block">Every folder that can be connected, flagged with whether it already is.</div>
@@ -1474,6 +1511,10 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 <dt><a href="com/mobybank/harness/domain/Location.html#LOCAL" class="member-name-link">LOCAL</a> - Enum constant in enum class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/application/CreateSessionCommand.html#location()" class="member-name-link">location()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/CreateSessionCommand.html" title="class in com.mobybank.harness.application">CreateSessionCommand</a></dt>
+<dd>
+<div class="block">Returns the value of the <code>location</code> record component.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#location()" class="member-name-link">location()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>location</code> record component.</div>
 </dd>
@@ -1892,9 +1933,13 @@ new sandbox from it at the destination.</div>
 <dd>
 <div class="block">Reconstruction path for the persistence layer.</div>
 </dd>
-<dt><a href="com/mobybank/harness/domain/Session.html#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, Instant, Instant, long)</a> - Static method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
+<dt><a href="com/mobybank/harness/domain/Session.html#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, boolean, Instant, Instant, long)</a> - Static method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
 <dd>
 <div class="block">Reconstruction path for the persistence layer.</div>
+</dd>
+<dt><a href="com/mobybank/harness/domain/Session.html#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, Instant, Instant, long)</a> - Static method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
+<dd>
+<div class="block"><a href="com/mobybank/harness/domain/Session.html#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)"><code>Session.rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, boolean, Instant, Instant, long)</code></a> for a session that has not been launched on its own (it has started if it has messages).</div>
 </dd>
 <dt><a href="com/mobybank/harness/domain/ConnectedFolders.html#rehydrate(com.mobybank.harness.domain.UserId,java.util.List,long)" class="member-name-link">rehydrate(UserId, List, long)</a> - Static method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a></dt>
 <dd>
@@ -1971,6 +2016,10 @@ as a structured table.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/VirtualThreadBackgroundRunner.html#run(java.lang.Runnable)" class="member-name-link">run(Runnable)</a> - Method in class com.mobybank.harness.infrastructure.<a href="com/mobybank/harness/infrastructure/VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure">VirtualThreadBackgroundRunner</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/interfaces/web/ConversationsResource.html#run(java.lang.String,java.lang.String)" class="member-name-link">run(String, String)</a> - Method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/ConversationsResource.html" title="class in com.mobybank.harness.interfaces.web">ConversationsResource</a></dt>
+<dd>
+<div class="block">Chooses where a conversation that has not started yet runs (<code>at</code>, <code>local</code> or <code>cloud</code>).</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/CommandRunner.html#run(java.util.List,java.time.Duration)" class="member-name-link">run(List, Duration)</a> - Method in interface com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/CommandRunner.html" title="interface in com.mobybank.harness.infrastructure.sbx">CommandRunner</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/CommandRunner.html#run(java.util.List,java.time.Duration,java.util.function.Consumer)" class="member-name-link">run(List, Duration, Consumer)</a> - Method in interface com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/CommandRunner.html" title="interface in com.mobybank.harness.infrastructure.sbx">CommandRunner</a></dt>
@@ -2134,8 +2183,8 @@ credential shows up in the log before the first turn fails.</div>
 </dd>
 <dt><a href="com/mobybank/harness/interfaces/web/Templates.html#sent(com.mobybank.harness.application.SessionDTO,java.util.List)" class="member-name-link">sent(SessionDTO, List)</a> - Static method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/Templates.html" title="class in com.mobybank.harness.interfaces.web">Templates</a></dt>
 <dd>
-<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the conversation's
-heading (the first message gives it its title).</div>
+<div class="block">The reply to sending a message: the new messages, removal of the empty-thread prompt, and the header (the first
+message gives the conversation its title and starts it, which turns the Run buttons into Move buttons).</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/Dtos.html#session(com.mobybank.harness.domain.Session,java.lang.String)" class="member-name-link">session(Session, String)</a> - Static method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/Dtos.html" title="class in com.mobybank.harness.application">Dtos</a></dt>
 <dd>&nbsp;</dd>
@@ -2160,7 +2209,7 @@ between the local and cloud sandbox.</div>
 <dd>
 <div class="block">A whole conversation.</div>
 </dd>
-<dt><a href="com/mobybank/harness/application/SessionDTO.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Instant,java.time.Instant,java.util.List,java.util.List)" class="member-name-link">SessionDTO(String, String, String, String, String, String, Instant, Instant, List, List)</a> - Constructor for record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></dt>
+<dt><a href="com/mobybank/harness/application/SessionDTO.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Instant,java.time.Instant,java.util.List,java.util.List,boolean)" class="member-name-link">SessionDTO(String, String, String, String, String, String, Instant, Instant, List, List, boolean)</a> - Constructor for record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></dt>
 <dd>
 <div class="block">Creates an instance of a <code>SessionDTO</code> record class.</div>
 </dd>
@@ -2203,6 +2252,10 @@ between the local and cloud sandbox.</div>
 <div class="block">Returns the value of the <code>sessionFiles</code> record component.</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/AttachUploadCommand.html#sessionId()" class="member-name-link">sessionId()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/AttachUploadCommand.html" title="class in com.mobybank.harness.application">AttachUploadCommand</a></dt>
+<dd>
+<div class="block">Returns the value of the <code>sessionId</code> record component.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#sessionId()" class="member-name-link">sessionId()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>sessionId</code> record component.</div>
 </dd>
@@ -2365,6 +2418,14 @@ between the local and cloud sandbox.</div>
 <dt><a href="com/mobybank/harness/domain/Session.html#start(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.time.Instant)" class="member-name-link">start(SessionId, Location, Instant)</a> - Static method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
 <dd>
 <div class="block">Starts an empty session at the given location.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/SessionDTO.html#started()" class="member-name-link">started()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></dt>
+<dd>
+<div class="block">Returns the value of the <code>started</code> record component.</div>
+</dd>
+<dt><a href="com/mobybank/harness/domain/Session.html#started()" class="member-name-link">started()</a> - Method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
+<dd>
+<div class="block">Whether the session has a sandbox to speak of: the analyst has sent a message or has chosen where it runs.</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/SessionDTO.html#status()" class="member-name-link">status()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></dt>
 <dd>
@@ -2551,6 +2612,10 @@ between the local and cloud sandbox.</div>
 <dd>
 <div class="block">Returns the value of the <a href="./com/mobybank/harness/infrastructure/graph/GraphSettings.html#param-tokenUrl"><code>tokenUrl</code></a> record component.</div>
 </dd>
+<dt><a href="com/mobybank/harness/interfaces/web/Templates.html#topbar(com.mobybank.harness.application.SessionDTO,boolean)" class="member-name-link">topbar(SessionDTO, boolean)</a> - Static method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/Templates.html" title="class in com.mobybank.harness.interfaces.web">Templates</a></dt>
+<dd>
+<div class="block">The header: title, location, and the Run or Move buttons.</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html#toReply(java.lang.String,java.util.List)" class="member-name-link">toReply(String, List)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/ReplyFormatter.html" title="class in com.mobybank.harness.infrastructure.sbx">ReplyFormatter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/ClaudeStreamParser.html#toStep(java.lang.String,com.fasterxml.jackson.databind.JsonNode)" class="member-name-link">toStep(String, JsonNode)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/ClaudeStreamParser.html" title="class in com.mobybank.harness.infrastructure.sbx">ClaudeStreamParser</a></dt>
@@ -2576,6 +2641,10 @@ between the local and cloud sandbox.</div>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/FolderDTO.html#toString()" class="member-name-link">toString()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/FolderDTO.html" title="class in com.mobybank.harness.application">FolderDTO</a></dt>
+<dd>
+<div class="block">Returns a string representation of this record class.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/LaunchSessionCommand.html#toString()" class="member-name-link">toString()</a> - Method in record class com.mobybank.harness.application.<a href="com/mobybank/harness/application/LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>

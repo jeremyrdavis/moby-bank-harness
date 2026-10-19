@@ -42,6 +42,7 @@
   .btn-primary{background:var(--primary);color:var(--primary-fg)}.btn-primary:hover:not(:disabled){filter:brightness(1.08)}
   .btn-outline{border-color:var(--border);background:var(--card)}.btn-outline:hover:not(:disabled){background:var(--hover)}
   .btn-ghost{color:var(--muted-fg)}.btn-ghost:hover:not(:disabled){background:var(--hover);color:var(--fg)}
+  .move-buttons{display:flex;align-items:center;gap:8px}
   .btn-sm{height:28px;padding:0 8px}.btn-icon{width:28px;padding:0}.btn-xs{height:24px;width:24px;padding:0}
   .btn.w-full{width:100%;justify-content:flex-start}
   .eyebrow{font-size:11px;font-weight:520;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-fg);padding:4px 8px}
@@ -162,10 +163,16 @@
   <header class="topbar">
     <h1 id="conversation-title" class="trunc">New conversation</h1>
     <div class="status"><span class="dot"></span>Local model · on-prem</div>
-    <button class="btn btn-primary btn-sm" disabled>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/><path d="M12 16v-5M9.5 13.5L12 11l2.5 2.5"/></svg>
-      Move to cloud
-    </button>
+    <div class="move-buttons">
+      <button class="btn btn-primary btn-sm" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg>
+        Run locally
+      </button>
+      <button class="btn btn-primary btn-sm" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg>
+        Run in cloud
+      </button>
+    </div>
   </header>
   <div class="thread" id="thread">
     <div class="thread-inner" id="messages">

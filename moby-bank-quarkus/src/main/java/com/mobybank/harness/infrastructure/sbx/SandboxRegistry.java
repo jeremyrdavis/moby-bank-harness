@@ -6,6 +6,7 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,6 +23,7 @@ public class SandboxRegistry {
 
     private final Map<SessionId, Handle> handles = new ConcurrentHashMap<>();
     private final Map<SessionId, String> agentSessions = new ConcurrentHashMap<>();
+    private final Set<SessionId> awaitingFiles = ConcurrentHashMap.newKeySet();
 
     public Optional<Handle> current(SessionId session) {
         return Optional.ofNullable(handles.get(session));
@@ -31,6 +33,27 @@ public class SandboxRegistry {
         Log.debugf("Session %s now runs in %s (%s, generation %d)", session.value(), handle.name(), handle.location(),
                 handle.generation());
         handles.put(session, handle);
+    }
+
+    /**
+     * Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
+     * into it (a sandbox the turn creates itself gets them as part of the turn).
+     */
+    public void expectFiles(SessionId session) {
+        Log.debugf("Session %s: its new sandbox still needs the shared files", session.value());
+        awaitingFiles.add(session);
+    }
+
+    /** Whether {@link #expectFiles} was called and the shared files have not been copied in yet. */
+    public boolean expectsFiles(SessionId session) {
+        return awaitingFiles.contains(session);
+    }
+
+    /** Clears the note once the shared files are in the sandbox. A failed copy leaves it, so the next turn retries. */
+    public void filesCopied(SessionId session) {
+        if (awaitingFiles.remove(session)) {
+            Log.debugf("Session %s: the shared files are in its sandbox", session.value());
+        }
     }
 
     public Optional<String> agentSession(SessionId session) {

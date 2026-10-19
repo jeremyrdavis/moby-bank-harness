@@ -40,8 +40,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         Log.debugf("Move of session %s %s -> %s: source sandbox %s", session.value(), request.from(), request.to(),
                 source.map(Handle::name).orElse("none yet"));
         if (source.isEmpty()) {
-            onProgress.accept(new MoveProgress(MoveStage.PACKAGING,
-                    "Nothing to package yet · the agent will start at the destination"));
+            startAtDestination(request, onProgress);
             return;
         }
         Handle from = source.get();
@@ -72,6 +71,28 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         Handle moved = locate(session, request.to(), generation);
         Log.debugf("Move of session %s done: %s is now at %s", session.value(), moved.name(), request.to());
         registry.set(session, moved);
+    }
+
+    /**
+     * A session that has no sandbox yet (no turn has run, or its sandbox is gone) has nothing to carry over, but the
+     * move still has to leave a sandbox at the destination: it is created there now, empty, and the next turn copies
+     * the shared files in and replays the conversation. Without this the move would only change what the app says.
+     */
+    private void startAtDestination(MoveRequest request, Consumer<MoveProgress> onProgress) {
+        SessionId session = request.sessionId();
+        int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
+        String name = SandboxRegistry.nameFor(session, generation);
+        Log.debugf("Session %s has no sandbox to move; creating %s at %s", session.value(), name, request.to());
+        onProgress.accept(new MoveProgress(MoveStage.PACKAGING,
+                "No sandbox to package yet · creating a new one at the destination"));
+        cli.create(request.to(), name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
+        onProgress.accept(new MoveProgress(MoveStage.TRANSFERRING, "Starting the session at the destination"));
+        Handle created = locate(session, request.to(), generation);
+        Log.debugf("Created %s at %s for session %s; the next turn copies the shared files in", created.name(),
+                request.to(), session.value());
+        registry.set(session, created);
+        registry.forgetAgentSession(session);
+        registry.expectFiles(session);
     }
 
     /** The sandbox the session runs in now, from memory or, after a restart, from the source location's listing. */

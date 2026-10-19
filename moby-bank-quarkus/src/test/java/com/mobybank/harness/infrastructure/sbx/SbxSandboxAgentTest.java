@@ -279,6 +279,47 @@ class SbxSandboxAgentTest {
     }
 
     @Test
+    void aSandboxCreatedEmptyByAMoveGetsTheSessionsSharedFilesOnItsFirstTurn() {
+        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, NAME, 0));
+        registry.expectFiles(SESSION);
+        uploads.put("notes.docx", "uploaded text".getBytes(StandardCharsets.UTF_8));
+        agentPrints(INIT, RESULT);
+        Session session = sessionAt(Location.CLOUD);
+        var message = session.postUserMessage("go on", List.of(), T0);
+        AgentTurn turn = new AgentTurn(session.id(), Location.CLOUD, List.of(), message,
+                List.of(new FileRef("notes.docx", FileSource.UPLOAD)));
+
+        agent.runTurn(turn, streamed::add);
+
+        assertTrue(runner.linesWith("create").isEmpty(), "the sandbox already exists");
+        assertEquals("uploaded text", copied.get(NAME + ":/home/agent/workspace/files/notes.docx"));
+        assertTrue(!registry.expectsFiles(SESSION), "only the first turn copies them");
+    }
+
+    @Test
+    void ifCopyingTheSharedFilesFailsTheNextTurnTriesThemAgain() {
+        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, NAME, 0));
+        registry.expectFiles(SESSION);
+        runner.on(has("ls"), Response.ok("claude/" + NAME)); // the sandbox is there, so this is not a lost sandbox
+        agentPrints(INIT, RESULT);
+        Session session = sessionAt(Location.CLOUD);
+        var message = session.postUserMessage("go on", List.of(), T0);
+        AgentTurn turn = new AgentTurn(session.id(), Location.CLOUD, List.of(), message,
+                List.of(new FileRef("notes.docx", FileSource.UPLOAD)));
+
+        // the file cannot be read the first time, so staging fails before the agent runs
+        assertThrows(SandboxFailureException.class, () -> agent.runTurn(turn, streamed::add));
+        assertTrue(registry.expectsFiles(SESSION), "the files are still owed after the failed copy");
+        assertTrue(agentRunLines().isEmpty(), "the agent did not run without its files");
+
+        uploads.put("notes.docx", "uploaded text".getBytes(StandardCharsets.UTF_8));
+        agent.runTurn(turn, streamed::add);
+
+        assertEquals("uploaded text", copied.get(NAME + ":/home/agent/workspace/files/notes.docx"));
+        assertTrue(!registry.expectsFiles(SESSION), "cleared once the files are in");
+    }
+
+    @Test
     void stagedCopiesAreDeletedAfterwards() {
         uploads.put("notes.docx", "x".getBytes(StandardCharsets.UTF_8));
         agentPrints(INIT, RESULT);

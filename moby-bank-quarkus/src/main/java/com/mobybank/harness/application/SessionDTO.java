@@ -19,5 +19,7 @@ public record SessionDTO(
         Instant updatedAt,
         List<MessageDTO> messages,
         @Schema(description = "Distinct files shared anywhere in the conversation, in the order they first appeared")
-        List<FileRefDTO> files) {
+        List<FileRefDTO> files,
+        @Schema(description = "False until the analyst sends a message or chooses where the session runs: no sandbox "
+                + "exists before that, and the location is only a default") boolean started) {
 }

@@ -33,7 +33,8 @@ final class Dtos {
                 session.createdAt(),
                 session.updatedAt(),
                 session.messages().stream().map(Dtos::message).toList(),
-                session.filesShared().stream().map(Dtos::file).toList());
+                session.filesShared().stream().map(Dtos::file).toList(),
+                session.started());
     }
 
     static SessionSummaryDTO summary(Session session, String group) {

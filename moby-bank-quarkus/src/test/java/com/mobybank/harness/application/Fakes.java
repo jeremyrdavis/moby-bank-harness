@@ -69,7 +69,7 @@ final class Fakes {
 
         private static Session copy(Session s, long version) {
             return Session.rehydrate(s.id(), s.title(), s.location(), s.status(), s.moveTarget(), s.messages(),
-                    s.createdAt(), s.updatedAt(), version);
+                    s.started(), s.createdAt(), s.updatedAt(), version);
         }
     }
 

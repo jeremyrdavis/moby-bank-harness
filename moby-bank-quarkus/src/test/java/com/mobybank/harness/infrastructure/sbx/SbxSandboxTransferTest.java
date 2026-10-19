@@ -77,12 +77,29 @@ class SbxSandboxTransferTest {
     }
 
     @Test
-    void aSessionThatNeverStartedASandboxHasNothingToMove() {
+    void aSessionThatNeverStartedASandboxGetsANewOneAtTheDestination() {
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g0-k3j2x"));
+
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
-        assertEquals(List.of("sbx ls -q"), runner.lines(), "only looked for a sandbox, never moved anything");
-        assertEquals(1, progress.size());
-        assertTrue(progress.get(0).detail().startsWith("Nothing to package yet"), progress.get(0).detail());
+        assertEquals(List.of(
+                "sbx ls -q",
+                "sbx --cloud create --name moby-bank-0a1b2c3d4e5f-g0 --ttl 8h --on-timeout stop claude",
+                "sbx --cloud ls -q"), runner.lines(), "nothing to move, so one is created where the session now runs");
+        assertEquals(List.of(MoveStage.PACKAGING, MoveStage.TRANSFERRING),
+                progress.stream().map(MoveProgress::stage).toList());
+        assertTrue(progress.get(0).detail().startsWith("No sandbox to package yet"), progress.get(0).detail());
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g0-k3j2x", 0)),
+                registry.current(SESSION));
+        assertTrue(registry.expectsFiles(SESSION), "the next turn copies the shared files in");
+    }
+
+    @Test
+    void ifTheNewSandboxCannotBeCreatedTheMoveFails() {
+        runner.on(has("create"), Response.fail(1, "error: boom"));
+
+        assertThrows(SandboxFailureException.class,
+                () -> transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add));
         assertTrue(registry.current(SESSION).isEmpty());
     }
 
@@ -167,11 +184,12 @@ class SbxSandboxTransferTest {
         registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
         runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
                 Response.ok("moby-bank-0a1b2c3d4e5f-g0"));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g2-zz"));
 
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertTrue(runner.linesWith("move").isEmpty(), "the stale g0 is not moved: " + runner.lines());
-        assertTrue(progress.get(0).detail().startsWith("Nothing to package"), progress.get(0).detail());
+        assertTrue(progress.get(0).detail().startsWith("No sandbox to package"), progress.get(0).detail());
     }
 
     @Test

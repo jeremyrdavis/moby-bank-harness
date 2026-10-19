@@ -22,18 +22,20 @@ public class Session {
     private SessionStatus status;
     private Location moveTarget;
     private final List<Message> messages;
+    private boolean launched;
     private final Instant createdAt;
     private Instant updatedAt;
     private final List<DomainEvent> pendingEvents = new ArrayList<>();
 
     private Session(SessionId id, SessionTitle title, Location location, SessionStatus status, Location moveTarget,
-                    List<Message> messages, Instant createdAt, Instant updatedAt, long version) {
+                    List<Message> messages, boolean launched, Instant createdAt, Instant updatedAt, long version) {
         this.id = id;
         this.title = title;
         this.location = location;
         this.status = status;
         this.moveTarget = moveTarget;
         this.messages = new ArrayList<>(messages);
+        this.launched = launched;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.version = version;
@@ -44,8 +46,8 @@ public class Session {
         Objects.requireNonNull(id, "session id required");
         Objects.requireNonNull(location, "location required");
         Objects.requireNonNull(now, "now required");
-        return new Session(id, SessionTitle.NEW_CONVERSATION, location, SessionStatus.IDLE, null, List.of(), now, now,
-                0L);
+        return new Session(id, SessionTitle.NEW_CONVERSATION, location, SessionStatus.IDLE, null, List.of(), false, now,
+                now, 0L);
     }
 
     /**
@@ -53,9 +55,16 @@ public class Session {
      * calls it.
      */
     public static Session rehydrate(SessionId id, SessionTitle title, Location location, SessionStatus status,
+                                    Location moveTarget, List<Message> messages, boolean launched, Instant createdAt,
+                                    Instant updatedAt, long version) {
+        return new Session(id, title, location, status, moveTarget, messages, launched, createdAt, updatedAt, version);
+    }
+
+    /** {@link #rehydrate} for a session that has not been launched on its own (it has started if it has messages). */
+    public static Session rehydrate(SessionId id, SessionTitle title, Location location, SessionStatus status,
                                     Location moveTarget, List<Message> messages, Instant createdAt, Instant updatedAt,
                                     long version) {
-        return new Session(id, title, location, status, moveTarget, messages, createdAt, updatedAt, version);
+        return rehydrate(id, title, location, status, moveTarget, messages, false, createdAt, updatedAt, version);
     }
 
     /**
@@ -128,6 +137,7 @@ public class Session {
             throw new InvalidMoveException(id, location, target, "the session already runs there");
         }
         moveTarget = target;
+        launched = true; // moving it is choosing where it runs
         status = SessionStatus.MOVING;
         updatedAt = now;
     }
@@ -144,6 +154,34 @@ public class Session {
         status = SessionStatus.IDLE;
         updatedAt = now;
         pendingEvents.add(new SessionMovedEvent(id, from, location));
+    }
+
+    /**
+     * Chooses where a session that has not started yet will run. Nothing moves, because no sandbox exists yet: the
+     * agent starts at that location on the first message. After this the session counts as started, so from then on
+     * it can only be moved.
+     *
+     * @throws SessionBusyException if the session is not idle
+     * @throws InvalidMoveException if the session has already started
+     */
+    public void launchAt(Location target, Instant now) {
+        Objects.requireNonNull(target, "target required");
+        Objects.requireNonNull(now, "now required");
+        requireIdle();
+        if (started()) {
+            throw new InvalidMoveException(id, location, target, "the session has already started, so it can only be moved");
+        }
+        location = target;
+        launched = true;
+        updatedAt = now;
+    }
+
+    /**
+     * Whether the session has a sandbox to speak of: the analyst has sent a message or has chosen where it runs. Until
+     * then no sandbox has been created and the location is only a default.
+     */
+    public boolean started() {
+        return launched || !messages.isEmpty();
     }
 
     /** Gives up on the move: the session stays where it was and becomes idle again. */
