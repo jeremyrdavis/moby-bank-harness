@@ -194,6 +194,11 @@ components:
             $ref: "#/components/schemas/FileRefDTO"
           description: "Distinct files shared anywhere in the conversation, in the\
             \ order they first appeared"
+        started:
+          type: boolean
+          description: "False until the analyst sends a message or chooses where the\
+            \ session runs: no sandbox exists before that, and the location is only\
+            \ a default"
     SessionSummaryDTO:
       type: object
       properties:

@@ -66,6 +66,8 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#current(com.mobybank.harness.domain.SessionId)" tabindex="0">current(SessionId)</a></li>
 <li><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" tabindex="0">set(SessionId, SandboxRegistry.Handle)</a></li>
+<li><a href="#expectFiles(com.mobybank.harness.domain.SessionId)" tabindex="0">expectFiles(SessionId)</a></li>
+<li><a href="#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" tabindex="0">takeExpectedFiles(SessionId)</a></li>
 <li><a href="#agentSession(com.mobybank.harness.domain.SessionId)" tabindex="0">agentSession(SessionId)</a></li>
 <li><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" tabindex="0">setAgentSession(SessionId, String)</a></li>
 <li><a href="#bareName(java.lang.String)" tabindex="0">bareName(String)</a></li>
@@ -165,27 +167,38 @@ generation, which lets the adapters find a session's sandbox again after a resta
 when the registry points elsewhere.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#expectFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">expectFiles</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
+into it (a sandbox the turn creates itself gets them as part of the turn).</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
  <a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Reads the generation out of a name listed by <code>sbx ls</code>, which may carry an <code>agent/</code> prefix and, for
 cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  int&nbsp;generation)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#takeExpectedFiles(com.mobybank.harness.domain.SessionId)" class="member-name-link">takeExpectedFiles</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">True once, after <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
+</div>
 </div>
 </div>
 </div>
@@ -233,6 +246,25 @@ cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</co
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">set</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="expectFiles(com.mobybank.harness.domain.SessionId)">
+<h3>expectFiles</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">expectFiles</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
+<div class="block">Notes that a session's sandbox was created empty by a move, so the next turn must copy the session's shared files
+into it (a sandbox the turn creates itself gets them as part of the turn).</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="takeExpectedFiles(com.mobybank.harness.domain.SessionId)">
+<h3>takeExpectedFiles</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">takeExpectedFiles</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
+<div class="block">True once, after <a href="#expectFiles(com.mobybank.harness.domain.SessionId)"><code>expectFiles(SessionId)</code></a>: the next turn should copy the shared files in.</div>
 </div>
 </section>
 </li>

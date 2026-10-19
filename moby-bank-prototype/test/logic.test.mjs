@@ -146,6 +146,22 @@ test('the header offers Move to cloud for a local session and Move to local for 
   assert.deepEqual([cloud.isLocal, cloud.isCloud], [false, true]);
 });
 
+test('both move buttons are always offered: the one for where the session runs is disabled and secondary', () => {
+  const pick = v => [v.localDisabled, v.cloudDisabled, v.localVariant, v.cloudVariant, v.movingToLocal, v.movingToCloud];
+  const local = withSession(DETAIL('s1', { location: 'local' })).c.renderVals();
+  assert.deepEqual(pick(local), [true, false, 'secondary', 'default', false, false]);
+  const cloud = withSession(DETAIL('s1', { location: 'cloud' })).c.renderVals();
+  assert.deepEqual(pick(cloud), [false, true, 'default', 'secondary', false, false]);
+});
+
+test('while a session moves both buttons are disabled and the one it is moving to shows the spinner', () => {
+  const { c } = withSession(DETAIL('s1', { location: 'local', status: 'moving' }), { moving: { s1: true } });
+  c.moveTargets.s1 = 'cloud';
+  const vals = c.renderVals();
+  assert.deepEqual([vals.localDisabled, vals.cloudDisabled, vals.movingToCloud, vals.movingToLocal], [true, true, true, false]);
+  assert.deepEqual([vals.localVariant, vals.cloudVariant], ['secondary', 'secondary']);
+});
+
 test('the connect dialog marks connected folders and the attach dialog lists their documents', () => {
   const { c } = withSession(DETAIL('s1'), {
     library: [{ id: 'f1', name: 'Earnings', path: 'A / B', fileCount: 24, connected: true }, { id: 'f2', name: 'Peers', path: 'C', fileCount: 5, connected: false }],

@@ -3,6 +3,7 @@ package com.mobybank.harness.interfaces.web;
 import com.mobybank.harness.application.AttachUploadCommand;
 import com.mobybank.harness.application.CreateSessionCommand;
 import com.mobybank.harness.application.FileRefDTO;
+import com.mobybank.harness.application.LaunchSessionCommand;
 import com.mobybank.harness.application.MessageDTO;
 import com.mobybank.harness.application.MoveSessionCommand;
 import com.mobybank.harness.application.ResourceNotFoundException;
@@ -171,6 +172,17 @@ public class ConversationsResource {
                 cloud ? "Context and files are now on the cloud model. The local copy is kept."
                         : "The session runs on the local model again. The cloud copy is kept.");
         return triggers.on(withCookie(Hx.html(Templates.main(sessions.get(id))), id)).build();
+    }
+
+    /**
+     * Chooses where a conversation that has not started yet runs ({@code at}, {@code local} or {@code cloud}). No
+     * sandbox exists yet, so nothing moves and nothing waits: the pane comes back at once with the new location, and
+     * the header then offers the move buttons.
+     */
+    @POST
+    @Path("/{id}/run")
+    public Response run(@PathParam("id") String id, @QueryParam("at") @DefaultValue("local") String at) {
+        return main(sessions.launch(new LaunchSessionCommand(id, at)), true);
     }
 
     // --- helpers -----------------------------------------------------------------------------------------------

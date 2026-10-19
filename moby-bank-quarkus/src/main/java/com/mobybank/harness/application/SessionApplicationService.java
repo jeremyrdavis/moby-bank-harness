@@ -67,6 +67,16 @@ public class SessionApplicationService {
         return toDto(session);
     }
 
+    /** Chooses where a session that has not started yet runs. No sandbox exists yet, so nothing is moved. */
+    public SessionDTO launch(LaunchSessionCommand command) {
+        SessionId id = Dtos.sessionId(command.sessionId());
+        Location location = Dtos.location(command.location(), null);
+        Session session = load(id);
+        session.launchAt(location, clock.instant());
+        sessions.persist(session);
+        return toDto(session);
+    }
+
     /** The conversation history, most recently updated first. */
     public List<SessionSummaryDTO> list() {
         return sessions.findAllByMostRecentlyUpdated().stream()

@@ -264,6 +264,59 @@ class SessionTest {
         assertTrue(restored.pullPendingEvents().isEmpty());
     }
 
+    // --- choosing where to run ---------------------------------------------------------------------------------
+
+    @Test
+    void aNewSessionHasNotStartedUntilTheAnalystChoosesWhereToRunOrSendsAMessage() {
+        assertTrue(!newSession(Location.LOCAL).started());
+
+        Session chosen = newSession(Location.LOCAL);
+        chosen.launchAt(Location.CLOUD, T1);
+        assertTrue(chosen.started());
+        assertEquals(Location.CLOUD, chosen.location());
+        assertEquals(SessionStatus.IDLE, chosen.status());
+        assertEquals(T1, chosen.updatedAt());
+
+        Session talking = newSession(Location.LOCAL);
+        talking.postUserMessage("question", List.of(), T1);
+        assertTrue(talking.started());
+    }
+
+    @Test
+    void aSessionThatHasStartedCanOnlyBeMovedNotLaunchedAgain() {
+        Session session = newSession(Location.LOCAL);
+        session.launchAt(Location.LOCAL, T1);
+
+        assertThrows(InvalidMoveException.class, () -> session.launchAt(Location.CLOUD, T2));
+
+        Session talking = newSession(Location.LOCAL);
+        talking.postUserMessage("question", List.of(), T1);
+        talking.recordAgentReply(REPLY, T2);
+        assertThrows(InvalidMoveException.class, () -> talking.launchAt(Location.CLOUD, T2));
+    }
+
+    @Test
+    void aMoveCountsAsStartingTheSessionAndALaunchSurvivesRehydrating() {
+        Session moved = newSession(Location.LOCAL);
+        moved.beginMove(Location.CLOUD, T1);
+        assertTrue(moved.started());
+
+        Session launched = newSession(Location.LOCAL);
+        launched.launchAt(Location.CLOUD, T1);
+        Session restored = Session.rehydrate(launched.id(), launched.title(), launched.location(), launched.status(),
+                launched.moveTarget(), launched.messages(), launched.started(), launched.createdAt(),
+                launched.updatedAt(), 1L);
+        assertTrue(restored.started());
+    }
+
+    @Test
+    void aBusySessionCannotBeLaunched() {
+        Session session = newSession(Location.LOCAL);
+        session.beginMove(Location.CLOUD, T1);
+
+        assertThrows(SessionBusyException.class, () -> session.launchAt(Location.CLOUD, T2));
+    }
+
     // --- notices -----------------------------------------------------------------------------------------------
 
     @Test

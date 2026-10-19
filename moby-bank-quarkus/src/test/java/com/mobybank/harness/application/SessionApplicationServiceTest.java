@@ -270,6 +270,31 @@ class SessionApplicationServiceTest {
         assertTrue(service.get(created.id()).messages().get(1).paragraphs().get(0).contains("boom"));
     }
 
+    // --- choosing where to run --------------------------------------------------------------------------------
+
+    @Test
+    void launchingChoosesWhereAnewSessionRunsWithoutMovingAnything() {
+        SessionDTO created = service.create(new CreateSessionCommand("local"));
+        assertEquals(false, created.started());
+
+        SessionDTO launched = service.launch(new LaunchSessionCommand(created.id(), "cloud"));
+
+        assertEquals("cloud", launched.location());
+        assertEquals("idle", launched.status());
+        assertEquals(true, launched.started());
+        assertEquals(true, service.get(created.id()).started());
+        assertEquals(List.of(), events.types(), "nothing was moved, so nothing is announced");
+    }
+
+    @Test
+    void aSessionThatHasStartedCannotBeLaunchedAndALocationIsRequired() {
+        SessionDTO created = service.create(new CreateSessionCommand("local"));
+        service.launch(new LaunchSessionCommand(created.id(), "local"));
+
+        assertThrows(InvalidMoveException.class, () -> service.launch(new LaunchSessionCommand(created.id(), "cloud")));
+        assertThrows(IllegalArgumentException.class, () -> service.launch(new LaunchSessionCommand(created.id(), null)));
+    }
+
     // --- moves -------------------------------------------------------------------------------------------------
 
     @Test

@@ -64,12 +64,15 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#start(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.time.Instant)" tabindex="0">start(SessionId, Location, Instant)</a></li>
+<li><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)" tabindex="0">rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, boolean, Instant, Instant, long)</a></li>
 <li><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,java.time.Instant,java.time.Instant,long)" tabindex="0">rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, Instant, Instant, long)</a></li>
 <li><a href="#postUserMessage(java.lang.String,java.util.List,java.time.Instant)" tabindex="0">postUserMessage(String, List, Instant)</a></li>
 <li><a href="#recordAgentReply(com.mobybank.harness.domain.AgentReply,java.time.Instant)" tabindex="0">recordAgentReply(AgentReply, Instant)</a></li>
 <li><a href="#recordAgentFailure(java.lang.String,java.time.Instant)" tabindex="0">recordAgentFailure(String, Instant)</a></li>
 <li><a href="#beginMove(com.mobybank.harness.domain.Location,java.time.Instant)" tabindex="0">beginMove(Location, Instant)</a></li>
 <li><a href="#completeMove(java.time.Instant)" tabindex="0">completeMove(Instant)</a></li>
+<li><a href="#launchAt(com.mobybank.harness.domain.Location,java.time.Instant)" tabindex="0">launchAt(Location, Instant)</a></li>
+<li><a href="#started()" tabindex="0">started()</a></li>
 <li><a href="#abortMove(java.time.Instant)" tabindex="0">abortMove(Instant)</a></li>
 <li><a href="#filesShared()" tabindex="0">filesShared()</a></li>
 <li><a href="#id()" tabindex="0">id()</a></li>
@@ -158,40 +161,60 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#id()" class="member-name-link">id</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#location()" class="member-name-link">location</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#messages()" class="member-name-link">messages</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#moveTarget()" class="member-name-link">moveTarget</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#launchAt(com.mobybank.harness.domain.Location,java.time.Instant)" class="member-name-link">launchAt</a><wbr>(<a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Chooses where a session that has not started yet will run.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#location()" class="member-name-link">location</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#messages()" class="member-name-link">messages</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#moveTarget()" class="member-name-link">moveTarget</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The location the session is moving to, or null when it is not moving.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#postUserMessage(java.lang.String,java.util.List,java.time.Instant)" class="member-name-link">postUserMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#postUserMessage(java.lang.String,java.util.List,java.time.Instant)" class="member-name-link">postUserMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="FileRef.html" title="class in com.mobybank.harness.domain">FileRef</a>&gt;&nbsp;files,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds the analyst's message and marks the session as running.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="DomainEvent.html" title="interface in com.mobybank.harness.domain">DomainEvent</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pullPendingEvents()" class="member-name-link">pullPendingEvents</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="DomainEvent.html" title="interface in com.mobybank.harness.domain">DomainEvent</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pullPendingEvents()" class="member-name-link">pullPendingEvents</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Drained by the application service after persisting, then published.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recordAgentFailure(java.lang.String,java.time.Instant)" class="member-name-link">recordAgentFailure</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Records that the agent could not answer the running turn, so the analyst sees why, and frees the session.</div>
-</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recordAgentReply(com.mobybank.harness.domain.AgentReply,java.time.Instant)" class="member-name-link">recordAgentReply</a><wbr>(<a href="AgentReply.html" title="class in com.mobybank.harness.domain">AgentReply</a>&nbsp;reply,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recordAgentFailure(java.lang.String,java.time.Instant)" class="member-name-link">recordAgentFailure</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Records that the agent could not answer the running turn, so the analyst sees why, and frees the session.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Message.html" title="class in com.mobybank.harness.domain">Message</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recordAgentReply(com.mobybank.harness.domain.AgentReply,java.time.Instant)" class="member-name-link">recordAgentReply</a><wbr>(<a href="AgentReply.html" title="class in com.mobybank.harness.domain">AgentReply</a>&nbsp;reply,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Records the agent's answer to the running turn and makes the session idle again.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
+ <a href="SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a>&nbsp;title,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a>&nbsp;status,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;moveTarget,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;messages,
+ boolean&nbsp;launched,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;updatedAt,
+ long&nbsp;version)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Reconstruction path for the persistence layer.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
@@ -204,7 +227,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;updatedAt,
  long&nbsp;version)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Reconstruction path for the persistence layer.</div>
+<div class="block"><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)"><code>rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, boolean, Instant, Instant, long)</code></a> for a session that has not been launched on its own (it has started if it has messages).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#start(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,java.time.Instant)" class="member-name-link">start</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
@@ -213,18 +236,23 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Starts an empty session at the given location.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#status()" class="member-name-link">status</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#title()" class="member-name-link">title</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#started()" class="member-name-link">started</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Whether the session has a sandbox to speak of: the analyst has sent a message or has chosen where it runs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#status()" class="member-name-link">status</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatedAt()" class="member-name-link">updatedAt</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#title()" class="member-name-link">title</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#version()" class="member-name-link">version</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updatedAt()" class="member-name-link">updatedAt</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#version()" class="member-name-link">version</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -278,6 +306,25 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)">
+<h3>rehydrate</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Session.html" title="class in com.mobybank.harness.domain">Session</a></span>&nbsp;<span class="element-name">rehydrate</span><wbr><span class="parameters">(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
+ <a href="SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a>&nbsp;title,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a>&nbsp;status,
+ <a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;moveTarget,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;messages,
+ boolean&nbsp;launched,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;updatedAt,
+ long&nbsp;version)</span></div>
+<div class="block">Reconstruction path for the persistence layer. It trusts stored state and raises no events. Domain code never
+calls it.</div>
+</div>
+</section>
+</li>
+<li>
 <section class="detail" id="rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,java.time.Instant,java.time.Instant,long)">
 <h3>rehydrate</h3>
 <div class="horizontal-scroll">
@@ -290,8 +337,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;updatedAt,
  long&nbsp;version)</span></div>
-<div class="block">Reconstruction path for the persistence layer. It trusts stored state and raises no events. Domain code never
-calls it.</div>
+<div class="block"><a href="#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)"><code>rehydrate(SessionId, SessionTitle, Location, SessionStatus, Location, List, boolean, Instant, Instant, long)</code></a> for a session that has not been launched on its own (it has started if it has messages).</div>
 </div>
 </section>
 </li>
@@ -353,6 +399,33 @@ either direction.</div>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">completeMove</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</span></div>
 <div class="block">Finishes the move: the session now runs at the target location.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="launchAt(com.mobybank.harness.domain.Location,java.time.Instant)">
+<h3>launchAt</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">launchAt</span><wbr><span class="parameters">(<a href="Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;target,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</span></div>
+<div class="block">Chooses where a session that has not started yet will run. Nothing moves, because no sandbox exists yet: the
+agent starts at that location on the first message. After this the session counts as started, so from then on
+it can only be moved.</div>
+<dl class="notes">
+<dt>Throws:</dt>
+<dd><code><a href="SessionBusyException.html" title="class in com.mobybank.harness.domain">SessionBusyException</a></code> - if the session is not idle</dd>
+<dd><code><a href="InvalidMoveException.html" title="class in com.mobybank.harness.domain">InvalidMoveException</a></code> - if the session has already started</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="started()">
+<h3>started</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">started</span>()</div>
+<div class="block">Whether the session has a sandbox to speak of: the analyst has sent a message or has chosen where it runs. Until
+then no sandbox has been created and the location is only a default.</div>
 </div>
 </section>
 </li>

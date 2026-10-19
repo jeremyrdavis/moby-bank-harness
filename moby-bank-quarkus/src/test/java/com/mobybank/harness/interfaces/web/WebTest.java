@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,7 +81,9 @@ class WebTest {
         given().get("/ui/conversations/" + id).then().statusCode(200)
                 .body(containsString("hx-post=\"/api/conversations/" + id + "/messages\""))
                 .body(containsString("What should we analyze?"))
-                .body(containsString("data-move-cloud"))
+                .body(containsString("data-run-local")).body(containsString("data-run-cloud"))
+                .body(containsString("Run locally")).body(containsString("Run in cloud"))
+                .body(not(containsString("data-move-cloud"))).body(not(containsString("data-move-local")))
                 .body(containsString("id=\"thinking\""))
                 .body(not(containsString("<html")))
                 .cookie("moby-current", id)
@@ -225,7 +228,7 @@ class WebTest {
 
         response.then().statusCode(200).body(containsString("Move to local")).body(containsString("dot cloud"))
                 .body(containsString("data-move-local")).body(containsString("move?to=local"))
-                .body(not(containsString("data-move-cloud")))
+                .body(containsString("data-move-cloud"))
                 .body(containsString("data-location=\"cloud\""))
                 .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
                 .header("HX-Trigger", containsString("Session moved to cloud"))
@@ -244,12 +247,12 @@ class WebTest {
     }
 
     @Test
-    void movingBackToLocalOffersTheCloudButtonAgainAndRaisesTheSameToast() {
+    void movingBackToLocalEnablesTheCloudButtonAgainAndRaisesTheSameToast() {
         String id = createSession();
         given().post("/ui/conversations/" + id + "/move?to=cloud").then().statusCode(200);
 
         given().post("/ui/conversations/" + id + "/move?to=local").then().statusCode(200)
-                .body(containsString("data-move-cloud")).body(not(containsString("data-move-local")))
+                .body(containsString("data-move-cloud")).body(containsString("data-move-local"))
                 .body(containsString("data-location=\"local\""))
                 .header("HX-Trigger", containsString("\"id\":\"move-cloud\""))
                 .header("HX-Trigger", containsString("Session moved to local"));
@@ -261,14 +264,62 @@ class WebTest {
         // Busy panes (disabled button, polling) are covered in WebWaitTest.
         String id = given().contentType(ContentType.JSON).body(Map.of("location", "cloud"))
                 .post("/api/sessions").then().statusCode(201).extract().path("id");
+        given().post("/ui/conversations/" + id + "/run?at=cloud").then().statusCode(200);
         String pane = given().get("/ui/conversations/" + id).asString();
         assertTrue(pane.contains("data-move-local hx-post"), pane);
         assertTrue(!pane.contains("data-poll"), "an idle pane does not poll");
         assertTrue(!pane.matches("(?s).*data-move-local[^>]*disabled.*"), "enabled when idle");
+        assertTrue(pane.matches("(?s).*data-move-cloud[^>]*disabled.*"), "the button for where it runs is disabled");
     }
 
     @Test
-    void aSessionThatMovedBackShowsTheMoveButtonAgain() {
+    void aConversationThatHasNotStartedOffersBothRunButtonsInBlue() {
+        String pane = given().get("/ui/conversations/" + createSession()).asString();
+
+        assertTrue(pane.matches("(?s).*btn-primary[^>]*data-run-local hx-post=\"[^\"]*run\\?at=local\"[^>]*>.*"), pane);
+        assertTrue(pane.matches("(?s).*btn-primary[^>]*data-run-cloud hx-post=\"[^\"]*run\\?at=cloud\"[^>]*>.*"), pane);
+        assertTrue(!pane.matches("(?s).*data-run-(local|cloud)[^>]*disabled.*"), "both are enabled: " + pane);
+    }
+
+    @Test
+    void choosingWhereToRunStartsTheConversationAndOffersTheMoveButtonsWithTheCurrentOneGreyedOut() {
+        String id = createSession();
+
+        given().post("/ui/conversations/" + id + "/run?at=cloud").then().statusCode(200)
+                .body(containsString("data-location=\"cloud\""))
+                .body(containsString("Move to local")).body(containsString("Move to cloud"))
+                .body(not(containsString("data-run-cloud"))).body(not(containsString("data-run-local")))
+                .body(matchesPattern("(?s).*data-move-cloud[^>]*disabled.*"))
+                .body(not(matchesPattern("(?s).*data-move-local[^>]*disabled.*")))
+                .header("HX-Trigger", containsString("conversations-changed"));
+        given().get("/api/sessions/" + id).then().body("location", equalTo("cloud")).body("started", equalTo(true))
+                .body("status", equalTo("idle"));
+        // later visits keep the move buttons, and the choice cannot be made twice
+        given().get("/ui/conversations/" + id).then().body(containsString("data-move-local"));
+        given().post("/ui/conversations/" + id + "/run?at=local").then().statusCode(409);
+    }
+
+    @Test
+    void sendingAMessageAlsoStartsTheConversation() {
+        String id = createSession();
+        send(id, "Hello").then().statusCode(200);
+
+        given().get("/ui/conversations/" + id).then().body(containsString("data-move-cloud"))
+                .body(not(containsString("data-run-cloud")));
+    }
+
+    @Test
+    void bothMoveButtonsAreShownAndTheOneForTheCurrentLocationIsDisabled() {
+        String startedId = createSession();
+        given().post("/ui/conversations/" + startedId + "/run?at=local").then().statusCode(200);
+        String local = given().get("/ui/conversations/" + startedId).asString();
+        assertTrue(local.matches("(?s).*data-move-local[^>]*disabled.*"), "already local: " + local);
+        assertTrue(!local.matches("(?s).*data-move-cloud[^>]*disabled.*"), "cloud move is offered");
+        assertTrue(local.matches("(?s).*btn-outline[^>]*data-move-local.*btn-primary[^>]*data-move-cloud.*"), local);
+    }
+
+    @Test
+    void aSessionThatMovedBackEnablesTheMoveToCloudButtonAgain() {
         String id = createSession();
         given().post("/ui/conversations/" + id + "/move?to=cloud").then().statusCode(200);
         given().contentType(ContentType.JSON).body(Map.of("target", "local"))
@@ -277,7 +328,9 @@ class WebTest {
             sleep(50);
         }
 
-        given().get("/ui/conversations/" + id).then().body(containsString("data-move-cloud"));
+        String pane = given().get("/ui/conversations/" + id).asString();
+        assertTrue(pane.contains("data-move-cloud"), pane);
+        assertTrue(!pane.matches("(?s).*data-move-cloud[^>]*disabled.*"), "enabled again: " + pane);
     }
 
     // --- OneDrive -----------------------------------------------------------------------------------------------

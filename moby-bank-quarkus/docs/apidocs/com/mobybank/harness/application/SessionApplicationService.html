@@ -64,6 +64,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#create(com.mobybank.harness.application.CreateSessionCommand)" tabindex="0">create(CreateSessionCommand)</a></li>
+<li><a href="#launch(com.mobybank.harness.application.LaunchSessionCommand)" tabindex="0">launch(LaunchSessionCommand)</a></li>
 <li><a href="#list()" tabindex="0">list()</a></li>
 <li><a href="#get(java.lang.String)" tabindex="0">get(String)</a></li>
 <li><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" tabindex="0">sendMessage(SendMessageCommand)</a></li>
@@ -135,19 +136,24 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#get(java.lang.String)" class="member-name-link">get</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sessionId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="SessionSummaryDTO.html" title="class in com.mobybank.harness.application">SessionSummaryDTO</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#list()" class="member-name-link">list</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#launch(com.mobybank.harness.application.LaunchSessionCommand)" class="member-name-link">launch</a><wbr>(<a href="LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a>&nbsp;command)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Chooses where a session that has not started yet runs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="SessionSummaryDTO.html" title="class in com.mobybank.harness.application">SessionSummaryDTO</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#list()" class="member-name-link">list</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The conversation history, most recently updated first.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#move(com.mobybank.harness.application.MoveSessionCommand)" class="member-name-link">move</a><wbr>(<a href="MoveSessionCommand.html" title="class in com.mobybank.harness.application">MoveSessionCommand</a>&nbsp;command)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#move(com.mobybank.harness.application.MoveSessionCommand)" class="member-name-link">move</a><wbr>(<a href="MoveSessionCommand.html" title="class in com.mobybank.harness.application">MoveSessionCommand</a>&nbsp;command)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Starts moving the session to the other location and returns it in the <code>moving</code> state.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" class="member-name-link">sendMessage</a><wbr>(<a href="SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a>&nbsp;command)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" class="member-name-link">sendMessage</a><wbr>(<a href="SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a>&nbsp;command)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds the analyst's message and starts the agent on it in the background.</div>
 </div>
 </div>
@@ -195,6 +201,15 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <h3>create</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="CreateSessionCommand.html" title="class in com.mobybank.harness.application">CreateSessionCommand</a>&nbsp;command)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="launch(com.mobybank.harness.application.LaunchSessionCommand)">
+<h3>launch</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></span>&nbsp;<span class="element-name">launch</span><wbr><span class="parameters">(<a href="LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a>&nbsp;command)</span></div>
+<div class="block">Chooses where a session that has not started yet runs. No sandbox exists yet, so nothing is moved.</div>
 </div>
 </section>
 </li>

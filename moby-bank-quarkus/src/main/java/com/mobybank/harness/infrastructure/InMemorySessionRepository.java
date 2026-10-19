@@ -47,6 +47,7 @@ public class InMemorySessionRepository implements SessionRepository {
 
     private static Session copy(Session session, long version) {
         return Session.rehydrate(session.id(), session.title(), session.location(), session.status(),
-                session.moveTarget(), session.messages(), session.createdAt(), session.updatedAt(), version);
+                session.moveTarget(), session.messages(), session.started(), session.createdAt(), session.updatedAt(),
+                version);
     }
 }

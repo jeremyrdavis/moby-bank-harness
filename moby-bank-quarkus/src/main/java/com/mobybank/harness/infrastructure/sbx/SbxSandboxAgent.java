@@ -170,7 +170,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
 
         Optional<Handle> known = registry.current(session).filter(handle -> handle.location() == location);
         if (known.isPresent()) {
-            return new Sandbox(known.get(), false);
+            // A sandbox a move created empty has not had the session's files copied in yet
+            return new Sandbox(known.get(), registry.takeExpectedFiles(session));
         }
         Optional<Handle> existing = registry.discover(cli, session, location);
         if (existing.isPresent()) {

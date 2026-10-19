@@ -166,7 +166,10 @@ else is split on blank lines into paragraphs. A second table stays inside the pa
 ### A move (`SbxSandboxTransfer.move`)
 
 1. Find the source sandbox (registry, else by listing at the source location). **If there is none** (the session never
-   ran a turn), report "Nothing to package yet" and finish: the agent will start at the destination on its next turn.
+   ran a turn, or its sandbox is gone), there is nothing to carry over, but the move still creates an empty sandbox at the
+   destination (`sbx [--cloud] create`, next generation name), finds it by listing, and records that the next turn must
+   copy the session's shared files into it and replay the conversation. Without this a move would only change what the
+   app says, and no sandbox would exist at the destination.
 2. Report `packaging`, then run `sbx move <source> --to <destination> --name <next generation name> --force`.
    `sbx move` captures the sandbox's whole filesystem as an image and starts a new sandbox from it. The agent's
    conversation history and any staged files travel with it, which is why a resumed turn keeps working after a move.
