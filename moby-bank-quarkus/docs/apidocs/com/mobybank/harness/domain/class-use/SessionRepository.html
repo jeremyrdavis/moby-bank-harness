@@ -66,6 +66,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
 </div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-last even-row-color">
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
+</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -92,17 +96,6 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="com.mobybank.harness.infrastructure">
 <h2>Uses of <a href="../SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a> in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a></h2>
-<div class="caption"><span>Classes in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> that implement <a href="../SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Class</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../infrastructure/InMemorySessionRepository.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure">InMemorySessionRepository</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Keeps sessions in memory.</div>
-</div>
-</div>
 <div class="caption"><span>Constructors in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> with parameters of type <a href="../SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier</div>
@@ -115,6 +108,22 @@ loadScripts(document, 'script');</script>
  boolean&nbsp;enabled,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;documentsMode)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<h2>Uses of <a href="../SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a> in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></h2>
+<div class="caption"><span>Classes in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> that implement <a href="../SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure.persistence">PostgresSessionRepository</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Stores <a href="../Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>s in PostgreSQL.</div>
+</div>
 </div>
 </section>
 </li>

@@ -63,7 +63,7 @@ class SbxSandboxAgentTest {
     @BeforeEach
     void setUp() {
         runner = new FakeRunner();
-        registry = new SandboxRegistry();
+        registry = new SandboxRegistry(new InMemorySandboxRecordStore());
         uploads = new HashMap<>();
         onedrive = new HashMap<>();
         UploadStore store = new UploadStore() {

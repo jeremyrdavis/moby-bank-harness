@@ -12,6 +12,7 @@ import com.mobybank.harness.application.SessionEvent;
 import com.mobybank.harness.application.SessionEventStream;
 import com.mobybank.harness.application.SessionSummaryDTO;
 import io.quarkus.logging.Log;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.BackPressureStrategy;
 import jakarta.inject.Inject;
@@ -176,6 +177,7 @@ public class SessionsResource {
             content = @Content(mediaType = MediaType.SERVER_SENT_EVENTS))
     @APIResponse(responseCode = "404", description = "No such session",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
+    @Blocking // looking the session up reads the database, which must not happen on the event loop
     public Multi<OutboundSseEvent> events(@PathParam("id") String id, @Context Sse sse) {
         String sessionId = sessions.get(id).id(); // rejects unknown ids and gives the canonical form
         Log.debugf("GET /api/sessions/%s/events: opening the event stream", sessionId);

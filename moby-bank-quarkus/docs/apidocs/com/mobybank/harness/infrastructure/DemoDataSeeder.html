@@ -83,9 +83,9 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@ApplicationScoped
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">DemoDataSeeder</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), and connects its
-first three demo folders too, but only when the document catalog is the fake one: a real OneDrive has no such
-folders.</div>
+<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), but only into an
+empty database, so a restart does not add them again. It also connects the first three demo folders, but only when
+the document catalog is the fake one: a real OneDrive has no such folders.</div>
 </div>
 </section>
 <section class="summary">

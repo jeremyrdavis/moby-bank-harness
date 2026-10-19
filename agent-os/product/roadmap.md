@@ -29,4 +29,4 @@ Backend delivery: two implementations of the backend, built sequentially, one in
 
 To be determined
 
-Known gaps, not committed work: per-user sign-in (every analyst sees the one configured drive), persistence across restarts (state is in memory), cleaning up what a move leaves behind (the stopped source sandbox and, for a move to the cloud, a backing cloud template), cloud `sbx volume` for files that outlive a sandbox, and showing the agent's text as it streams.
+Known gaps, not committed work: per-user sign-in (every analyst sees the one configured drive), cleaning up what a move leaves behind (the stopped source sandbox and, for a move to the cloud, a backing cloud template), cloud `sbx volume` for files that outlive a sandbox, and showing the agent's text as it streams.

@@ -43,7 +43,7 @@ class SandboxRegistryTest {
 
     @Test
     void handlesAndAgentSessionsAreRememberedPerSession() {
-        SandboxRegistry registry = new SandboxRegistry();
+        SandboxRegistry registry = new SandboxRegistry(new InMemorySandboxRecordStore());
         assertTrue(registry.current(SESSION).isEmpty());
 
         Handle handle = new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g0", 0);

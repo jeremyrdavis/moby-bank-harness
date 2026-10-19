@@ -5,13 +5,11 @@ import com.mobybank.harness.domain.ConnectedFoldersRepository;
 import com.mobybank.harness.domain.StaleAggregateException;
 import com.mobybank.harness.domain.UserId;
 import io.quarkus.logging.Log;
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/** Keeps each user's connected folders in memory, with the same copy-and-version rules as the session store. */
-@ApplicationScoped
+/** A test double for the PostgreSQL repository: keeps each user's connected folders in memory, with the same copy-and-version rules as the session store. */
 public class InMemoryConnectedFoldersRepository implements ConnectedFoldersRepository {
 
     private final Map<UserId, ConnectedFolders> stored = new HashMap<>();

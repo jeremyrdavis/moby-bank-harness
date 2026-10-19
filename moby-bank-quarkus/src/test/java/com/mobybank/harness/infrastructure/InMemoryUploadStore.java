@@ -3,13 +3,11 @@ package com.mobybank.harness.infrastructure;
 import com.mobybank.harness.application.UploadStore;
 import com.mobybank.harness.domain.SessionId;
 import io.quarkus.logging.Log;
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Keeps uploaded files in memory, keyed by session and file name. State is lost on restart. */
-@ApplicationScoped
+/** A test double for the PostgreSQL upload store: keeps uploaded files in memory, keyed by session and file name. State is lost on restart. */
 public class InMemoryUploadStore implements UploadStore {
 
     private final Map<String, byte[]> files = new ConcurrentHashMap<>();

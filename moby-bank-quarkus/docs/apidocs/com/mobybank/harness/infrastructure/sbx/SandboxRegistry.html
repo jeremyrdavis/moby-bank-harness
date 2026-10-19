@@ -59,7 +59,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E()" tabindex="0">SandboxRegistry()</a></li>
+<li><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRecordStore)" tabindex="0">SandboxRegistry(SandboxRecordStore)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -97,7 +97,8 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Remembers which sandbox currently backs each session, and the agent's own conversation id inside it so the next
 turn can resume. Sandbox names follow <code>moby-bank-&lt;session&gt;-g&lt;generation&gt;</code>; each move creates the next
-generation, which lets the adapters find a session's sandbox again after a restart by listing sandboxes.</div>
+generation. The records are kept in a <a href="SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx"><code>SandboxRecordStore</code></a> (PostgreSQL in the application), so they survive a
+restart; when a record is missing the adapters still find a session's sandbox again by listing sandboxes.</div>
 </div>
 </section>
 <section class="summary">
@@ -127,7 +128,7 @@ generation, which lets the adapters find a session's sandbox again after a resta
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">SandboxRegistry</a>()</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRecordStore)" class="member-name-link">SandboxRegistry</a><wbr>(<a href="SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx">SandboxRecordStore</a>&nbsp;store)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -223,10 +224,11 @@ cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</co
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;()">
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.infrastructure.sbx.SandboxRecordStore)">
 <h3>SandboxRegistry</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SandboxRegistry</span>()</div>
+<div class="member-signature"><span class="annotations">@Inject
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">SandboxRegistry</span><wbr><span class="parameters">(<a href="SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx">SandboxRecordStore</a>&nbsp;store)</span></div>
 </div>
 </section>
 </li>

@@ -37,7 +37,7 @@ Quarkus tests then prove the pieces are wired and the HTTP surface behaves.
 |---|---|
 | Domain | `SessionTest` (23), `ValueObjectsTest` (14), `ConnectedFoldersTest` (6), `RecencyGroupTest` (6), `DomainLayeringTest` (2) |
 | Application | `SessionApplicationServiceTest` (28), `FolderApplicationServiceTest` (7), `CurrentUserApplicationServiceTest` (2), `ApplicationLayeringTest` (2) |
-| Infrastructure | `InMemoryRepositoriesTest` (7), `EventsUploadsAndRunnerTest` (9), `FakeAdaptersTest` (12), `DemoDataTest` (6), `InfrastructureLayeringTest` (1) |
+| Infrastructure | `PostgresRepositoriesTest` (12, against a real PostgreSQL), `EventsUploadsAndRunnerTest` (9), `FakeAdaptersTest` (12), `DemoDataTest` (6), `InfrastructureLayeringTest` (1) |
 | `sbx` adapter | `SbxSandboxAgentTest` (16), `SbxCliTest` (11), `SbxSandboxTransferTest` (7), `ClaudeStreamParserTest` (8), `ReplyFormatterTest` (8), `ProcessCommandRunnerTest` (8), `SandboxRegistryTest` (4) |
 | Graph adapter | `GraphDocumentCatalogTest` (23), `GraphTokenProviderTest` (6) |
 | Documentation | `DocumentationTest` (8) |

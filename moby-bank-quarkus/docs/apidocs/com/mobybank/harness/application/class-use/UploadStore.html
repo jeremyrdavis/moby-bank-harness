@@ -62,9 +62,9 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The use cases.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure">com.mobybank.harness.infrastructure</a></div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
 <div class="col-last odd-row-color">
-<div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
 </div>
 <div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
 <div class="col-last even-row-color">
@@ -94,17 +94,17 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="com.mobybank.harness.infrastructure">
-<h2>Uses of <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a> in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a></h2>
-<div class="caption"><span>Classes in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> that implement <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a></span></div>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<h2>Uses of <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a> in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></h2>
+<div class="caption"><span>Classes in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> that implement <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>class&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../infrastructure/InMemoryUploadStore.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure">InMemoryUploadStore</a></code></div>
+<div class="col-second even-row-color"><code><a href="../../infrastructure/persistence/PostgresUploadStore.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure.persistence">PostgresUploadStore</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Keeps uploaded files in memory, keyed by session and file name.</div>
+<div class="block">Keeps uploaded files in PostgreSQL, keyed by session and file name.</div>
 </div>
 </div>
 </section>

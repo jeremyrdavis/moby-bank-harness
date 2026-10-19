@@ -73,12 +73,16 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The OneDrive adapter, which reads documents through Microsoft Graph.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
 <div class="col-last even-row-color">
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
+</div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The real sandbox adapters, which drive Docker Sandboxes through the <code>sbx</code> command line.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
+<div class="col-last even-row-color">
 <div class="block">The HTTP surface: JAX-RS resources, request bodies, and the exception mappers that turn failures into error
 responses.</div>
 </div>
@@ -277,53 +281,45 @@ the new user message and every file shared anywhere in the conversation.</div>
 <div class="col-last even-row-color">
 <div class="block">A document inside a catalog folder.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/ConnectedFolders.html#com.mobybank.harness.infrastructure">ConnectedFolders</a></div>
+<div class="col-first odd-row-color"><a href="class-use/ConnectedFoldersRepository.html#com.mobybank.harness.infrastructure">ConnectedFoldersRepository</a></div>
 <div class="col-last odd-row-color">
-<div class="block">The document folders one analyst has connected, in the order they were connected.</div>
-</div>
-<div class="col-first even-row-color"><a href="class-use/ConnectedFoldersRepository.html#com.mobybank.harness.infrastructure">ConnectedFoldersRepository</a></div>
-<div class="col-last even-row-color">
 <div class="block">Stores each user's <a href="ConnectedFolders.html" title="class in com.mobybank.harness.domain"><code>ConnectedFolders</code></a>.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/DocumentCatalog.html#com.mobybank.harness.infrastructure">DocumentCatalog</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/DocumentCatalog.html#com.mobybank.harness.infrastructure">DocumentCatalog</a></div>
+<div class="col-last even-row-color">
 <div class="block">The document source analysts connect folders from (OneDrive in production).</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/Folder.html#com.mobybank.harness.infrastructure">Folder</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/Folder.html#com.mobybank.harness.infrastructure">Folder</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A document folder in the catalog that an analyst can connect.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/FolderId.html#com.mobybank.harness.infrastructure">FolderId</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/FolderId.html#com.mobybank.harness.infrastructure">FolderId</a></div>
+<div class="col-last even-row-color">
 <div class="block">Opaque identifier of a document folder in the catalog (an item id when the catalog is OneDrive).</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure">Location</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure">Location</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Where a session's agent runs: a sandbox on the analyst's machine, or a sandbox in the cloud.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure">MoveProgress</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/MoveProgress.html#com.mobybank.harness.infrastructure">MoveProgress</a></div>
+<div class="col-last even-row-color">
 <div class="block">A progress report emitted by a transfer while it moves a session.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure">MoveRequest</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/MoveRequest.html#com.mobybank.harness.infrastructure">MoveRequest</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Everything a transfer needs to carry a session from one location to the other.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure">SandboxAgent</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/SandboxAgent.html#com.mobybank.harness.infrastructure">SandboxAgent</a></div>
+<div class="col-last even-row-color">
 <div class="block">The agent running in a Docker Sandbox.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure">SandboxTransfer</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/SandboxTransfer.html#com.mobybank.harness.infrastructure">SandboxTransfer</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Carries a session's context and files from one location to the other.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/Session.html#com.mobybank.harness.infrastructure">Session</a></div>
-<div class="col-last odd-row-color">
-<div class="block">A conversation between an analyst and the agent, and the aggregate root for its messages.</div>
-</div>
-<div class="col-first even-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure">SessionId</a></div>
+<div class="col-first even-row-color"><a href="class-use/Session.html#com.mobybank.harness.infrastructure">Session</a></div>
 <div class="col-last even-row-color">
-<div class="block">Identifies a <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
+<div class="block">A conversation between an analyst and the agent, and the aggregate root for its messages.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/SessionRepository.html#com.mobybank.harness.infrastructure">SessionRepository</a></div>
 <div class="col-last odd-row-color">
@@ -332,10 +328,6 @@ the new user message and every file shared anywhere in the conversation.</div>
 <div class="col-first even-row-color"><a href="class-use/Step.html#com.mobybank.harness.infrastructure">Step</a></div>
 <div class="col-last even-row-color">
 <div class="block">One entry in an agent's trace: a file it read or a calculation it ran.</div>
-</div>
-<div class="col-first odd-row-color"><a href="class-use/UserId.html#com.mobybank.harness.infrastructure">UserId</a></div>
-<div class="col-last odd-row-color">
-<div class="block">Identifies the analyst.</div>
 </div>
 </div>
 </section>
@@ -361,6 +353,51 @@ the new user message and every file shared anywhere in the conversation.</div>
 <div class="col-first odd-row-color"><a href="class-use/FolderId.html#com.mobybank.harness.infrastructure.graph">FolderId</a></div>
 <div class="col-last odd-row-color">
 <div class="block">Opaque identifier of a document folder in the catalog (an item id when the catalog is OneDrive).</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<div class="caption"><span>Classes in <a href="package-summary.html">com.mobybank.harness.domain</a> used by <a href="../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><a href="class-use/ConnectedFolders.html#com.mobybank.harness.infrastructure.persistence">ConnectedFolders</a></div>
+<div class="col-last even-row-color">
+<div class="block">The document folders one analyst has connected, in the order they were connected.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/ConnectedFoldersRepository.html#com.mobybank.harness.infrastructure.persistence">ConnectedFoldersRepository</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Stores each user's <a href="ConnectedFolders.html" title="class in com.mobybank.harness.domain"><code>ConnectedFolders</code></a>.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/Location.html#com.mobybank.harness.infrastructure.persistence">Location</a></div>
+<div class="col-last even-row-color">
+<div class="block">Where a session's agent runs: a sandbox on the analyst's machine, or a sandbox in the cloud.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/MessageRole.html#com.mobybank.harness.infrastructure.persistence">MessageRole</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Who wrote a <a href="Message.html" title="class in com.mobybank.harness.domain"><code>Message</code></a>: the analyst or the agent.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/Session.html#com.mobybank.harness.infrastructure.persistence">Session</a></div>
+<div class="col-last even-row-color">
+<div class="block">A conversation between an analyst and the agent, and the aggregate root for its messages.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/SessionId.html#com.mobybank.harness.infrastructure.persistence">SessionId</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Identifies a <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/SessionRepository.html#com.mobybank.harness.infrastructure.persistence">SessionRepository</a></div>
+<div class="col-last even-row-color">
+<div class="block">Stores <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a>s.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/SessionStatus.html#com.mobybank.harness.infrastructure.persistence">SessionStatus</a></div>
+<div class="col-last odd-row-color">
+<div class="block">What a <a href="Session.html" title="class in com.mobybank.harness.domain"><code>Session</code></a> is doing right now.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/UserId.html#com.mobybank.harness.infrastructure.persistence">UserId</a></div>
+<div class="col-last even-row-color">
+<div class="block">Identifies the analyst.</div>
 </div>
 </div>
 </section>

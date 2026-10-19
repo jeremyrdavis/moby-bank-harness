@@ -34,7 +34,7 @@ class SbxSandboxTransferTest {
     @BeforeEach
     void setUp() {
         runner = new FakeRunner();
-        registry = new SandboxRegistry();
+        registry = new SandboxRegistry(new InMemorySandboxRecordStore());
         SbxSettings settings = new SbxSettings("claude", List.of(), "/home/agent/workspace", Duration.ofMinutes(10),
                 Duration.ofMinutes(30), Duration.ofHours(8), "stop");
         transfer = new SbxSandboxTransfer(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, settings);

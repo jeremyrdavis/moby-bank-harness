@@ -70,6 +70,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
 </div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-last odd-row-color">
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
+</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -170,26 +174,54 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InMemorySessionRepository.</span><code><a href="../../infrastructure/InMemorySessionRepository.html#findAllByMostRecentlyUpdated()" class="member-name-link">findAllByMostRecentlyUpdated</a>()</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">InMemorySessionRepository.</span><code><a href="../../infrastructure/InMemorySessionRepository.html#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DemoData.</span><code><a href="../../infrastructure/DemoData.html#sessions(java.time.Clock)" class="member-name-link">sessions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock)</code></div>
 <div class="col-last even-row-color">
 <div class="block">The five seeded conversations, dated relative to now so they fall into the prototype's history groups.</div>
 </div>
 </div>
-<div class="caption"><span>Methods in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> with parameters of type <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<h2>Uses of <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a> in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></h2>
+<div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> that return <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InMemorySessionRepository.</span><code><a href="../../infrastructure/InMemorySessionRepository.html#persist(com.mobybank.harness.domain.Session)" class="member-name-link">persist</a><wbr>(<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&nbsp;session)</code></div>
+<div class="col-first even-row-color"><code>(package private) static <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionMapper.</span><code><a href="../../infrastructure/persistence/SessionMapper.html#toAggregate(com.mobybank.harness.infrastructure.persistence.SessionEntity)" class="member-name-link">toAggregate</a><wbr>(<a href="../../infrastructure/persistence/SessionEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">SessionEntity</a>&nbsp;entity)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Rebuilds the aggregate, at the version the row holds.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> that return types with arguments of type <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PostgresSessionRepository.</span><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html#findAllByMostRecentlyUpdated()" class="member-name-link">findAllByMostRecentlyUpdated</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresSessionRepository.</span><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> with parameters of type <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>(package private) static void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionMapper.</span><code><a href="../../infrastructure/persistence/SessionMapper.html#copyInto(com.mobybank.harness.domain.Session,com.mobybank.harness.infrastructure.persistence.SessionEntity)" class="member-name-link">copyInto</a><wbr>(<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&nbsp;session,
+ <a href="../../infrastructure/persistence/SessionEntity.html" title="class in com.mobybank.harness.infrastructure.persistence">SessionEntity</a>&nbsp;entity)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Copies the aggregate's state into the entity.</div>
+</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresSessionRepository.</span><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html#persist(com.mobybank.harness.domain.Session)" class="member-name-link">persist</a><wbr>(<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

@@ -66,9 +66,9 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The heart of the harness: what a conversation is, and the rules that keep it consistent.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure">com.mobybank.harness.infrastructure</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
 <div class="col-last even-row-color">
-<div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
 </div>
 <div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
 <div class="col-last odd-row-color">
@@ -251,22 +251,29 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="com.mobybank.harness.infrastructure">
-<h2>Uses of <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a> in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a></h2>
-<div class="caption"><span>Methods in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> with parameters of type <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></span></div>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<h2>Uses of <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a> in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></h2>
+<div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> with parameters of type <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InMemoryUploadStore.</span><code><a href="../../infrastructure/InMemoryUploadStore.html#find(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">find</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../../infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRecord</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PostgresSandboxRecordStore.</span><code><a href="../../infrastructure/persistence/PostgresSandboxRecordStore.html#find(com.mobybank.harness.domain.SessionId)" class="member-name-link">find</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">InMemorySessionRepository.</span><code><a href="../../infrastructure/InMemorySessionRepository.html#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresUploadStore.</span><code><a href="../../infrastructure/persistence/PostgresUploadStore.html#find(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">find</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PostgresSessionRepository.</span><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresSandboxRecordStore.</span><code><a href="../../infrastructure/persistence/PostgresSandboxRecordStore.html#save(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRecord)" class="member-name-link">save</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRecord</a>&nbsp;record)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InMemoryUploadStore.</span><code><a href="../../infrastructure/InMemoryUploadStore.html#store(com.mobybank.harness.domain.SessionId,java.lang.String,byte%5B%5D)" class="member-name-link">store</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
+<div class="col-second even-row-color"><span class="type-name-label">PostgresUploadStore.</span><code><a href="../../infrastructure/persistence/PostgresUploadStore.html#store(com.mobybank.harness.domain.SessionId,java.lang.String,byte%5B%5D)" class="member-name-link">store</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;sessionId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
  byte[]&nbsp;content)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
@@ -316,20 +323,29 @@ into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 <div class="col-last even-row-color">
 <div class="block">Clears the note once the shared files are in the sandbox.</div>
 </div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../../infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRecord</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SandboxRecordStore.</span><code><a href="../../infrastructure/sbx/SandboxRecordStore.html#find(com.mobybank.harness.domain.SessionId)" class="member-name-link">find</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#forgetAgentSession(com.mobybank.harness.domain.SessionId)" class="member-name-link">forgetAgentSession</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" class="member-name-link">generationOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
  <a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">Reads the generation out of a name listed by <code>sbx ls</code>, which may carry an <code>agent/</code> prefix and, for
 cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>.</div>
 </div>
-<div class="col-first odd-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+<div class="col-first even-row-color"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  int&nbsp;generation)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SandboxRecordStore.</span><code><a href="../../infrastructure/sbx/SandboxRecordStore.html#save(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRecord)" class="member-name-link">save</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../infrastructure/sbx/SandboxRecord.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRecord</a>&nbsp;record)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Replaces everything stored for the session.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">SandboxRegistry.</span><code><a href="../../infrastructure/sbx/SandboxRegistry.html#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
  <a href="../../infrastructure/sbx/SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>

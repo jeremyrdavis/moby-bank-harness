@@ -218,13 +218,17 @@ sequenceDiagram
 
 ## Consistency and concurrency
 
-There is no database, but the code is written as if there were one, so adding one does not change the domain.
+State lives in PostgreSQL (see [persistence.md](persistence.md)); the domain does not know that.
 
 - **Aggregates are loaded, changed and saved as a whole**, one per use-case step.
-- **The repositories hand out copies.** `InMemorySessionRepository` stores a private copy and returns a fresh one on
+- **The repositories hand out fresh aggregates.** `PostgresSessionRepository` rebuilds a `Session` from its rows on
   every read, so two threads never share a mutable `Session`.
-- **Optimistic versioning.** Every aggregate carries a plain `long version`. `persist` requires the stored version to
-  equal the aggregate's version, then advances it by one; a mismatch throws `StaleAggregateException`, which the API
+- **Transactions are short and belong to the repository methods, not to the application services.** An agent turn or a
+  move runs for minutes between loading a session and saving it, so a transaction around the use case would hold a
+  database connection that whole time. Each load and each save is its own transaction; the version check protects
+  against two writers.
+- **Optimistic versioning.** Every aggregate carries a plain `long version`. `persist` locks the row, requires the
+  stored version to equal the aggregate's version, then advances it by one; a mismatch throws `StaleAggregateException`, which the API
   reports as 409. Consequence: after a `persist`, reload before changing the same session again.
 - **The status machine is the first line of defence.** Two concurrent sends cannot both start a turn: the second sees
   RUNNING and gets `SessionBusyException`. The version check catches anything that slips past.
@@ -273,7 +277,7 @@ answered with 202); they reach the client as a failure message in the conversati
 
 | Decision | Why | What it costs |
 |---|---|---|
-| No database; in-memory with versioning | The demo needs no infrastructure, and the repository interface keeps persistence swappable | State is lost on restart |
+| PostgreSQL through Hibernate ORM and Panache, no migration tool | Conversations, uploads and the sandbox bookkeeping survive a restart; the repository ports kept the domain unchanged | Dev mode and tests need Docker; Hibernate `update` will not migrate a changed column, so a real schema change would need Flyway |
 | Domain types kept out of the REST layer | The API must stay stable and language-neutral for the Python backend | A mapper (`Dtos`) and a second set of types |
 | Fakes are the default adapters | Runs anywhere; the UI and tests need no sandbox | The fakes must be kept in step with the real behaviour |
 | One `SbxCli` for local and cloud | The CLI differs only by a `--cloud` flag | The "separate adapters" idea from the spec was dropped (see the spec's `shape.md`) |

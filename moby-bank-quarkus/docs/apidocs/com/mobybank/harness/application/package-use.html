@@ -65,17 +65,21 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
 <div class="col-last even-row-color">
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
+</div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The real sandbox adapters, which drive Docker Sandboxes through the <code>sbx</code> command line.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
+<div class="col-last even-row-color">
 <div class="block">The HTTP surface: JAX-RS resources, request bodies, and the exception mappers that turn failures into error
 responses.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.interfaces.web">com.mobybank.harness.interfaces.web</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.web">com.mobybank.harness.interfaces.web</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The HTML endpoints behind <code>index.html</code>, the htmx page served at <code>/</code>.</div>
 </div>
 </div>
@@ -188,7 +192,16 @@ responses.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/SessionEventStream.Subscription.html#com.mobybank.harness.infrastructure">SessionEventStream.Subscription</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="class-use/UploadStore.html#com.mobybank.harness.infrastructure">UploadStore</a></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.persistence">
+<div class="caption"><span>Classes in <a href="package-summary.html">com.mobybank.harness.application</a> used by <a href="../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><a href="class-use/UploadStore.html#com.mobybank.harness.infrastructure.persistence">UploadStore</a></div>
 <div class="col-last even-row-color">
 <div class="block">Holds files an analyst uploaded from their machine until a sandbox agent needs them.</div>
 </div>

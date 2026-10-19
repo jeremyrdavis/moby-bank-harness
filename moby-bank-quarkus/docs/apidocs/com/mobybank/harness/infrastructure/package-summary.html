@@ -68,9 +68,8 @@ loadScripts(document, 'script');</script>
 <div class="block">The implementations of the ports, and the wiring that chooses between them.
 
 <ul>
-  <li><b>State:</b> <a href="InMemorySessionRepository.html" title="class in com.mobybank.harness.infrastructure"><code>InMemorySessionRepository</code></a> and
-      <a href="InMemoryConnectedFoldersRepository.html" title="class in com.mobybank.harness.infrastructure"><code>InMemoryConnectedFoldersRepository</code></a> keep copies in memory and enforce
-      the optimistic version check; <a href="InMemoryUploadStore.html" title="class in com.mobybank.harness.infrastructure"><code>InMemoryUploadStore</code></a> holds uploads.</li>
+  <li><b>State:</b> the <code>persistence</code> sub-package stores sessions, connected folders, uploads and the sandbox
+      records in PostgreSQL.</li>
   <li><b>Plumbing:</b> <a href="InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure"><code>InMemorySessionEventStream</code></a> fans events out to
       listeners and <a href="VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure"><code>VirtualThreadBackgroundRunner</code></a> runs long work off the
       request thread.</li>
@@ -82,7 +81,8 @@ loadScripts(document, 'script');</script>
       <code>harness.sandbox.mode</code> and <code>harness.documents.mode</code>.</li>
 </ul>
 
-<p>The real adapters are in the sub-packages <code>sbx</code> (Docker Sandboxes) and <code>graph</code> (OneDrive).</div>
+<p>The real adapters are in the sub-packages <code>sbx</code> (Docker Sandboxes) and <code>graph</code> (OneDrive); the
+database is in <code>persistence</code>.</div>
 </section>
 </div>
 <section class="summary">
@@ -97,8 +97,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">The OneDrive adapter, which reads documents through Microsoft Graph.</div>
 </div>
-<div class="col-first odd-row-color"><a href="sbx/package-summary.html">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-first odd-row-color"><a href="persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></div>
 <div class="col-last odd-row-color">
+<div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
+</div>
+<div class="col-first even-row-color"><a href="sbx/package-summary.html">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-last even-row-color">
 <div class="block">The real sandbox adapters, which drive Docker Sandboxes through the <code>sbx</code> command line.</div>
 </div>
 </div>
@@ -130,9 +134,8 @@ let a misspelt mode or missing credentials go unnoticed until the first request.
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), and connects its
-first three demo folders too, but only when the document catalog is the fake one: a real OneDrive has no such
-folders.</div>
+<div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), but only into an
+empty database, so a restart does not add them again.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="FakeDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure">FakeDocumentCatalog</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
@@ -152,28 +155,16 @@ attached file, "computes" one calculation, and returns a short summary plus a ta
 <div class="block">A stand-in transfer that reports the two stages the prototype shows ("Packaging context", then the transfer) and
 waits between them, in either direction.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="InMemoryConnectedFoldersRepository.html" title="class in com.mobybank.harness.infrastructure">InMemoryConnectedFoldersRepository</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionEventStream</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Keeps each user's connected folders in memory, with the same copy-and-version rules as the session store.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionEventStream</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Delivers session events to the listeners subscribed to that session, on the publishing thread.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="InMemorySessionRepository.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionRepository</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Keeps sessions in memory.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="InMemoryUploadStore.html" title="class in com.mobybank.harness.infrastructure">InMemoryUploadStore</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Keeps uploaded files in memory, keyed by session and file name.</div>
-</div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Sleeping that the fake adapters use to imitate real work.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure">VirtualThreadBackgroundRunner</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure">VirtualThreadBackgroundRunner</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Runs background work on virtual threads, which suits the blocking calls agent turns and sandbox transfers make.</div>
 </div>
 </div>
