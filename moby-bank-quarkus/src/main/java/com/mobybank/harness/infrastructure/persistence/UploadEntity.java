@@ -11,14 +11,15 @@ import java.util.UUID;
 @Table(name = "upload")
 public class UploadEntity {
 
-    /** {@code <session id>/<file name>}. */
+    /** {@code <session id>/<file name>}. Text, so a long file name does not hit a 255-character limit. */
     @Id
+    @Column(name = "id", columnDefinition = "text")
     public String id;
 
-    @Column(nullable = false)
+    @Column(name = "session_id", nullable = false)
     public UUID sessionId;
 
-    @Column(nullable = false)
+    @Column(name = "file_name", columnDefinition = "text", nullable = false)
     public String fileName;
 
     @Column(nullable = false)

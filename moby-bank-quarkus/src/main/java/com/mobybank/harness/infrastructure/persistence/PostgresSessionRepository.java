@@ -66,9 +66,12 @@ public class PostgresSessionRepository implements SessionRepository {
             }
             jpa.flush();
         } catch (PersistenceException e) {
-            // Two writers inserted the same new session at once: the other one won.
-            Log.debugf("Insert of session %s lost a race: %s", session.id().value(), e.getMessage());
-            throw new StaleAggregateException("session", session.id().value().toString(), session.version(), 1L);
+            if (isNew && DatabaseErrors.isDuplicateKey(e)) {
+                // Two writers inserted the same new session at once: the other one won, and its row is at version 1.
+                Log.debugf("Insert of session %s lost a race: %s", session.id().value(), e.getMessage());
+                throw new StaleAggregateException("session", session.id().value().toString(), session.version(), 1L);
+            }
+            throw e; // any other database failure is not a stale write: let it surface with its cause
         }
         Log.debugf("Persisted session %s: version %d -> %d, status %s, %d messages", session.id().value(),
                 session.version(), row.version, session.status(), session.messages().size());

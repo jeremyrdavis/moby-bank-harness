@@ -8,7 +8,11 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 
-/** Keeps uploaded files in PostgreSQL, keyed by session and file name. Storing a name again replaces the content. */
+/**
+ * Keeps uploaded files in PostgreSQL, keyed by session and file name. Storing a name again replaces the content, and
+ * does so atomically: the write is one {@code INSERT ... ON CONFLICT DO UPDATE}, so two uploads of the same new name
+ * at once both succeed (the later one wins) instead of one failing on the duplicate key.
+ */
 @ApplicationScoped
 public class PostgresUploadStore implements UploadStore {
 
@@ -22,18 +26,14 @@ public class PostgresUploadStore implements UploadStore {
     @Override
     @Transactional
     public void store(SessionId sessionId, String fileName, byte[] content) {
-        String key = key(sessionId, fileName);
-        UploadEntity row = jpa.findById(key);
-        if (row == null) {
-            row = new UploadEntity();
-            row.id = key;
-            row.sessionId = sessionId.value();
-            row.fileName = fileName;
-            row.content = content.clone();
-            jpa.persist(row);
-        } else {
-            row.content = content.clone();
-        }
+        jpa.getEntityManager().createNativeQuery("""
+                insert into upload (id, session_id, file_name, content) values (:id, :sessionId, :fileName, :content)
+                on conflict (id) do update set content = excluded.content""")
+                .setParameter("id", key(sessionId, fileName))
+                .setParameter("sessionId", sessionId.value())
+                .setParameter("fileName", fileName)
+                .setParameter("content", content.clone())
+                .executeUpdate();
         Log.debugf("Stored an upload for session %s: %d bytes", sessionId.value(), content.length);
     }
 

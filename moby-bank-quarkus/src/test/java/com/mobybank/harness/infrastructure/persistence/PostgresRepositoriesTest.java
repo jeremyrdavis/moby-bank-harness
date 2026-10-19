@@ -233,6 +233,25 @@ class PostgresRepositoriesTest {
         }
     }
 
+    @Test
+    void ofTwoWritersInsertingTheSameNewSessionExactlyOneWins() throws Exception {
+        SessionId id = SessionId.fresh();
+        Session a = Session.start(id, Location.LOCAL, T0);
+        Session b = Session.start(id, Location.CLOUD, T0);
+
+        CountDownLatch go = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        try {
+            Future<Boolean> first = pool.submit(() -> save(a, go));
+            Future<Boolean> second = pool.submit(() -> save(b, go));
+            go.countDown();
+            assertEquals(1, (first.get() ? 1 : 0) + (second.get() ? 1 : 0), "one insert wins, the other is stale");
+        } finally {
+            pool.shutdownNow();
+        }
+        assertEquals(1L, sessions.findById(id).orElseThrow().version());
+    }
+
     // --- connected folders -------------------------------------------------------------------------------------
 
     @Test
@@ -267,6 +286,41 @@ class PostgresRepositoriesTest {
 
         uploads.store(session, "notes.pdf", new byte[] {9});
         assertTrue(java.util.Arrays.equals(new byte[] {9}, uploads.find(session, "notes.pdf").orElseThrow()));
+    }
+
+    @Test
+    void twoUploadsOfTheSameNewNameAtOnceBothSucceedAndTheLaterOneWins() throws Exception {
+        SessionId session = SessionId.fresh();
+        CountDownLatch go = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(4);
+        try {
+            List<Future<?>> writes = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                byte[] content = {(byte) i};
+                writes.add(pool.submit(() -> {
+                    go.await();
+                    uploads.store(session, "same.pdf", content);
+                    return null;
+                }));
+            }
+            go.countDown();
+            for (Future<?> write : writes) {
+                write.get(); // none of them fails on the duplicate key
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+        assertEquals(1, uploads.find(session, "same.pdf").orElseThrow().length);
+    }
+
+    @Test
+    void aFileNameLongerThan255CharactersIsStored() {
+        SessionId session = SessionId.fresh();
+        String longName = "q".repeat(300) + ".pdf";
+
+        uploads.store(session, longName, new byte[] {1, 2, 3});
+
+        assertTrue(java.util.Arrays.equals(new byte[] {1, 2, 3}, uploads.find(session, longName).orElseThrow()));
     }
 
     // --- sandbox records ---------------------------------------------------------------------------------------

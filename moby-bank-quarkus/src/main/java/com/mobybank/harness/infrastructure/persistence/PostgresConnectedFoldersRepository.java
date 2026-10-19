@@ -57,7 +57,11 @@ public class PostgresConnectedFoldersRepository implements ConnectedFoldersRepos
             }
             jpa.flush();
         } catch (PersistenceException e) {
-            throw new StaleAggregateException("connected folders", folders.userId().value(), folders.version(), 1L);
+            if (isNew && DatabaseErrors.isDuplicateKey(e)) {
+                // Two writers inserted the same new row at once: the other one won, and its row is at version 1.
+                throw new StaleAggregateException("connected folders", folders.userId().value(), folders.version(), 1L);
+            }
+            throw e; // any other database failure is not a stale write: let it surface with its cause
         }
         Log.debugf("Persisted connected folders for %s: version %d -> %d, %d folders", folders.userId().value(),
                 folders.version(), row.version, row.folderIds.size());

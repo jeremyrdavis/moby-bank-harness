@@ -65,6 +65,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#create(com.mobybank.harness.application.CreateSessionCommand)" tabindex="0">create(CreateSessionCommand)</a></li>
 <li><a href="#launch(com.mobybank.harness.application.LaunchSessionCommand)" tabindex="0">launch(LaunchSessionCommand)</a></li>
+<li><a href="#recoverInterruptedWork()" tabindex="0">recoverInterruptedWork()</a></li>
 <li><a href="#list()" tabindex="0">list()</a></li>
 <li><a href="#get(java.lang.String)" tabindex="0">get(String)</a></li>
 <li><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" tabindex="0">sendMessage(SendMessageCommand)</a></li>
@@ -151,9 +152,14 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Starts moving the session to the other location and returns it in the <code>moving</code> state.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" class="member-name-link">sendMessage</a><wbr>(<a href="SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a>&nbsp;command)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#recoverInterruptedWork()" class="member-name-link">recoverInterruptedWork</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Releases the sessions a restart interrupted.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="MessageDTO.html" title="class in com.mobybank.harness.application">MessageDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" class="member-name-link">sendMessage</a><wbr>(<a href="SendMessageCommand.html" title="class in com.mobybank.harness.application">SendMessageCommand</a>&nbsp;command)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds the analyst's message and starts the agent on it in the background.</div>
 </div>
 </div>
@@ -210,6 +216,22 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></span>&nbsp;<span class="element-name">launch</span><wbr><span class="parameters">(<a href="LaunchSessionCommand.html" title="class in com.mobybank.harness.application">LaunchSessionCommand</a>&nbsp;command)</span></div>
 <div class="block">Chooses where a session that has not started yet runs. No sandbox exists yet, so nothing is moved.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="recoverInterruptedWork()">
+<h3>recoverInterruptedWork</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">recoverInterruptedWork</span>()</div>
+<div class="block">Releases the sessions a restart interrupted. A turn or a move runs in the background of one process, so a session
+saved as running or moving when the process stopped would otherwise stay busy for ever and refuse every send and
+move. A running session gets a failed reply that tells the analyst to send the message again; a moving session
+stays where it was (the move is abandoned, and the sandbox record still points at the source).</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>how many sessions were released</dd>
+</dl>
 </div>
 </section>
 </li>

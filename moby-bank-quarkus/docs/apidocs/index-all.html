@@ -513,6 +513,10 @@ message and moving the session.</div>
 </dl>
 <h2 class="title" id="I:D">D</h2>
 <dl class="index">
+<dt><a href="com/mobybank/harness/infrastructure/persistence/DatabaseErrors.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure.persistence">DatabaseErrors</a> - Class in <a href="com/mobybank/harness/infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></dt>
+<dd>
+<div class="block">Tells apart the database failures the repositories treat specially.</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html#DEFAULT_AGENT_ARGS" class="member-name-link">DEFAULT_AGENT_ARGS</a> - Static variable in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a></dt>
 <dd>
 <div class="block">Headless runs cannot answer permission prompts, and the same flags must work in both locations: the model is
@@ -1515,6 +1519,12 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 </dd>
 <dt><a href="com/mobybank/harness/infrastructure/InMemorySessionEventStream.html#%3Cinit%3E()" class="member-name-link">InMemorySessionEventStream()</a> - Constructor for class com.mobybank.harness.infrastructure.<a href="com/mobybank/harness/infrastructure/InMemorySessionEventStream.html" title="class in com.mobybank.harness.infrastructure">InMemorySessionEventStream</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html" class="type-name-link" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a> - Class in <a href="com/mobybank/harness/infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a></dt>
+<dd>
+<div class="block">Releases the sessions a restart interrupted, as soon as the application starts.</div>
+</dd>
+<dt><a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html#%3Cinit%3E(com.mobybank.harness.application.SessionApplicationService)" class="member-name-link">InterruptedWorkRecovery(SessionApplicationService)</a> - Constructor for class com.mobybank.harness.infrastructure.<a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/interfaces/rest/ApiExceptionMappers.html#invalidMove(com.mobybank.harness.domain.InvalidMoveException)" class="member-name-link">invalidMove(InvalidMoveException)</a> - Method in class com.mobybank.harness.interfaces.rest.<a href="com/mobybank/harness/interfaces/rest/ApiExceptionMappers.html" title="class in com.mobybank.harness.interfaces.rest">ApiExceptionMappers</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/domain/InvalidMoveException.html" class="type-name-link" title="class in com.mobybank.harness.domain">InvalidMoveException</a> - Exception Class in <a href="com/mobybank/harness/domain/package-summary.html">com.mobybank.harness.domain</a></dt>
@@ -1525,6 +1535,10 @@ OAuth client-credentials flow and reused until a minute before it expires.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/domain/ConnectedFolders.html#isConnected(com.mobybank.harness.domain.FolderId)" class="member-name-link">isConnected(FolderId)</a> - Method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/infrastructure/persistence/DatabaseErrors.html#isDuplicateKey(java.lang.Throwable)" class="member-name-link">isDuplicateKey(Throwable)</a> - Static method in class com.mobybank.harness.infrastructure.persistence.<a href="com/mobybank/harness/infrastructure/persistence/DatabaseErrors.html" title="class in com.mobybank.harness.infrastructure.persistence">DatabaseErrors</a></dt>
+<dd>
+<div class="block">True when the failure, or anything that caused it, is a duplicate-key violation.</div>
+</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/ClaudeStreamParser.html#isError()" class="member-name-link">isError()</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/ClaudeStreamParser.html" title="class in com.mobybank.harness.infrastructure.sbx">ClaudeStreamParser</a></dt>
 <dd>
 <div class="block">True when the result event said the agent ended in error.</div>
@@ -1927,6 +1941,8 @@ new sandbox from it at the destination.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/DemoDataSeeder.html#onStart(io.quarkus.runtime.StartupEvent)" class="member-name-link">onStart(StartupEvent)</a> - Method in class com.mobybank.harness.infrastructure.<a href="com/mobybank/harness/infrastructure/DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html#onStart(io.quarkus.runtime.StartupEvent)" class="member-name-link">onStart(StartupEvent)</a> - Method in class com.mobybank.harness.infrastructure.<a href="com/mobybank/harness/infrastructure/InterruptedWorkRecovery.html" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxStartupCheck.html#onStart(io.quarkus.runtime.StartupEvent)" class="member-name-link">onStart(StartupEvent)</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxStartupCheck.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxStartupCheck</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/interfaces/web/ConversationsResource.html#open(java.lang.String)" class="member-name-link">open(String)</a> - Method in class com.mobybank.harness.interfaces.web.<a href="com/mobybank/harness/interfaces/web/ConversationsResource.html" title="class in com.mobybank.harness.interfaces.web">ConversationsResource</a></dt>
@@ -2073,6 +2089,10 @@ new sandbox from it at the destination.</div>
 <dt><a href="com/mobybank/harness/domain/Session.html#recordAgentReply(com.mobybank.harness.domain.AgentReply,java.time.Instant)" class="member-name-link">recordAgentReply(AgentReply, Instant)</a> - Method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
 <dd>
 <div class="block">Records the agent's answer to the running turn and makes the session idle again.</div>
+</dd>
+<dt><a href="com/mobybank/harness/application/SessionApplicationService.html#recoverInterruptedWork()" class="member-name-link">recoverInterruptedWork()</a> - Method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/SessionApplicationService.html" title="class in com.mobybank.harness.application">SessionApplicationService</a></dt>
+<dd>
+<div class="block">Releases the sessions a restart interrupted.</div>
 </dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxAgent.html#recreatedNotice(com.mobybank.harness.domain.Location,java.util.List)" class="member-name-link">recreatedNotice(Location, List)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxSandboxAgent.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSandboxAgent</a></dt>
 <dd>

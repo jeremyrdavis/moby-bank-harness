@@ -77,6 +77,32 @@ public class SessionApplicationService {
         return toDto(session);
     }
 
+    /**
+     * Releases the sessions a restart interrupted. A turn or a move runs in the background of one process, so a session
+     * saved as running or moving when the process stopped would otherwise stay busy for ever and refuse every send and
+     * move. A running session gets a failed reply that tells the analyst to send the message again; a moving session
+     * stays where it was (the move is abandoned, and the sandbox record still points at the source).
+     *
+     * @return how many sessions were released
+     */
+    public int recoverInterruptedWork() {
+        int released = 0;
+        for (Session session : sessions.findAllByMostRecentlyUpdated()) {
+            if (session.status() == SessionStatus.RUNNING) {
+                session.recordAgentFailure("the server restarted before the agent finished. Send the message again.",
+                        clock.instant());
+            } else if (session.status() == SessionStatus.MOVING) {
+                session.abortMove(clock.instant());
+            } else {
+                continue;
+            }
+            sessions.persist(session);
+            released++;
+            Log.warnf("Released session %s, which a restart interrupted", Dtos.id(session.id()));
+        }
+        return released;
+    }
+
     /** The conversation history, most recently updated first. */
     public List<SessionSummaryDTO> list() {
         List<SessionSummaryDTO> history = sessions.findAllByMostRecentlyUpdated().stream()
