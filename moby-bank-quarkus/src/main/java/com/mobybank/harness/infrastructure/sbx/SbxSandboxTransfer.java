@@ -8,6 +8,7 @@ import com.mobybank.harness.domain.SandboxFailureException;
 import com.mobybank.harness.domain.SandboxTransfer;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle;
+import io.quarkus.logging.Log;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -36,6 +37,8 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
     public void move(MoveRequest request, Consumer<MoveProgress> onProgress) {
         SessionId session = request.sessionId();
         Optional<Handle> source = source(request);
+        Log.debugf("Move of session %s %s -> %s: source sandbox %s", session.value(), request.from(), request.to(),
+                source.map(Handle::name).orElse("none yet"));
         if (source.isEmpty()) {
             startAtDestination(request, onProgress);
             return;
@@ -55,6 +58,8 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
             }
             // Nothing is left to carry (it was deleted): the next turn starts a fresh sandbox at the destination
             // from the conversation history, and copies the shared files in again.
+            Log.warnf("The source sandbox %s of session %s is gone; the next turn starts fresh at the destination",
+                    from.name(), session.value());
             registry.forgetAgentSession(session);
             onProgress.accept(new MoveProgress(MoveStage.TRANSFERRING, "The sandbox at the "
                     + request.from().name().toLowerCase() + " source is no longer there · the agent will start at the "
@@ -64,6 +69,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
 
         onProgress.accept(new MoveProgress(MoveStage.TRANSFERRING, "Starting the session at the destination"));
         Handle moved = locate(session, request.to(), generation);
+        Log.debugf("Move of session %s done: %s is now at %s", session.value(), moved.name(), request.to());
         registry.set(session, moved);
     }
 
@@ -76,11 +82,14 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         SessionId session = request.sessionId();
         int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
         String name = SandboxRegistry.nameFor(session, generation);
+        Log.debugf("Session %s has no sandbox to move; creating %s at %s", session.value(), name, request.to());
         onProgress.accept(new MoveProgress(MoveStage.PACKAGING,
                 "No sandbox to package yet · creating a new one at the destination"));
         cli.create(request.to(), name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
         onProgress.accept(new MoveProgress(MoveStage.TRANSFERRING, "Starting the session at the destination"));
         Handle created = locate(session, request.to(), generation);
+        Log.debugf("Created %s at %s for session %s; the next turn copies the shared files in", created.name(),
+                request.to(), session.value());
         registry.set(session, created);
         registry.forgetAgentSession(session);
         registry.expectFiles(session);
@@ -90,6 +99,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
     private Optional<Handle> source(MoveRequest request) {
         Optional<Handle> known = registry.current(request.sessionId()).filter(h -> h.location() == request.from());
         if (known.isPresent()) {
+            Log.tracef("Move source of session %s is known", request.sessionId().value());
             return known;
         }
         return registry.discover(cli, request.sessionId(), request.from());
@@ -114,6 +124,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
             }
         }
         if (found == null) {
+            Log.debugf("Generation %d of session %s is not listed at %s", generation, session.value(), destination);
             throw new SandboxFailureException("The move finished but the new sandbox "
                     + SandboxRegistry.nameFor(session, generation) + " is not listed at the "
                     + destination.name().toLowerCase() + " destination");

@@ -4,6 +4,7 @@ import com.mobybank.harness.application.CatalogFileDTO;
 import com.mobybank.harness.application.ConnectFoldersCommand;
 import com.mobybank.harness.application.FileRefDTO;
 import com.mobybank.harness.application.FolderApplicationService;
+import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -36,6 +37,7 @@ public class OneDriveResource {
     @GET
     @Path("/folders")
     public String connected() {
+        Log.debug("GET /ui/onedrive/folders");
         return Templates.folders(folders.connected()).render();
     }
 
@@ -43,6 +45,7 @@ public class OneDriveResource {
     @GET
     @Path("/picker")
     public String picker(@QueryParam("mode") String mode) {
+        Log.debugf("GET /ui/onedrive/picker (mode %s)", mode);
         return switch (mode == null ? "" : mode) {
             case "connect" -> Templates.connectPicker(folders.library()).render();
             case "attach" -> Templates.attachPicker(folders.connectedFiles()).render();
@@ -56,6 +59,7 @@ public class OneDriveResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response connect(@RestForm("folder") List<String> chosen) {
         List<String> ids = chosen == null ? List.of() : chosen;
+        Log.debugf("POST /ui/onedrive/connect (%d folders chosen)", ids.size());
         Hx.Triggers triggers = Hx.triggers().event(Hx.CLOSE_DIALOG);
         if (!ids.isEmpty()) {
             folders.connect(new ConnectFoldersCommand(ids));
@@ -76,6 +80,8 @@ public class OneDriveResource {
         Set<String> available = folders.connectedFiles().stream().map(CatalogFileDTO::name).collect(Collectors.toSet());
         List<FileRefDTO> files = (chosen == null ? List.<String>of() : chosen).stream()
                 .filter(available::contains).distinct().map(name -> new FileRefDTO(name, "onedrive")).toList();
+        Log.debugf("POST /ui/onedrive/attach: %d of %d chosen files accepted", files.size(),
+                chosen == null ? 0 : chosen.size());
         Response.ResponseBuilder response = files.isEmpty() ? Hx.empty() : Hx.html(Templates.chips(files));
         return Hx.triggers().event(Hx.CLOSE_DIALOG).on(response).build();
     }

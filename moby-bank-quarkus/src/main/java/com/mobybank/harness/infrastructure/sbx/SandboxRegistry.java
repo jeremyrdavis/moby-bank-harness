@@ -2,6 +2,7 @@ package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SessionId;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class SandboxRegistry {
     }
 
     public void set(SessionId session, Handle handle) {
+        Log.debugf("Session %s now runs in %s (%s, generation %d)", session.value(), handle.name(), handle.location(),
+                handle.generation());
         handles.put(session, handle);
     }
 
@@ -37,6 +40,7 @@ public class SandboxRegistry {
      * into it (a sandbox the turn creates itself gets them as part of the turn).
      */
     public void expectFiles(SessionId session) {
+        Log.debugf("Session %s: its new sandbox still needs the shared files", session.value());
         awaitingFiles.add(session);
     }
 
@@ -47,7 +51,9 @@ public class SandboxRegistry {
 
     /** Clears the note once the shared files are in the sandbox. A failed copy leaves it, so the next turn retries. */
     public void filesCopied(SessionId session) {
-        awaitingFiles.remove(session);
+        if (awaitingFiles.remove(session)) {
+            Log.debugf("Session %s: the shared files are in its sandbox", session.value());
+        }
     }
 
     public Optional<String> agentSession(SessionId session) {
@@ -55,6 +61,7 @@ public class SandboxRegistry {
     }
 
     public void setAgentSession(SessionId session, String agentSessionId) {
+        Log.debugf("Session %s keeps agent conversation %s", session.value(), agentSessionId);
         agentSessions.put(session, agentSessionId);
     }
 
@@ -83,10 +90,13 @@ public class SandboxRegistry {
                 best = new Handle(location, bareName(listed), generation.get());
             }
         }
+        Log.debugf("Discovery for session %s at %s (newer than generation %d): %s", session.value(), location,
+                newerThan, best == null ? "nothing" : best.name());
         return Optional.ofNullable(best);
     }
 
     public void forgetAgentSession(SessionId session) {
+        Log.debugf("Forgetting the agent conversation of session %s", session.value());
         agentSessions.remove(session);
     }
 

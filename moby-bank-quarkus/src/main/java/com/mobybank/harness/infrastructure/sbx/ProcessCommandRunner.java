@@ -1,6 +1,7 @@
 package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.domain.SandboxFailureException;
+import io.quarkus.logging.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,9 +22,14 @@ public final class ProcessCommandRunner implements CommandRunner {
     @Override
     public CommandResult run(List<String> command, Duration timeout, Consumer<String> onStdoutLine) {
         Process process;
+        // Only the command's name and verb are logged: arguments can hold a whole prompt or file content.
+        String what = command.get(0) + (command.size() > 1 ? " " + command.get(1) : "");
+        Log.debugf("Starting '%s' (%d arguments, timeout %s)", what, command.size(), timeout);
+        long started = System.nanoTime();
         try {
             process = new ProcessBuilder(command).start();
         } catch (IOException e) {
+            Log.debugf("Could not start '%s': %s", command.get(0), e.getMessage());
             throw new SandboxFailureException("Could not start '" + command.get(0) + "': " + e.getMessage()
                     + " (is it installed and on the PATH?)", e);
         }
@@ -37,6 +43,7 @@ public final class ProcessCommandRunner implements CommandRunner {
             try {
                 if (!process.waitFor(timeout.toMillis(), java.util.concurrent.TimeUnit.MILLISECONDS)) {
                     timedOut.set(true);
+                    Log.warnf("'%s' did not finish within %s; killing it", what, timeout);
                     process.destroyForcibly();
                 }
             } catch (InterruptedException e) {
@@ -50,10 +57,13 @@ public final class ProcessCommandRunner implements CommandRunner {
             String line;
             while ((line = reader.readLine()) != null) {
                 append(stdout, line);
+                Log.tracef("'%s' stdout line of %d chars", what, line.length());
                 onStdoutLine.accept(line);
             }
             int exit = process.waitFor();
             stderrReader.join();
+            Log.debugf("'%s' exited %d after %d ms (stdout %d chars, stderr %d chars)", what, exit,
+                    (System.nanoTime() - started) / 1_000_000, stdout.length(), stderr.length());
             if (timedOut.get()) {
                 throw new SandboxFailureException("'" + String.join(" ", redacted(command)) + "' did not finish within "
                         + timeout);
@@ -66,6 +76,7 @@ public final class ProcessCommandRunner implements CommandRunner {
             }
             throw new SandboxFailureException("Reading the output of '" + command.get(0) + "' failed: " + e.getMessage(), e);
         } catch (InterruptedException e) {
+            Log.debugf("Interrupted while waiting for '%s'; killing it", what);
             process.destroyForcibly();
             Thread.currentThread().interrupt();
             throw new SandboxFailureException("Interrupted while waiting for '" + command.get(0) + "'", e);

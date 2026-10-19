@@ -7,6 +7,7 @@ import com.mobybank.harness.application.SessionEvent.MessageAdded;
 import com.mobybank.harness.application.SessionEvent.MoveCompleted;
 import com.mobybank.harness.application.SessionEvent.MoveFailed;
 import com.mobybank.harness.application.SessionEventStream;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.Duration;
@@ -82,6 +83,7 @@ public class SessionWaiter {
         Consumer<SessionEvent> judge = event -> {
             try {
                 R result = outcome.apply(event);
+                Log.tracef("Session %s event %s: %s", sessionId, event.type(), result == null ? "not the outcome" : "the outcome");
                 if (result != null) {
                     done.complete(result);
                 }
@@ -89,6 +91,8 @@ public class SessionWaiter {
                 done.completeExceptionally(e);
             }
         };
+        Log.debugf("Waiting on session %s for up to %s", sessionId, timeout);
+        long waitStarted = System.nanoTime();
         Object lock = new Object();
         List<SessionEvent> early = new ArrayList<>();
         boolean[] started = {false};
@@ -103,17 +107,23 @@ public class SessionWaiter {
         })) {
             start.run();
             synchronized (lock) {
+                Log.debugf("Work started for session %s; %d events arrived early", sessionId, early.size());
                 started[0] = true;
                 early.forEach(judge);
                 early.clear();
             }
-            return Optional.of(done.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
+            R result = done.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            Log.debugf("Session %s: the outcome arrived after %d ms", sessionId, (System.nanoTime() - waitStarted) / 1_000_000);
+            return Optional.of(result);
         } catch (TimeoutException e) {
+            Log.debugf("Session %s: no outcome within %s", sessionId, timeout);
             return Optional.empty();
         } catch (InterruptedException e) {
+            Log.debugf("Session %s: interrupted while waiting", sessionId);
             Thread.currentThread().interrupt();
             return Optional.empty();
         } catch (ExecutionException e) {
+            Log.debugf("Session %s: judging an event failed: %s", sessionId, e.getCause());
             throw new IllegalStateException(e.getCause());
         }
     }

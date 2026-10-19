@@ -23,11 +23,11 @@ import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionMovedEvent;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.SessionStatus;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.Clock;
 import java.util.List;
-import org.jboss.logging.Logger;
 
 /**
  * Orchestrates the session use cases: start a conversation, send a message, attach an upload, and move a session
@@ -36,8 +36,6 @@ import org.jboss.logging.Logger;
  */
 @ApplicationScoped
 public class SessionApplicationService {
-
-    private static final Logger LOG = Logger.getLogger(SessionApplicationService.class);
 
     private final SessionRepository sessions;
     private final SandboxAgent agent;
@@ -64,6 +62,7 @@ public class SessionApplicationService {
         Location location = Dtos.location(command == null ? null : command.location(), Location.LOCAL);
         Session session = Session.start(SessionId.fresh(), location, clock.instant());
         sessions.persist(session);
+        Log.debugf("Started session %s at %s", Dtos.id(session.id()), location);
         return toDto(session);
     }
 
@@ -74,17 +73,21 @@ public class SessionApplicationService {
         Session session = load(id);
         session.launchAt(location, clock.instant());
         sessions.persist(session);
+        Log.debugf("Session %s will run at %s (chosen before it started)", Dtos.id(id), location);
         return toDto(session);
     }
 
     /** The conversation history, most recently updated first. */
     public List<SessionSummaryDTO> list() {
-        return sessions.findAllByMostRecentlyUpdated().stream()
+        List<SessionSummaryDTO> history = sessions.findAllByMostRecentlyUpdated().stream()
                 .map(session -> Dtos.summary(session, group(session)))
                 .toList();
+        Log.debugf("Listed %d sessions", history.size());
+        return history;
     }
 
     public SessionDTO get(String sessionId) {
+        Log.tracef("Opening session %s", sessionId);
         return toDto(load(Dtos.sessionId(sessionId)));
     }
 
@@ -96,6 +99,9 @@ public class SessionApplicationService {
         SessionId id = Dtos.sessionId(command.sessionId());
         Session session = load(id);
         List<FileRef> files = Dtos.fileRefs(command.files());
+        Log.debugf("Message for session %s at %s: %d chars, %d attached files, %d earlier messages",
+                Dtos.id(id), session.location(), command.text() == null ? 0 : command.text().length(), files.size(),
+                session.messages().size());
         List<Message> history = session.messages();
         Message userMessage = session.postUserMessage(command.text() == null ? "" : command.text(), files,
                 clock.instant());
@@ -107,6 +113,8 @@ public class SessionApplicationService {
 
         AgentTurn turn = new AgentTurn(id, session.location(), history, userMessage,
                 session.filesShared());
+        Log.debugf("Session %s is %s; starting the agent turn in the background (%d files shared so far)",
+                Dtos.id(id), session.status(), turn.sessionFiles().size());
         runner.run(() -> runTurn(turn));
         return stored;
     }
@@ -120,6 +128,7 @@ public class SessionApplicationService {
         }
         FileRef ref = new FileRef(baseName(command.fileName()), FileSource.UPLOAD);
         uploads.store(id, ref.name(), command.content());
+        Log.debugf("Stored an upload for session %s: %d bytes", Dtos.id(id), command.content().length);
         return Dtos.file(ref);
     }
 
@@ -144,10 +153,14 @@ public class SessionApplicationService {
         Location target = Dtos.location(command.target(), null);
         Session session = load(id);
         Location from = session.location();
+        Log.debugf("Move requested for session %s: %s -> %s (status %s)", Dtos.id(id), from, target,
+                session.status());
         session.beginMove(target, clock.instant());
         sessions.persist(session);
 
         MoveRequest request = new MoveRequest(id, from, target, session.messages(), session.filesShared());
+        Log.debugf("Session %s is %s; starting the move in the background (%d messages, %d files)",
+                Dtos.id(id), session.status(), request.history().size(), request.files().size());
         runner.run(() -> runMove(request));
         return toDto(session);
     }
@@ -156,14 +169,22 @@ public class SessionApplicationService {
 
     private void runTurn(AgentTurn turn) {
         String sessionId = Dtos.id(turn.sessionId());
+        long started = System.nanoTime();
+        Log.debugf("Agent turn started for session %s at %s", sessionId, turn.location());
         try {
-            AgentReply reply = agent.runTurn(turn, step -> events.publish(new StepRecorded(sessionId, Dtos.step(step))));
+            AgentReply reply = agent.runTurn(turn, step -> {
+                Log.debugf("Agent step for session %s: %s", sessionId, step.kind());
+                events.publish(new StepRecorded(sessionId, Dtos.step(step)));
+            });
+            Log.debugf("Agent turn finished for session %s in %d ms: %d steps, %d paragraphs, table=%s, notice=%s",
+                    sessionId, elapsedMs(started), reply.steps().size(), reply.paragraphs().size(),
+                    reply.table().isPresent(), reply.notice().isPresent());
             Session session = load(turn.sessionId());
             session.recordAgentReply(reply, clock.instant());
             sessions.persist(session);
             publish(session);
         } catch (RuntimeException e) {
-            LOG.errorf(e, "Agent turn failed for session %s", sessionId);
+            Log.errorf(e, "Agent turn failed for session %s after %d ms", sessionId, elapsedMs(started));
             failTurn(turn.sessionId(), e);
         }
     }
@@ -172,27 +193,35 @@ public class SessionApplicationService {
         try {
             Session session = load(id);
             if (session.status() != SessionStatus.RUNNING) {
+                Log.debugf("Not recording a failure for session %s: it is %s, not running", Dtos.id(id),
+                        session.status());
                 return;
             }
             Message failure = session.recordAgentFailure(String.valueOf(cause.getMessage()), clock.instant());
             sessions.persist(session);
+            Log.debugf("Recorded the agent failure for session %s", Dtos.id(id));
             events.publish(new MessageAdded(Dtos.id(id), Dtos.message(failure)));
         } catch (RuntimeException e) {
-            LOG.errorf(e, "Could not record the agent failure for session %s", Dtos.id(id));
+            Log.errorf(e, "Could not record the agent failure for session %s", Dtos.id(id));
         }
     }
 
     private void runMove(MoveRequest request) {
         String sessionId = Dtos.id(request.sessionId());
+        long started = System.nanoTime();
+        Log.debugf("Move started for session %s: %s -> %s", sessionId, request.from(), request.to());
         try {
-            transfer.move(request, progress -> events.publish(
-                    new MoveProgressed(sessionId, Dtos.name(progress.stage()), progress.detail())));
+            transfer.move(request, progress -> {
+                Log.debugf("Move progress for session %s: %s", sessionId, progress.stage());
+                events.publish(new MoveProgressed(sessionId, Dtos.name(progress.stage()), progress.detail()));
+            });
+            Log.debugf("Move finished for session %s in %d ms", sessionId, elapsedMs(started));
             Session session = load(request.sessionId());
             session.completeMove(clock.instant());
             sessions.persist(session);
             publish(session);
         } catch (RuntimeException e) {
-            LOG.errorf(e, "Move failed for session %s", sessionId);
+            Log.errorf(e, "Move failed for session %s after %d ms", sessionId, elapsedMs(started));
             failMove(request.sessionId(), e);
         }
     }
@@ -201,13 +230,15 @@ public class SessionApplicationService {
         try {
             Session session = load(id);
             if (session.status() != SessionStatus.MOVING) {
+                Log.debugf("Not aborting the move for session %s: it is %s, not moving", Dtos.id(id), session.status());
                 return;
             }
             session.abortMove(clock.instant());
             sessions.persist(session);
+            Log.debugf("Aborted the move for session %s; it stays at %s", Dtos.id(id), session.location());
             events.publish(new MoveFailed(Dtos.id(id), String.valueOf(cause.getMessage())));
         } catch (RuntimeException e) {
-            LOG.errorf(e, "Could not abort the move for session %s", Dtos.id(id));
+            Log.errorf(e, "Could not abort the move for session %s", Dtos.id(id));
         }
     }
 
@@ -216,6 +247,7 @@ public class SessionApplicationService {
     /** Drains the events the aggregate raised and publishes them as session events. */
     private void publish(Session session) {
         for (DomainEvent event : session.pullPendingEvents()) {
+            Log.debugf("Publishing %s for session %s", event.getClass().getSimpleName(), Dtos.id(session.id()));
             switch (event) {
                 case AgentRepliedEvent replied -> session.messages().stream()
                         .filter(message -> message.id().equals(replied.messageId()))
@@ -229,7 +261,14 @@ public class SessionApplicationService {
     }
 
     private Session load(SessionId id) {
-        return sessions.findById(id).orElseThrow(() -> new ResourceNotFoundException("session", Dtos.id(id)));
+        return sessions.findById(id).orElseThrow(() -> {
+            Log.debugf("Session %s not found", Dtos.id(id));
+            return new ResourceNotFoundException("session", Dtos.id(id));
+        });
+    }
+
+    private static long elapsedMs(long startedNanos) {
+        return (System.nanoTime() - startedNanos) / 1_000_000;
     }
 
     private SessionDTO toDto(Session session) {

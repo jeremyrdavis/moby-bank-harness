@@ -4,13 +4,13 @@ import com.mobybank.harness.domain.ConnectedFolders;
 import com.mobybank.harness.domain.ConnectedFoldersRepository;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.UserId;
+import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import java.time.Clock;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
 
 /**
  * Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), and connects its
@@ -19,8 +19,6 @@ import org.jboss.logging.Logger;
  */
 @ApplicationScoped
 public class DemoDataSeeder {
-
-    private static final Logger LOG = Logger.getLogger(DemoDataSeeder.class);
 
     private final SessionRepository sessions;
     private final ConnectedFoldersRepository connectedFolders;
@@ -42,18 +40,21 @@ public class DemoDataSeeder {
     void onStart(@Observes StartupEvent event) {
         if (enabled) {
             seed();
+        } else {
+            Log.debug("Demo data seeding is off (harness.seed-demo-data=false)");
         }
     }
 
     void seed() {
+        Log.debugf("Seeding the demo data (harness.documents.mode=%s)", documentsMode);
         DemoData.sessions(clock).forEach(sessions::persist);
         if ("fake".equals(documentsMode)) {
             ConnectedFolders folders = ConnectedFolders.none(UserId.DEMO);
             folders.connect(DemoData.initiallyConnected());
             connectedFolders.persist(folders);
-            LOG.info("Seeded the demo conversations and connected folders");
+            Log.info("Seeded the demo conversations and connected folders");
         } else {
-            LOG.info("Seeded the demo conversations (folders come from the real document source)");
+            Log.info("Seeded the demo conversations (folders come from the real document source)");
         }
     }
 }

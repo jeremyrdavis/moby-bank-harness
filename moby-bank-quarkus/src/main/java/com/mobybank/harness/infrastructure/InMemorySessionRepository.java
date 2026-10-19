@@ -4,6 +4,7 @@ import com.mobybank.harness.domain.Session;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.StaleAggregateException;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,7 +24,9 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public synchronized Optional<Session> findById(SessionId id) {
-        return Optional.ofNullable(stored.get(id)).map(session -> copy(session, session.version()));
+        Optional<Session> found = Optional.ofNullable(stored.get(id)).map(session -> copy(session, session.version()));
+        Log.tracef("findById %s: %s", id.value(), found.isPresent() ? "found" : "not found");
+        return found;
     }
 
     @Override
@@ -39,10 +42,14 @@ public class InMemorySessionRepository implements SessionRepository {
         Session existing = stored.get(session.id());
         long storedVersion = existing == null ? 0L : existing.version();
         if (storedVersion != session.version()) {
+            Log.debugf("Rejected a stale write of session %s: holds version %d, store has %d", session.id().value(),
+                    session.version(), storedVersion);
             throw new StaleAggregateException("session", session.id().value().toString(), session.version(),
                     storedVersion);
         }
         stored.put(session.id(), copy(session, session.version() + 1));
+        Log.debugf("Persisted session %s: version %d -> %d, status %s, %d messages", session.id().value(),
+                session.version(), session.version() + 1, session.status(), session.messages().size());
     }
 
     private static Session copy(Session session, long version) {

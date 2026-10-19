@@ -11,6 +11,7 @@ import com.mobybank.harness.application.SessionDTO;
 import com.mobybank.harness.application.SessionEvent;
 import com.mobybank.harness.application.SessionEventStream;
 import com.mobybank.harness.application.SessionSummaryDTO;
+import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.BackPressureStrategy;
 import jakarta.inject.Inject;
@@ -60,6 +61,7 @@ public class SessionsResource {
     @Operation(summary = "List the conversation history",
             description = "Most recently updated first. Each entry carries the recency group shown in the sidebar.")
     public List<SessionSummaryDTO> list() {
+        Log.debug("GET /api/sessions");
         return sessions.list();
     }
 
@@ -71,6 +73,7 @@ public class SessionsResource {
     @APIResponse(responseCode = "400", description = "Unknown location",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public Response create(CreateSessionRequest request, @Context UriInfo uriInfo) {
+        Log.debugf("POST /api/sessions (location %s)", request == null ? null : request.location());
         SessionDTO created = sessions.create(new CreateSessionCommand(request == null ? null : request.location()));
         return Response.created(uriInfo.getAbsolutePathBuilder().path(created.id()).build()).entity(created).build();
     }
@@ -81,6 +84,7 @@ public class SessionsResource {
     @APIResponse(responseCode = "404", description = "No such session",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public SessionDTO get(@PathParam("id") String id) {
+        Log.debugf("GET /api/sessions/%s", id);
         return sessions.get(id);
     }
 
@@ -100,6 +104,7 @@ public class SessionsResource {
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public Response sendMessage(@PathParam("id") String id, SendMessageRequest request) {
         SendMessageRequest body = request == null ? new SendMessageRequest(null, null) : request;
+        Log.debugf("POST /api/sessions/%s/messages (%d files)", id, body.files() == null ? 0 : body.files().size());
         MessageDTO stored = sessions.sendMessage(new SendMessageCommand(id, body.text(), body.files()));
         return Response.accepted(stored).build();
     }
@@ -119,6 +124,7 @@ public class SessionsResource {
     public Response upload(@PathParam("id") String id,
                            @RestForm("file") @Parameter(description = "The file to upload") FileUpload file)
             throws IOException {
+        Log.debugf("POST /api/sessions/%s/uploads", id);
         if (file == null) {
             throw new IllegalArgumentException("multipart field 'file' is required");
         }
@@ -144,6 +150,7 @@ public class SessionsResource {
             description = "The session is busy, or already runs at the target location",
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public Response move(@PathParam("id") String id, MoveSessionRequest request) {
+        Log.debugf("POST /api/sessions/%s/move (target %s)", id, request == null ? null : request.target());
         SessionDTO moving = sessions.move(new MoveSessionCommand(id, request == null ? null : request.target()));
         return Response.accepted(moving).build();
     }
@@ -171,10 +178,14 @@ public class SessionsResource {
             content = @Content(schema = @Schema(implementation = ApiError.class)))
     public Multi<OutboundSseEvent> events(@PathParam("id") String id, @Context Sse sse) {
         String sessionId = sessions.get(id).id(); // rejects unknown ids and gives the canonical form
+        Log.debugf("GET /api/sessions/%s/events: opening the event stream", sessionId);
 
         Multi<OutboundSseEvent> live = Multi.createFrom().emitter(emitter -> {
             SessionEventStream.Subscription subscription = events.subscribe(sessionId, event -> emitter.emit(toSse(sse, event)));
-            emitter.onTermination(subscription::close);
+            emitter.onTermination(() -> {
+                Log.debugf("The event stream of session %s ended", sessionId);
+                subscription.close();
+            });
             emitter.emit(sse.newEventBuilder().name("ready").mediaType(MediaType.APPLICATION_JSON_TYPE)
                     .data(new Ready(sessionId)).build());
         }, BackPressureStrategy.BUFFER);

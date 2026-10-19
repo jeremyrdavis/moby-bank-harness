@@ -11,6 +11,7 @@ import com.mobybank.harness.application.SendMessageCommand;
 import com.mobybank.harness.application.SessionApplicationService;
 import com.mobybank.harness.application.SessionDTO;
 import com.mobybank.harness.application.SessionSummaryDTO;
+import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +33,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
@@ -49,7 +49,6 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 @RunOnVirtualThread
 public class ConversationsResource {
 
-    private static final Logger LOG = Logger.getLogger(ConversationsResource.class);
     private static final String CURRENT_COOKIE = "moby-current";
     private static final String MOVE_TOAST = "move-cloud";
 
@@ -65,6 +64,7 @@ public class ConversationsResource {
     /** The sidebar history; the open conversation (or, failing that, the newest) is marked current. */
     @GET
     public String history(@CookieParam(CURRENT_COOKIE) String currentId) {
+        Log.debugf("GET /ui/conversations (current %s)", currentId);
         List<SessionSummaryDTO> all = sessions.list();
         String current = all.stream().map(SessionSummaryDTO::id).filter(id -> id.equals(currentId)).findFirst()
                 .orElse(all.isEmpty() ? null : all.get(0).id());
@@ -82,26 +82,31 @@ public class ConversationsResource {
     @GET
     @Path("/current")
     public Response current(@CookieParam(CURRENT_COOKIE) String currentId) {
+        Log.debugf("GET /ui/conversations/current (cookie %s)", currentId);
         Optional<SessionDTO> open = find(currentId);
         if (open.isPresent()) {
             return main(open.get(), false);
         }
         List<SessionSummaryDTO> all = sessions.list();
         if (!all.isEmpty()) {
+            Log.debugf("No usable cookie; opening the newest of %d sessions", all.size());
             return main(sessions.get(all.get(0).id()), false);
         }
+        Log.debug("No sessions yet; starting one");
         return main(sessions.create(new CreateSessionCommand(null)), true);
     }
 
     @GET
     @Path("/{id}")
     public Response open(@PathParam("id") String id) {
+        Log.debugf("GET /ui/conversations/%s", id);
         return main(sessions.get(id), true);
     }
 
     /** Starts a new conversation. */
     @POST
     public Response create() {
+        Log.debug("POST /ui/conversations");
         return main(sessions.create(new CreateSessionCommand(null)), true);
     }
 
@@ -116,6 +121,8 @@ public class ConversationsResource {
                          @RestForm("text") String text,
                          @RestForm("files") List<FileUpload> files,
                          @RestForm("onedrive") List<String> onedrive) throws IOException {
+        Log.debugf("POST /ui/conversations/%s/messages (%d chars, %d uploads, %d OneDrive files)", id,
+                text == null ? 0 : text.length(), files == null ? 0 : files.size(), onedrive == null ? 0 : onedrive.size());
         List<FileRefDTO> attachments = new ArrayList<>();
         for (FileUpload file : files == null ? List.<FileUpload>of() : files) {
             if (file.fileName() != null && !file.fileName().isBlank() && file.size() > 0) {
@@ -131,6 +138,7 @@ public class ConversationsResource {
         Optional<MessageDTO> reply = waiter.awaitReply(id,
                 () -> sent[0] = sessions.sendMessage(new SendMessageCommand(id, text, attachments)));
 
+        Log.debugf("Reply for session %s: %s", id, reply.isPresent() ? "arrived" : "not yet (the wait timed out)");
         List<MessageDTO> messages = new ArrayList<>(List.of(sent[0]));
         Hx.Triggers triggers = Hx.triggers().event(Hx.CONVERSATIONS_CHANGED);
         if (reply.isPresent()) {
@@ -149,13 +157,16 @@ public class ConversationsResource {
     @POST
     @Path("/{id}/move")
     public Response move(@PathParam("id") String id, @QueryParam("to") @DefaultValue("cloud") String to) {
+        Log.debugf("POST /ui/conversations/%s/move (to %s)", id, to);
         Optional<SessionWaiter.MoveOutcome> outcome;
         try {
             outcome = waiter.awaitMove(id, to, () -> sessions.move(new MoveSessionCommand(id, to)));
         } catch (RuntimeException e) {
-            LOG.warnf("Could not start moving session %s to %s: %s", id, to, e.getMessage());
+            Log.warnf("Could not start moving session %s to %s: %s", id, to, e.getMessage());
             return moveToast("Could not move the session", e.getMessage());
         }
+        Log.debugf("Move of session %s: %s", id, outcome.isEmpty() ? "still running after the wait"
+                : outcome.get().completed() ? "completed" : "failed");
         if (outcome.isEmpty()) {
             // Moving back to local takes minutes. Answer with the busy pane, which refreshes itself until the move
             // ends, and keep the page's loading toast until it does.
@@ -182,6 +193,7 @@ public class ConversationsResource {
     @POST
     @Path("/{id}/run")
     public Response run(@PathParam("id") String id, @QueryParam("at") @DefaultValue("local") String at) {
+        Log.debugf("POST /ui/conversations/%s/run (at %s)", id, at);
         return main(sessions.launch(new LaunchSessionCommand(id, at)), true);
     }
 
@@ -194,6 +206,7 @@ public class ConversationsResource {
         try {
             return Optional.of(sessions.get(id));
         } catch (ResourceNotFoundException | IllegalArgumentException e) {
+            Log.debugf("Ignoring the cookie %s: no such session", id);
             return Optional.empty(); // a stale or foreign cookie
         }
     }

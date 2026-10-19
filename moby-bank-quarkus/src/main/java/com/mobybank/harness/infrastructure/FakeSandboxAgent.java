@@ -10,6 +10,7 @@ import com.mobybank.harness.domain.Step;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.StepKind;
 import com.mobybank.harness.infrastructure.sbx.SbxSandboxAgent;
+import io.quarkus.logging.Log;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,8 @@ public final class FakeSandboxAgent implements SandboxAgent {
     @Override
     public AgentReply runTurn(AgentTurn turn, Consumer<Step> onStep) {
         List<FileRef> files = turn.userMessage().files();
+        Log.debugf("Fake agent: turn for session %s at %s with %d files, delay %s", turn.sessionId().value(),
+                turn.location(), files.size(), delay);
         List<Step> steps = new ArrayList<>();
         files.forEach(file -> steps.add(new Step(StepKind.READ, file.name())));
         steps.add(new Step(StepKind.COMPUTE, COMPUTE_LABEL));
@@ -64,6 +67,7 @@ public final class FakeSandboxAgent implements SandboxAgent {
         Pauses.sleep(slice);
 
         AgentReply reply = answer(files, steps);
+        Log.debugf("Fake agent: answered session %s", turn.sessionId().value());
         return expired(turn) ? reply.withNotice(SbxSandboxAgent.recreatedNotice(turn.location(), turn.sessionFiles()))
                 : reply;
     }
@@ -78,6 +82,8 @@ public final class FakeSandboxAgent implements SandboxAgent {
             int done = count == null ? 0 : count;
             if (done >= cloudExpiryTurns) {
                 expired[0] = 1;
+                Log.debugf("Fake agent: pretending the cloud sandbox of session %s was lost (after %d turns)",
+                        id.value(), done);
                 return 0;
             }
             return done + 1;

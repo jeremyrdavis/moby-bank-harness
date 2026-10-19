@@ -2,6 +2,7 @@ package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.SandboxFailureException;
+import io.quarkus.logging.Log;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -12,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.jboss.logging.Logger;
 
 /**
  * Checks, without changing anything the demo depends on, that this host can run what the adapters will ask of it: sbx
@@ -24,8 +24,6 @@ import org.jboss.logging.Logger;
  * once per start, not on every check.
  */
 public final class SbxPreflight {
-
-    private static final Logger LOG = Logger.getLogger(SbxPreflight.class);
 
     /** The first sbx release with {@code --cloud}. */
     static final int[] CLOUD_MINIMUM = {0, 45, 0};
@@ -68,8 +66,12 @@ public final class SbxPreflight {
     public synchronized Report report() {
         Instant now = clock.instant();
         if (cached == null || cachedAt.plus(cacheFor).isBefore(now)) {
+            Log.debugf("Running the sbx preflight (cache %s)", cacheFor);
             cached = check();
             cachedAt = now;
+            Log.debugf("sbx preflight: ready=%s, %d warnings", cached.ready(), cached.warnings().size());
+        } else {
+            Log.tracef("Using the cached sbx preflight from %s", cachedAt);
         }
         return cached;
     }
@@ -111,6 +113,7 @@ public final class SbxPreflight {
                 return true;
             }
             String why = SbxErrors.hint(result.tail(), location).orElse("exit " + result.exitCode() + ": " + result.tail());
+            Log.debugf("%s failed: %s", key, why);
             details.put(key, "failed: " + why);
             warnings.add("`sbx " + (location == Location.CLOUD ? "--cloud " : "") + "diagnose` failed: " + why);
             return !required;
@@ -140,6 +143,7 @@ public final class SbxPreflight {
     /** One trivial agent turn in a throwaway cloud sandbox, which proves the credential works. At most once per start. */
     private void probeOnce(Map<String, String> details, List<String> warnings) {
         if (probeResult == null) {
+            Log.debug("Running the cloud probe turn");
             probeResult = runProbe(Location.CLOUD);
         }
         details.put("cloud probe", probeResult);
@@ -168,7 +172,7 @@ public final class SbxPreflight {
             try {
                 cli.remove(location, name);
             } catch (SandboxFailureException e) {
-                LOG.warnf("Could not remove the probe sandbox %s; remove it with `sbx %srm %s`: %s", name,
+                Log.warnf("Could not remove the probe sandbox %s; remove it with `sbx %srm %s`: %s", name,
                         location == Location.CLOUD ? "--cloud " : "", name, e.getMessage());
             }
         }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobybank.harness.domain.Step;
 import com.mobybank.harness.domain.StepKind;
+import io.quarkus.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,17 +38,23 @@ final class ClaudeStreamParser {
     void accept(String line) {
         String trimmed = line.strip();
         if (trimmed.isEmpty() || trimmed.charAt(0) != '{') {
+            Log.tracef("Ignoring a stream line that is not JSON (%d chars)", trimmed.length());
             return;
         }
         JsonNode event;
         try {
             event = JSON.readTree(trimmed);
         } catch (Exception e) {
+            Log.debugf("Ignoring a stream line that does not parse as JSON: %s", e.getMessage());
             return;
         }
         if (event.hasNonNull("session_id")) {
+            if (sessionId == null) {
+                Log.debugf("The agent's conversation id is %s", event.get("session_id").asText());
+            }
             sessionId = event.get("session_id").asText();
         }
+        Log.tracef("Stream event of type '%s'", event.path("type").asText(""));
         switch (event.path("type").asText("")) {
             case "assistant" -> assistant(event.path("message").path("content"));
             case "result" -> {
@@ -55,6 +62,7 @@ final class ClaudeStreamParser {
                     resultText = event.get("result").asText();
                 }
                 error = event.path("is_error").asBoolean(false);
+                Log.debugf("The agent sent its result: error=%s, %d chars", error, resultText == null ? 0 : resultText.length());
             }
             default -> { }
         }
@@ -94,6 +102,7 @@ final class ClaudeStreamParser {
                 case "text" -> text.append(block.path("text").asText(""));
                 case "tool_use" -> toStep(block.path("name").asText(""), block.path("input")).ifPresent(step -> {
                     steps.add(step);
+                    Log.debugf("Agent step %d: %s", steps.size(), step.kind());
                     onStep.accept(step);
                 });
                 default -> { }
