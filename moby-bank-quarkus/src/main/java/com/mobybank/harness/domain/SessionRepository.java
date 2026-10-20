@@ -8,8 +8,11 @@ public interface SessionRepository {
 
     Optional<Session> findById(SessionId id);
 
-    /** All sessions, most recently updated first. */
+    /** All sessions of every user, most recently updated first. For housekeeping; use cases list by owner. */
     List<Session> findAllByMostRecentlyUpdated();
+
+    /** The sessions that belong to one user, most recently updated first. */
+    List<Session> findAllByOwner(UserId owner);
 
     /**
      * Saves the session. The stored version must equal {@link Session#version()}, the version it was loaded at;

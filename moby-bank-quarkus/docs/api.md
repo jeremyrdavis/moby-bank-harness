@@ -15,7 +15,7 @@ All values the API speaks are lower-case strings: `"local"`, `"assistant"`, `"id
 
 | Method and path | What it does | Success | Errors |
 |---|---|---|---|
-| `GET /api/me` | The signed-in analyst | 200 | |
+| `GET /api/me` | The signed-in analyst | 200 | 401 |
 | `GET /api/sessions` | The conversation history, most recent first | 200 | |
 | `POST /api/sessions` | Start a conversation | 201 + `Location` header | 400 |
 | `GET /api/sessions/{id}` | Open a conversation (messages, files) | 200 | 400, 404 |
@@ -63,7 +63,10 @@ Operational endpoints: `GET /q/health`, `GET /q/openapi`, `GET /q/swagger-ui`.
 {"id": "demo-analyst", "name": "Hermione Granger", "role": "Credit Research", "initials": "HG"}
 ```
 
-Configured by `harness.user.name` and `harness.user.role`. There is no sign-in; every caller is the same analyst.
+The stored account of whoever is signed in. With `harness.auth.mode=login` (the default) **every `/api` call needs the
+`moby-login` session cookie that `POST /auth/login` or the Microsoft sign-in sets, and answers 401 without it** (see
+[authentication.md](authentication.md)); someone else's session is 404. With `harness.auth.mode=none` every caller is the
+demo analyst, described by `harness.user.name` and `harness.user.role` when no account is stored.
 
 ## Sessions
 

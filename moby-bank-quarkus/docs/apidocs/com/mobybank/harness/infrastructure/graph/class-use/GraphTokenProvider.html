@@ -68,15 +68,27 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="com.mobybank.harness.infrastructure.graph">
 <h2>Uses of <a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a> in <a href="../package-summary.html">com.mobybank.harness.infrastructure.graph</a></h2>
+<div class="caption"><span>Methods in <a href="../package-summary.html">com.mobybank.harness.infrastructure.graph</a> with parameters of type <a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static <a href="../GraphTokenSource.html" title="interface in com.mobybank.harness.infrastructure.graph">GraphTokenSource</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GraphTokenSource.</span><code><a href="../GraphTokenSource.html#appWide(com.mobybank.harness.infrastructure.graph.GraphTokenProvider)" class="member-name-link">appWide</a><wbr>(<a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a>&nbsp;provider)</code></div>
+<div class="col-last even-row-color">
+<div class="block">The same token, from <code>provider</code>, for every user (the app-wide credential).</div>
+</div>
+</div>
 <div class="caption"><span>Constructors in <a href="../package-summary.html">com.mobybank.harness.infrastructure.graph</a> with parameters of type <a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier</div>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../GraphDocumentCatalog.html#%3Cinit%3E(com.mobybank.harness.infrastructure.graph.GraphSettings,com.mobybank.harness.infrastructure.graph.GraphTokenProvider,java.net.http.HttpClient)" class="member-name-link">GraphDocumentCatalog</a><wbr>(<a href="../GraphSettings.html" title="class in com.mobybank.harness.infrastructure.graph">GraphSettings</a>&nbsp;settings,
- <a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a>&nbsp;tokens,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpClient.html" title="class or interface in java.net.http" class="external-link">HttpClient</a>&nbsp;http)</code></div>
+<div class="col-second even-row-color"><code><a href="../UserGraphTokenSource.html#%3Cinit%3E(com.mobybank.harness.application.UserGraphTokens,com.mobybank.harness.infrastructure.graph.GraphTokenProvider,com.mobybank.harness.infrastructure.graph.MicrosoftTokenRefresher,java.time.Clock)" class="member-name-link">UserGraphTokenSource</a><wbr>(<a href="../../../application/UserGraphTokens.html" title="interface in com.mobybank.harness.application">UserGraphTokens</a>&nbsp;userTokens,
+ <a href="../GraphTokenProvider.html" title="class in com.mobybank.harness.infrastructure.graph">GraphTokenProvider</a>&nbsp;appWide,
+ <a href="../MicrosoftTokenRefresher.html" title="class in com.mobybank.harness.infrastructure.graph">MicrosoftTokenRefresher</a>&nbsp;refresher,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>

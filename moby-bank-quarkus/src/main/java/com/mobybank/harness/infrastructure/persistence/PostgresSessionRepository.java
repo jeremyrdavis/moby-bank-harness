@@ -4,6 +4,7 @@ import com.mobybank.harness.domain.Session;
 import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.StaleAggregateException;
+import com.mobybank.harness.domain.UserId;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -41,6 +42,18 @@ public class PostgresSessionRepository implements SessionRepository {
     public List<Session> findAllByMostRecentlyUpdated() {
         return jpa.find("select distinct s from SessionEntity s left join fetch s.messages order by s.updatedAt desc")
                 .list().stream().map(SessionMapper::toAggregate).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<Session> findAllByOwner(UserId owner) {
+        // rows from before there were users have no owner and belong to the demo user
+        String query = UserId.DEMO.equals(owner)
+                ? "select distinct s from SessionEntity s left join fetch s.messages "
+                        + "where s.ownerId = ?1 or s.ownerId is null order by s.updatedAt desc"
+                : "select distinct s from SessionEntity s left join fetch s.messages "
+                        + "where s.ownerId = ?1 order by s.updatedAt desc";
+        return jpa.find(query, owner.value()).list().stream().map(SessionMapper::toAggregate).toList();
     }
 
     @Override

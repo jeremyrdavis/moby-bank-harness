@@ -5,6 +5,7 @@ import com.mobybank.harness.application.FileRefDTO;
 import com.mobybank.harness.application.FolderDTO;
 import com.mobybank.harness.application.MessageDTO;
 import com.mobybank.harness.application.SessionDTO;
+import com.mobybank.harness.application.UserDTO;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import java.util.List;
@@ -21,6 +22,9 @@ final class Templates {
 
     /** Everything inside {@code <main id="main">}: header, thread and composer for one conversation. */
     static native TemplateInstance main(SessionDTO session);
+
+    /** The signed-in analyst's card for the sidebar: avatar, name, role and (when sign-in is on) the sign-out button. */
+    static native TemplateInstance user(UserDTO user, boolean signOut);
 
     /** The sidebar's conversation history, grouped by recency. */
     static native TemplateInstance history(List<HistoryGroup> groups);

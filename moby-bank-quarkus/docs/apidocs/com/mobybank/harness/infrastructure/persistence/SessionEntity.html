@@ -60,6 +60,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#field-detail" tabindex="0">Field Details</a>
 <ol class="toc-list">
 <li><a href="#id" tabindex="0">id</a></li>
+<li><a href="#ownerId" tabindex="0">ownerId</a></li>
 <li><a href="#title" tabindex="0">title</a></li>
 <li><a href="#location" tabindex="0">location</a></li>
 <li><a href="#status" tabindex="0">status</a></li>
@@ -126,18 +127,23 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code><a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#moveTarget" class="member-name-link">moveTarget</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../../domain/SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a></code></div>
-<div class="col-second even-row-color"><code><a href="#status" class="member-name-link">status</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#title" class="member-name-link">title</a></code></div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#ownerId" class="member-name-link">ownerId</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">The owning user's id.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../../domain/SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#status" class="member-name-link">status</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a></code></div>
-<div class="col-second even-row-color"><code><a href="#updatedAt" class="member-name-link">updatedAt</a></code></div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#title" class="member-name-link">title</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>long</code></div>
-<div class="col-second odd-row-color"><code><a href="#version" class="member-name-link">version</a></code></div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#updatedAt" class="member-name-link">updatedAt</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>long</code></div>
+<div class="col-second even-row-color"><code><a href="#version" class="member-name-link">version</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -177,6 +183,15 @@ loadScripts(document, 'script');</script>
 <h3>id</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a></span>&nbsp;<span class="element-name">id</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ownerId">
+<h3>ownerId</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">ownerId</span></div>
+<div class="block">The owning user's id. Null in rows written before there were users: they belong to the demo user.</div>
 </div>
 </section>
 </li>

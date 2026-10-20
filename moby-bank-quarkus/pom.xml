@@ -62,6 +62,16 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-postgresql</artifactId>
         </dependency>
+        <!-- Sign in with Microsoft: the OpenID Connect authorization-code flow (only /auth/microsoft uses it) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <!-- bcrypt for the stored passwords -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-elytron-security-common</artifactId>
+        </dependency>
         <!-- Browser assets for index.html, served from the classpath at /webjars/... and /_static/... -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
@@ -107,12 +117,31 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources</outputDirectory>
+                            <!-- not a public static file: PageResource serves it to signed-in users only -->
+                            <outputDirectory>${project.build.outputDirectory}/pages</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/..</directory>
                                     <includes>
                                         <include>index.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-login-page</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/..</directory>
+                                    <includes>
+                                        <include>login.html</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -141,6 +170,11 @@
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
+                        <!-- A developer's .env in this folder (real Microsoft, graph, sbx) is read by the tests too and
+                             beats application.properties; system properties beat it, so the tests stay on the fakes -->
+                        <harness.documents.mode>fake</harness.documents.mode>
+                        <harness.sandbox.mode>fake</harness.sandbox.mode>
+                        <harness.auth.microsoft.enabled>false</harness.auth.microsoft.enabled>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

@@ -54,7 +54,6 @@ class SbxSandboxAgentTest {
     private FakeRunner runner;
     private SandboxRegistry registry;
     private Map<String, byte[]> uploads;
-    private Map<String, byte[]> onedrive;
     private SbxSandboxAgent agent;
     private final List<Step> streamed = new ArrayList<>();
     private final Map<String, String> copied = new HashMap<>();
@@ -65,7 +64,6 @@ class SbxSandboxAgentTest {
         runner = new FakeRunner();
         registry = new SandboxRegistry(new InMemorySandboxRecordStore());
         uploads = new HashMap<>();
-        onedrive = new HashMap<>();
         UploadStore store = new UploadStore() {
             @Override
             public void store(SessionId sessionId, String fileName, byte[] content) {
@@ -77,25 +75,9 @@ class SbxSandboxAgentTest {
                 return Optional.ofNullable(uploads.get(fileName));
             }
         };
-        DocumentCatalog catalog = new DocumentCatalog() {
-            @Override
-            public List<Folder> folders() {
-                return List.of();
-            }
-
-            @Override
-            public List<CatalogFile> files(FolderId folderId) {
-                return List.of();
-            }
-
-            @Override
-            public Optional<byte[]> fetch(String fileName) {
-                return Optional.ofNullable(onedrive.get(fileName));
-            }
-        };
         SbxSettings settings = new SbxSettings("claude", List.of("--dangerously-skip-permissions"),
                 "/home/agent/workspace", Duration.ofMinutes(10), Duration.ofMinutes(30), Duration.ofHours(8), "stop");
-        agent = new SbxSandboxAgent(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, store, catalog, settings);
+        agent = new SbxSandboxAgent(new SbxCli(runner, "sbx", Duration.ofMinutes(2)), registry, store, settings);
 
         // Capture staged files while they still exist: sbx cp <local> <sandbox>:<remote>
         runner.on(command -> command.contains("cp"), command -> {
@@ -259,7 +241,7 @@ class SbxSandboxAgentTest {
     @Test
     void attachedFilesAreCopiedIntoTheSandboxBeforeTheAgentRuns() {
         uploads.put("notes.docx", "uploaded text".getBytes(StandardCharsets.UTF_8));
-        onedrive.put("Fathom_10-Q.pdf", "onedrive text".getBytes(StandardCharsets.UTF_8));
+        uploads.put("Fathom_10-Q.pdf", "onedrive text".getBytes(StandardCharsets.UTF_8));
         agentPrints(INIT, RESULT);
 
         agent.runTurn(turn(sessionAt(Location.LOCAL), "Summarize",
@@ -341,7 +323,7 @@ class SbxSandboxAgentTest {
 
     @Test
     void aFileNameWithAPathIsRefusedBeforeAnythingIsCopied() {
-        onedrive.put("../escape.pdf", "x".getBytes(StandardCharsets.UTF_8));
+        uploads.put("../escape.pdf", "x".getBytes(StandardCharsets.UTF_8));
         assertThrows(SandboxFailureException.class, () -> agent.runTurn(
                 turn(sessionAt(Location.LOCAL), "go", new FileRef("../escape.pdf", FileSource.ONEDRIVE)), streamed::add));
         assertTrue(copied.isEmpty());

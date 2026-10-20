@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Test;
 
 class FakeAdaptersTest {
 
+    private static final com.mobybank.harness.domain.UserId USER = com.mobybank.harness.domain.UserId.DEMO;
+
     private static final Instant T0 = Instant.parse("2026-09-30T12:00:00Z");
 
     private static AgentTurn turn(String text, FileRef... files) {
@@ -202,16 +204,16 @@ class FakeAdaptersTest {
     @Test
     void theCatalogServesThePrototypesFolderLibrary() {
         FakeDocumentCatalog catalog = new FakeDocumentCatalog();
-        List<Folder> folders = catalog.folders();
+        List<Folder> folders = catalog.folders(USER);
 
         assertEquals(List.of("Earnings 2026", "Client Financials", "Peer Comps", "Covenant Models", "ALM Reports",
                 "Analyst Templates"), folders.stream().map(Folder::name).toList());
         assertEquals(24, folders.get(0).fileCount());
 
-        List<CatalogFile> files = catalog.files(new FolderId("f1"));
+        List<CatalogFile> files = catalog.files(USER, new FolderId("f1"));
         assertEquals(3, files.size());
         assertEquals("Fathom_Q2_2026_10-Q.pdf", files.get(0).name());
-        assertTrue(catalog.files(new FolderId("missing")).isEmpty());
+        assertTrue(catalog.files(USER, new FolderId("missing")).isEmpty());
     }
 
     // --- adapter selection -------------------------------------------------------------------------------------
@@ -275,7 +277,7 @@ class FakeAdaptersTest {
     void theFakeCatalogServesPlaceholderContentForListedFilesOnly() {
         FakeDocumentCatalog catalog = new FakeDocumentCatalog();
         assertEquals("Demo content of Fathom_Q2_2026_10-Q.pdf\n",
-                new String(catalog.fetch("Fathom_Q2_2026_10-Q.pdf").orElseThrow()));
-        assertTrue(catalog.fetch("not-in-the-library.pdf").isEmpty());
+                new String(catalog.fetch(USER, "Fathom_Q2_2026_10-Q.pdf").orElseThrow()));
+        assertTrue(catalog.fetch(USER, "not-in-the-library.pdf").isEmpty());
     }
 }

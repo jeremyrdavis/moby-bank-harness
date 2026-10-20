@@ -122,7 +122,7 @@ All are records, validate in the constructor, and are immutable.
 | Type | Holds | Rules |
 |---|---|---|
 | `SessionId`, `MessageId` | A UUID | Not null; `fresh()` makes a new one (`SessionId.parse` reads text) |
-| `FolderId`, `UserId` | A string | Not blank; trimmed. `UserId.DEMO` is the one fixed user, since sign-in is out of scope |
+| `FolderId`, `UserId` | A string | Not blank; trimmed. `UserId.DEMO` is the demo analyst (Hermione Granger), who owns the demo data and everything from before there were users |
 | `Location` | `LOCAL` or `CLOUD` | `other()` returns the opposite |
 | `SessionStatus` | `IDLE`, `RUNNING`, `MOVING` | |
 | `MessageRole` | `USER`, `ASSISTANT` | |

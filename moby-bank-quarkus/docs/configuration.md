@@ -30,8 +30,14 @@ Any other value stops the app at startup with a message naming the property and 
 
 | Property | Default | Meaning |
 |---|---|---|
-| `harness.user.name` | `Hermione Granger` | The analyst's name in the sidebar |
-| `harness.user.role` | `Credit Research` | Their role |
+| `harness.user.name` | `Hermione Granger` | The analyst's name in the sidebar when there is no stored account for the user (the demo user, with `harness.auth.mode=none` and no seeded users) |
+| `harness.user.role` | `Credit Research` | Their role, in the same case |
+| `harness.auth.mode` | `login` | `login`: every page and API call needs a signed-in user, and the sign-in page is login.html. `none`: everybody is the demo user, as before. The tests run with `none` (`%test`). See [authentication.md](authentication.md) |
+| `harness.auth.session-ttl` | `8h` | How long a sign-in lasts |
+| `harness.auth.seed-users` | `true` | Create the demo analysts (Hermione Granger, Rana Kapoor, and the developer account Jeremy Davis) at startup, each only if no account has its email yet |
+| `harness.auth.seed-password` | `moby-demo` | The password of Hermione and Rana. **Demo only**: it is public in this repository, so change it or turn seeding off anywhere that is not a demo |
+| `harness.auth.seed-developer-password` | `myawesomepassword` | The password of the developer account `jeremy.davis@docker.com`. Same warning |
+| `harness.auth.microsoft.enabled` | `false` | Turns on "Sign in with Microsoft" (environment variable `HARNESS_MICROSOFT_ENABLED`). Needs the `QUARKUS_OIDC_*` variables of an Entra app registration |
 | `harness.ui.wait-timeout` | `180s` | How long a request from the htmx page (send a message, move a session) waits for the agent or the move before giving up with a toast. The work carries on. See [ui-fragments.md](ui-fragments.md) |
 | `harness.seed-demo-data` | `true` | Load the five demo conversations at startup. Also connects the first three demo folders, but only when `harness.documents.mode` is `fake` |
 
@@ -82,6 +88,7 @@ credentials), the app fails at startup naming the properties it needs.
 | `harness.graph.client-id` | *(unset)* | The Entra app registration's client id |
 | `harness.graph.client-secret` | *(unset)* | Its client secret |
 | `harness.graph.token-url` | `https://login.microsoftonline.com/common/oauth2/v2.0/token` | The token endpoint, for tests or sovereign clouds |
+| `harness.graph.user-token-url` | derived from `QUARKUS_OIDC_AUTH_SERVER_URL` | Where a signed-in user's Microsoft refresh token is traded for a new access token. By default the sign-in tenant's `.../oauth2/v2.0/token` |
 | `harness.graph.base-url` | `https://graph.microsoft.com/v1.0` | The Graph root |
 | `harness.graph.drive` | `me/drive` | Which drive: `me/drive` needs a signed-in user's token; with client credentials use `users/<upn>/drive` or `drives/<id>` |
 | `harness.graph.folders-root` | *(unset: the drive root)* | A folder path whose sub-folders form the library, for example `Credit Research/Coverage` |

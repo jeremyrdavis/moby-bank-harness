@@ -1,6 +1,7 @@
 package com.mobybank.harness.application;
 
 import com.mobybank.harness.domain.AgentReply;
+import com.mobybank.harness.domain.AppUser;
 import com.mobybank.harness.domain.AgentTurn;
 import com.mobybank.harness.domain.CatalogFile;
 import com.mobybank.harness.domain.ConnectedFolders;
@@ -21,6 +22,7 @@ import com.mobybank.harness.domain.StaleAggregateException;
 import com.mobybank.harness.domain.Step;
 import com.mobybank.harness.domain.StepKind;
 import com.mobybank.harness.domain.UserId;
+import com.mobybank.harness.domain.UserRepository;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -49,6 +51,11 @@ final class Fakes {
         }
 
         @Override
+        public List<Session> findAllByOwner(UserId owner) {
+            return findAllByMostRecentlyUpdated().stream().filter(s -> s.owner().equals(owner)).toList();
+        }
+
+        @Override
         public List<Session> findAllByMostRecentlyUpdated() {
             return stored.values().stream()
                     .map(s -> copy(s, s.version()))
@@ -68,8 +75,8 @@ final class Fakes {
         }
 
         private static Session copy(Session s, long version) {
-            return Session.rehydrate(s.id(), s.title(), s.location(), s.status(), s.moveTarget(), s.messages(),
-                    s.started(), s.createdAt(), s.updatedAt(), version);
+            return Session.rehydrate(s.id(), s.owner(), s.title(), s.location(), s.status(), s.moveTarget(),
+                    s.messages(), s.started(), s.createdAt(), s.updatedAt(), version);
         }
     }
 
@@ -99,7 +106,7 @@ final class Fakes {
         static final FolderId F3 = new FolderId("f3");
 
         @Override
-        public List<Folder> folders() {
+        public List<Folder> folders(UserId user) {
             return List.of(
                     new Folder(F1, "Earnings 2026", "Credit Research / Coverage / Earnings 2026", 24),
                     new Folder(F2, "Client Financials", "Corporate Banking / Clients / Financials", 58),
@@ -107,7 +114,7 @@ final class Fakes {
         }
 
         @Override
-        public List<CatalogFile> files(FolderId folderId) {
+        public List<CatalogFile> files(UserId user, FolderId folderId) {
             if (folderId.equals(F1)) {
                 return List.of(new CatalogFile(F1, "Fathom_Q2_2026_10-Q.pdf"), new CatalogFile(F1, "Kestrel_Q2.pdf"));
             }
@@ -117,9 +124,117 @@ final class Fakes {
             return List.of();
         }
 
+        /** What OneDrive "holds", by file name, for the tests of attaching files. */
+        final Map<String, byte[]> content = new HashMap<>();
+        /** When set, every call asks the user to sign in with Microsoft. */
+        boolean signInRequired;
+
         @Override
-        public Optional<byte[]> fetch(String fileName) {
-            return Optional.empty();
+        public Optional<byte[]> fetch(UserId user, String fileName) {
+            if (signInRequired) {
+                throw new com.mobybank.harness.domain.SignInRequiredException("Sign in with Microsoft to use your OneDrive.");
+            }
+            return Optional.ofNullable(content.get(fileName));
+        }
+    }
+
+    /** Who is calling: the test sets it. */
+    static final class Caller implements CurrentUser {
+
+        UserId user = UserId.DEMO;
+
+        @Override
+        public UserId id() {
+            return user;
+        }
+    }
+
+    static final class Users implements UserRepository {
+
+        private final Map<UserId, AppUser> stored = new HashMap<>();
+
+        @Override
+        public Optional<AppUser> findById(UserId id) {
+            return Optional.ofNullable(stored.get(id));
+        }
+
+        @Override
+        public Optional<AppUser> findByEmail(String email) {
+            String normalized = AppUser.normalize(email);
+            return stored.values().stream().filter(u -> u.email().equals(normalized)).findFirst();
+        }
+
+        @Override
+        public Optional<AppUser> findByMicrosoftSubject(String subject) {
+            return stored.values().stream().filter(u -> u.microsoftSubject().filter(subject::equals).isPresent())
+                    .findFirst();
+        }
+
+        @Override
+        public void persist(AppUser user) {
+            stored.put(user.id(), user);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return stored.isEmpty();
+        }
+    }
+
+    /** Not a real hash: "hash:" in front of the password, so tests can see what was stored. */
+    static final class PlainHasher implements PasswordHasher {
+
+        @Override
+        public String hash(String password) {
+            return "hash:" + password;
+        }
+
+        @Override
+        public boolean matches(String password, String hash) {
+            return hash.equals("hash:" + password);
+        }
+    }
+
+    static final class LoginSessions implements LoginSessionStore {
+
+        final Map<String, UserId> open = new HashMap<>();
+        private int counter;
+
+        @Override
+        public String open(UserId user, java.time.Duration timeToLive) {
+            String token = "token-" + (++counter);
+            open.put(token, user);
+            return token;
+        }
+
+        @Override
+        public Optional<UserId> resolve(String token) {
+            return Optional.ofNullable(open.get(token));
+        }
+
+        @Override
+        public void close(String token) {
+            open.remove(token);
+        }
+    }
+
+    static final class GraphTokens implements UserGraphTokens {
+
+        final Map<UserId, MicrosoftTokens> tokens = new HashMap<>();
+
+        @Override
+        public void remember(UserId user, MicrosoftTokens microsoftTokens) {
+            tokens.put(user, microsoftTokens);
+        }
+
+        @Override
+        public Optional<MicrosoftTokens> find(UserId user) {
+            return Optional.ofNullable(tokens.get(user));
+        }
+
+        @Override
+        public void forget(UserId user) {
+            tokens.remove(user);
         }
     }
 

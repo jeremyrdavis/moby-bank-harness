@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.mobybank.harness.application.Fakes.Caller;
 import com.mobybank.harness.application.Fakes.Catalog;
 import com.mobybank.harness.application.Fakes.FoldersRepo;
 import java.util.List;
@@ -19,7 +20,7 @@ class FolderApplicationServiceTest {
     @BeforeEach
     void setUp() {
         repo = new FoldersRepo();
-        service = new FolderApplicationService(new Catalog(), repo);
+        service = new FolderApplicationService(new Catalog(), repo, new Caller());
     }
 
     @Test

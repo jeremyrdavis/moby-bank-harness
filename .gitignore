@@ -2,3 +2,5 @@
 .claude/settings.local.json
 .quarkus/
 .DS_Store
+# Local settings and secrets (Quarkus dev mode reads moby-bank-quarkus/.env)
+.env

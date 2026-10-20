@@ -42,6 +42,8 @@ class BuildLayoutTest {
 
         assertTrue(pom.contains("<id>copy-index-page</id>"), "the copy-index-page execution is missing");
         assertTrue(pom.contains("<include>index.html</include>"), "the copy must be limited to index.html");
+        assertTrue(pom.contains("<id>copy-login-page</id>") && pom.contains("<include>login.html</include>"),
+                "the sign-in page is copied the same way");
     }
 
     @Test
@@ -54,6 +56,9 @@ class BuildLayoutTest {
             assertFalse(Files.exists(classes.resolve(stray)),
                     "target/classes/" + stray + " exists: the repository was copied into the build output; run ./mvnw clean");
         }
-        assertEquals(true, Files.exists(classes.resolve("META-INF/resources/index.html")));
+        assertEquals(true, Files.exists(classes.resolve("pages/index.html")), "served by PageResource, signed-in only");
+        assertEquals(false, Files.exists(classes.resolve("META-INF/resources/index.html")),
+                "index.html must not be a public static file");
+        assertEquals(true, Files.exists(classes.resolve("META-INF/resources/login.html")));
     }
 }

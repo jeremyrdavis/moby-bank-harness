@@ -10,6 +10,7 @@ import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionTitle;
 import com.mobybank.harness.domain.Step;
 import com.mobybank.harness.domain.StepKind;
+import com.mobybank.harness.domain.UserId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,8 @@ final class SessionMapper {
     /** Rebuilds the aggregate, at the version the row holds. */
     static Session toAggregate(SessionEntity entity) {
         List<Message> messages = entity.messages.stream().map(SessionMapper::toMessage).toList();
-        return Session.rehydrate(new SessionId(entity.id), new SessionTitle(entity.title), entity.location,
+        UserId owner = entity.ownerId == null ? UserId.DEMO : new UserId(entity.ownerId);
+        return Session.rehydrate(new SessionId(entity.id), owner, new SessionTitle(entity.title), entity.location,
                 entity.status, entity.moveTarget, messages, entity.launched, entity.createdAt, entity.updatedAt,
                 entity.version);
     }
@@ -37,6 +39,7 @@ final class SessionMapper {
      */
     static void copyInto(Session session, SessionEntity entity) {
         entity.id = session.id().value();
+        entity.ownerId = session.owner().value();
         entity.title = session.title().value();
         entity.location = session.location();
         entity.status = session.status();

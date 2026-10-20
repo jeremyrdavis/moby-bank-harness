@@ -10,6 +10,7 @@ import com.mobybank.harness.domain.AgentRepliedEvent;
 import com.mobybank.harness.domain.AgentReply;
 import com.mobybank.harness.domain.AgentTurn;
 import com.mobybank.harness.domain.DomainEvent;
+import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.FileRef;
 import com.mobybank.harness.domain.FileSource;
 import com.mobybank.harness.domain.Location;
@@ -23,6 +24,7 @@ import com.mobybank.harness.domain.SessionId;
 import com.mobybank.harness.domain.SessionMovedEvent;
 import com.mobybank.harness.domain.SessionRepository;
 import com.mobybank.harness.domain.SessionStatus;
+import com.mobybank.harness.domain.UserId;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -44,11 +46,13 @@ public class SessionApplicationService {
     private final SessionEventStream events;
     private final BackgroundRunner runner;
     private final Clock clock;
+    private final CurrentUser currentUser;
+    private final DocumentCatalog catalog;
 
     @Inject
     public SessionApplicationService(SessionRepository sessions, SandboxAgent agent, SandboxTransfer transfer,
                                      UploadStore uploads, SessionEventStream events, BackgroundRunner runner,
-                                     Clock clock) {
+                                     Clock clock, CurrentUser currentUser, DocumentCatalog catalog) {
         this.sessions = sessions;
         this.agent = agent;
         this.transfer = transfer;
@@ -56,11 +60,13 @@ public class SessionApplicationService {
         this.events = events;
         this.runner = runner;
         this.clock = clock;
+        this.currentUser = currentUser;
+        this.catalog = catalog;
     }
 
     public SessionDTO create(CreateSessionCommand command) {
         Location location = Dtos.location(command == null ? null : command.location(), Location.LOCAL);
-        Session session = Session.start(SessionId.fresh(), location, clock.instant());
+        Session session = Session.start(SessionId.fresh(), currentUser.id(), location, clock.instant());
         sessions.persist(session);
         Log.debugf("Started session %s at %s", Dtos.id(session.id()), location);
         return toDto(session);
@@ -70,7 +76,7 @@ public class SessionApplicationService {
     public SessionDTO launch(LaunchSessionCommand command) {
         SessionId id = Dtos.sessionId(command.sessionId());
         Location location = Dtos.location(command.location(), null);
-        Session session = load(id);
+        Session session = loadOwned(id);
         session.launchAt(location, clock.instant());
         sessions.persist(session);
         Log.debugf("Session %s will run at %s (chosen before it started)", Dtos.id(id), location);
@@ -105,7 +111,7 @@ public class SessionApplicationService {
 
     /** The conversation history, most recently updated first. */
     public List<SessionSummaryDTO> list() {
-        List<SessionSummaryDTO> history = sessions.findAllByMostRecentlyUpdated().stream()
+        List<SessionSummaryDTO> history = sessions.findAllByOwner(currentUser.id()).stream()
                 .map(session -> Dtos.summary(session, group(session)))
                 .toList();
         Log.debugf("Listed %d sessions", history.size());
@@ -114,7 +120,15 @@ public class SessionApplicationService {
 
     public SessionDTO get(String sessionId) {
         Log.tracef("Opening session %s", sessionId);
-        return toDto(load(Dtos.sessionId(sessionId)));
+        return toDto(loadOwned(Dtos.sessionId(sessionId)));
+    }
+
+    /**
+     * The session's status ({@code idle}, {@code running} or {@code moving}) without checking who is asking. For code
+     * that follows a session from a background thread, where there is no request and so no current user.
+     */
+    public String statusOf(String sessionId) {
+        return Dtos.name(load(Dtos.sessionId(sessionId)).status());
     }
 
     /**
@@ -123,8 +137,9 @@ public class SessionApplicationService {
      */
     public MessageDTO sendMessage(SendMessageCommand command) {
         SessionId id = Dtos.sessionId(command.sessionId());
-        Session session = load(id);
+        Session session = loadOwned(id);
         List<FileRef> files = Dtos.fileRefs(command.files());
+        stageOneDriveFiles(id, files);
         Log.debugf("Message for session %s at %s: %d chars, %d attached files, %d earlier messages",
                 Dtos.id(id), session.location(), command.text() == null ? 0 : command.text().length(), files.size(),
                 session.messages().size());
@@ -148,7 +163,7 @@ public class SessionApplicationService {
     /** Stores a file the analyst uploaded so it can be attached to the next message. */
     public FileRefDTO attachUpload(AttachUploadCommand command) {
         SessionId id = Dtos.sessionId(command.sessionId());
-        load(id);
+        loadOwned(id);
         if (command.content() == null) {
             throw new IllegalArgumentException("file content required");
         }
@@ -156,6 +171,26 @@ public class SessionApplicationService {
         uploads.store(id, ref.name(), command.content());
         Log.debugf("Stored an upload for session %s: %d bytes", Dtos.id(id), command.content().length);
         return Dtos.file(ref);
+    }
+
+    /**
+     * Downloads the OneDrive files attached to a message while the request, and so the user's Microsoft access, is
+     * still there, and keeps them with the session's uploads. The background agent then reads every attached file from
+     * there and needs no token of its own.
+     *
+     * @throws IllegalArgumentException if a file is not in the user's OneDrive
+     */
+    private void stageOneDriveFiles(SessionId id, List<FileRef> files) {
+        UserId user = currentUser.id();
+        for (FileRef file : files) {
+            if (file.source() != FileSource.ONEDRIVE) {
+                continue;
+            }
+            byte[] content = catalog.fetch(user, file.name()).orElseThrow(() ->
+                    new IllegalArgumentException("The file " + file.name() + " was not found in your OneDrive"));
+            uploads.store(id, file.name(), content);
+            Log.debugf("Staged a OneDrive file for session %s: %d bytes", Dtos.id(id), content.length);
+        }
     }
 
     /** Keeps only the file name, so a client-supplied path can never point outside the session's upload area. */
@@ -177,7 +212,7 @@ public class SessionApplicationService {
     public SessionDTO move(MoveSessionCommand command) {
         SessionId id = Dtos.sessionId(command.sessionId());
         Location target = Dtos.location(command.target(), null);
-        Session session = load(id);
+        Session session = loadOwned(id);
         Location from = session.location();
         Log.debugf("Move requested for session %s: %s -> %s (status %s)", Dtos.id(id), from, target,
                 session.status());
@@ -286,6 +321,17 @@ public class SessionApplicationService {
         }
     }
 
+    /** The session if it exists and belongs to the caller; anyone else's session is simply not found. */
+    private Session loadOwned(SessionId id) {
+        Session session = load(id);
+        if (!session.owner().equals(currentUser.id())) {
+            Log.debugf("Session %s does not belong to the caller", Dtos.id(id));
+            throw new ResourceNotFoundException("session", Dtos.id(id));
+        }
+        return session;
+    }
+
+    /** The session by id, whoever it belongs to. For background work, which has no caller. */
     private Session load(SessionId id) {
         return sessions.findById(id).orElseThrow(() -> {
             Log.debugf("Session %s not found", Dtos.id(id));

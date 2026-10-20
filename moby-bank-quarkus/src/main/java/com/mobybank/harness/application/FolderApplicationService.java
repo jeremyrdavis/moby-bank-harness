@@ -20,21 +20,22 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class FolderApplicationService {
 
-    private static final UserId USER = UserId.DEMO;
-
     private final DocumentCatalog catalog;
     private final ConnectedFoldersRepository connectedFolders;
+    private final CurrentUser currentUser;
 
     @Inject
-    public FolderApplicationService(DocumentCatalog catalog, ConnectedFoldersRepository connectedFolders) {
+    public FolderApplicationService(DocumentCatalog catalog, ConnectedFoldersRepository connectedFolders,
+                                    CurrentUser currentUser) {
         this.catalog = catalog;
         this.connectedFolders = connectedFolders;
+        this.currentUser = currentUser;
     }
 
     /** Every folder that can be connected, flagged with whether it already is. */
     public List<FolderDTO> library() {
         Set<FolderId> connected = Set.copyOf(current().folderIds());
-        List<FolderDTO> library = catalog.folders().stream()
+        List<FolderDTO> library = catalog.folders(currentUser.id()).stream()
                 .map(folder -> toDto(folder, connected.contains(folder.id())))
                 .toList();
         Log.debugf("Folder library: %d folders, %d connected", library.size(), connected.size());
@@ -49,7 +50,7 @@ public class FolderApplicationService {
     /** Connects the chosen folders and returns the updated library. Already-connected folders are ignored. */
     public List<FolderDTO> connect(ConnectFoldersCommand command) {
         List<String> requested = command.folderIds() == null ? List.of() : command.folderIds();
-        Set<FolderId> known = catalog.folders().stream().map(Folder::id).collect(Collectors.toSet());
+        Set<FolderId> known = catalog.folders(currentUser.id()).stream().map(Folder::id).collect(Collectors.toSet());
         List<FolderId> ids = requested.stream().map(FolderId::new).toList();
         Log.debugf("Connecting %d folders (%d known in the catalog)", ids.size(), known.size());
         ids.stream().filter(id -> !known.contains(id)).findFirst().ifPresent(unknown -> {
@@ -66,12 +67,12 @@ public class FolderApplicationService {
 
     /** The documents in every connected folder, for the attach dialog. */
     public List<CatalogFileDTO> connectedFiles() {
-        Map<FolderId, Folder> byId = catalog.folders().stream()
+        Map<FolderId, Folder> byId = catalog.folders(currentUser.id()).stream()
                 .collect(Collectors.toMap(Folder::id, Function.identity(), (a, b) -> a));
         Set<FolderId> connected = Set.copyOf(current().folderIds());
-        List<CatalogFileDTO> files = catalog.folders().stream()
+        List<CatalogFileDTO> files = catalog.folders(currentUser.id()).stream()
                 .filter(folder -> connected.contains(folder.id()))
-                .flatMap(folder -> catalog.files(folder.id()).stream())
+                .flatMap(folder -> catalog.files(currentUser.id(), folder.id()).stream())
                 .map(file -> toDto(file, byId.get(file.folderId())))
                 .toList();
         Log.debugf("Listed %d files across %d connected folders", files.size(), connected.size());
@@ -79,7 +80,8 @@ public class FolderApplicationService {
     }
 
     private ConnectedFolders current() {
-        return connectedFolders.findByUser(USER).orElseGet(() -> ConnectedFolders.none(USER));
+        UserId user = currentUser.id();
+        return connectedFolders.findByUser(user).orElseGet(() -> ConnectedFolders.none(user));
     }
 
     private static FolderDTO toDto(Folder folder, boolean connected) {

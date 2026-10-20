@@ -24,6 +24,10 @@ public class SessionEntity {
     @Id
     public UUID id;
 
+    /** The owning user's id. Null in rows written before there were users: they belong to the demo user. */
+    @Column(name = "owner_id")
+    public String ownerId;
+
     @Column(nullable = false)
     public String title;
 

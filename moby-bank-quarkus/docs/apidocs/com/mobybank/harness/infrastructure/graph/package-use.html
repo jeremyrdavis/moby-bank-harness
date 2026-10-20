@@ -96,6 +96,15 @@ loadScripts(document, 'script');</script>
 <div class="block">Supplies the bearer token for Microsoft Graph: either a configured token used as-is, or one obtained with the
 OAuth client-credentials flow and reused until a minute before it expires.</div>
 </div>
+<div class="col-first even-row-color"><a href="class-use/GraphTokenSource.html#com.mobybank.harness.infrastructure.graph">GraphTokenSource</a></div>
+<div class="col-last even-row-color">
+<div class="block">Where <a href="GraphDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure.graph"><code>GraphDocumentCatalog</code></a> gets the bearer token for a request made on behalf of a user.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/MicrosoftTokenRefresher.html#com.mobybank.harness.infrastructure.graph">MicrosoftTokenRefresher</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Trades a user's refresh token for a new access token at Microsoft's token endpoint (the refresh-token grant, with the
+app registration's client id and secret).</div>
+</div>
 </div>
 </section>
 </li>

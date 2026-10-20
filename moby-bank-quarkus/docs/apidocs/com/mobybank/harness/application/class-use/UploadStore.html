@@ -82,13 +82,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../SessionApplicationService.html#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock)" class="member-name-link">SessionApplicationService</a><wbr>(<a href="../../domain/SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a>&nbsp;sessions,
+<div class="col-second even-row-color"><code><a href="../SessionApplicationService.html#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock,com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.DocumentCatalog)" class="member-name-link">SessionApplicationService</a><wbr>(<a href="../../domain/SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a>&nbsp;sessions,
  <a href="../../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&nbsp;agent,
  <a href="../../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a>&nbsp;transfer,
  <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
  <a href="../SessionEventStream.html" title="interface in com.mobybank.harness.application">SessionEventStream</a>&nbsp;events,
  <a href="../BackgroundRunner.html" title="interface in com.mobybank.harness.application">BackgroundRunner</a>&nbsp;runner,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="../CurrentUser.html" title="interface in com.mobybank.harness.application">CurrentUser</a>&nbsp;currentUser,
+ <a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -118,9 +120,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../infrastructure/sbx/SbxAdapters.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)" class="member-name-link">SbxAdapters</a><wbr>(<a href="../../infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
+<div class="col-second even-row-color"><code><a href="../../infrastructure/sbx/SbxAdapters.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.time.Duration,java.time.Duration,java.time.Duration,java.time.Duration,java.lang.String,java.time.Duration,boolean)" class="member-name-link">SbxAdapters</a><wbr>(<a href="../../infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
  <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
- <a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;binary,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agent,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentArgs,
@@ -134,10 +135,9 @@ loadScripts(document, 'script');</script>
  boolean&nbsp;preflightProbe)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../infrastructure/sbx/SbxSandboxAgent.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SbxCli,com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.domain.DocumentCatalog,com.mobybank.harness.infrastructure.sbx.SbxSettings)" class="member-name-link">SbxSandboxAgent</a><wbr>(<a href="../../infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a>&nbsp;cli,
+<div class="col-second odd-row-color"><code><a href="../../infrastructure/sbx/SbxSandboxAgent.html#%3Cinit%3E(com.mobybank.harness.infrastructure.sbx.SbxCli,com.mobybank.harness.infrastructure.sbx.SandboxRegistry,com.mobybank.harness.application.UploadStore,com.mobybank.harness.infrastructure.sbx.SbxSettings)" class="member-name-link">SbxSandboxAgent</a><wbr>(<a href="../../infrastructure/sbx/SbxCli.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxCli</a>&nbsp;cli,
  <a href="../../infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a>&nbsp;registry,
  <a href="../UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
- <a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog,
  <a href="../../infrastructure/sbx/SbxSettings.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxSettings</a>&nbsp;settings)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>

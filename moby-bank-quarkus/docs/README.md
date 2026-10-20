@@ -14,6 +14,7 @@ it. **New here? Start with [ONBOARDING.md](ONBOARDING.md).**
 | [integrations.md](integrations.md) | How the real Docker Sandboxes (`sbx`) and OneDrive (Microsoft Graph) adapters work, and what to verify on a real system |
 | [LEARNINGS.md](LEARNINGS.md) | What a real `sbx` host showed about moving sessions between local and cloud (timings, credentials, expiry, failure texts), what changed because of it, and what is still unverified |
 | [ONEDRIVE_INTEGRATION.md](ONEDRIVE_INTEGRATION.md) | **A plan** (not built yet) for taking OneDrive from the stand-in to a real tenant with per-user access: decisions, target architecture, Microsoft setup, phases, API changes, security, tests, rollout and a backlog |
+| [authentication.md](authentication.md) | Signing in (password and Microsoft), the demo users, session cookies, who owns what, registering the Entra app |
 | [persistence.md](persistence.md) | What is stored in PostgreSQL, how the repositories are built, the version and transaction rules, and how to run with a database |
 | [testing.md](testing.md) | The kinds of test, the test doubles, the guards, and where a new test goes |
 | [apidocs/index.html](apidocs/index.html) | The generated Javadoc |
