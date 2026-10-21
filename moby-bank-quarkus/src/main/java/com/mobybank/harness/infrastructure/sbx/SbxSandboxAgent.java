@@ -3,7 +3,6 @@ package com.mobybank.harness.infrastructure.sbx;
 import com.mobybank.harness.application.UploadStore;
 import com.mobybank.harness.domain.AgentReply;
 import com.mobybank.harness.domain.AgentTurn;
-import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.FileRef;
 import com.mobybank.harness.domain.Location;
 import com.mobybank.harness.domain.Message;
@@ -46,15 +45,12 @@ public final class SbxSandboxAgent implements SandboxAgent {
     private final SbxCli cli;
     private final SandboxRegistry registry;
     private final UploadStore uploads;
-    private final DocumentCatalog catalog;
     private final SbxSettings settings;
 
-    public SbxSandboxAgent(SbxCli cli, SandboxRegistry registry, UploadStore uploads, DocumentCatalog catalog,
-                           SbxSettings settings) {
+    public SbxSandboxAgent(SbxCli cli, SandboxRegistry registry, UploadStore uploads, SbxSettings settings) {
         this.cli = cli;
         this.registry = registry;
         this.uploads = uploads;
-        this.catalog = catalog;
         this.settings = settings;
     }
 
@@ -233,10 +229,8 @@ public final class SbxSandboxAgent implements SandboxAgent {
     }
 
     private byte[] content(SessionId session, FileRef file) {
-        Optional<byte[]> content = switch (file.source()) {
-            case UPLOAD -> uploads.find(session, file.name());
-            case ONEDRIVE -> catalog.fetch(file.name());
-        };
+        // OneDrive files were downloaded and kept with the uploads when the message was sent (see SessionApplicationService)
+        Optional<byte[]> content = uploads.find(session, file.name());
         Log.debugf("Content of an attached file (%s) for session %s: %s", file.source(), session.value(),
                 content.map(bytes -> bytes.length + " bytes").orElse("not available"));
         return content.orElseThrow(() -> new SandboxFailureException(

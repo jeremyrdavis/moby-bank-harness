@@ -5,6 +5,7 @@ import com.mobybank.harness.domain.DocumentSourceException;
 import com.mobybank.harness.domain.DomainException;
 import com.mobybank.harness.domain.InvalidMoveException;
 import com.mobybank.harness.domain.SandboxFailureException;
+import com.mobybank.harness.domain.SignInRequiredException;
 import com.mobybank.harness.domain.SessionBusyException;
 import com.mobybank.harness.domain.StaleAggregateException;
 import io.quarkus.logging.Log;
@@ -56,6 +57,12 @@ public class ApiExceptionMappers {
     public RestResponse<ApiError> documentSourceFailure(DocumentSourceException e) {
         Log.warn("Document source failure reached the API", e);
         return RestResponse.status(RestResponse.Status.BAD_GATEWAY, new ApiError("document_source_failure", e.getMessage()));
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ApiError> signInRequired(SignInRequiredException e) {
+        Log.debugf("401: %s", e.getMessage());
+        return RestResponse.status(RestResponse.Status.UNAUTHORIZED, new ApiError("sign_in_required", e.getMessage()));
     }
 
     @ServerExceptionMapper

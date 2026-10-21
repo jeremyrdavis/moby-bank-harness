@@ -7,7 +7,9 @@ so they survive a restart. This page says what is stored, how the code is arrang
 
 | Table | Entity | Holds |
 |---|---|---|
-| `agent_session` | `SessionEntity` | One row per `Session`: title, location (`LOCAL`/`CLOUD`), status, move target, whether it has started, timestamps and the aggregate's `version` |
+| `app_user` | `UserEntity` | The analysts who can sign in: email (unique, lower case), name, role, a bcrypt password hash and/or a Microsoft subject |
+| `login_session` | `LoginSessionEntity` | A signed-in session: the SHA-256 hash of its token (never the token), the user, when it was created and when it expires |
+| `agent_session` | `SessionEntity` | One row per `Session`: the owner's user id (empty in rows from before there were users: they belong to the demo user), title, location (`LOCAL`/`CLOUD`), status, move target, whether it has started, timestamps and the aggregate's `version` |
 | `session_message` | `MessageEntity` | The conversation: the analyst's messages (the commands, with the files attached) and the agent's replies, in order. The files, steps, paragraphs and result table are JSON columns |
 | `connected_folders` | `ConnectedFoldersEntity` | The folder ids each user has connected, in order, and the `version` |
 | `upload` | `UploadEntity` | The bytes of each uploaded file, keyed by session and file name |

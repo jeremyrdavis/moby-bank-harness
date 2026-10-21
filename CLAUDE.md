@@ -21,7 +21,9 @@ A demo for engineering/platform teams of a custom agent harness: a chat UI for a
 ## Commands
 
 ```bash
-# Backend (Java 25, Maven wrapper; PostgreSQL via Quarkus Dev Services, so Docker must be running)
+# Backend (Java 25, Maven wrapper; PostgreSQL via Quarkus Dev Services, so Docker must be running).
+# The page needs a sign-in: hermione.granger@mobybank.com or rana.kapoor@mobybank.com (password moby-demo), or the
+# developer account jeremy.davis@docker.com (password myawesomepassword); -Dharness.auth.mode=none skips it, and the tests run that way
 cd moby-bank-quarkus
 ./mvnw quarkus:dev                      # http://localhost:8080 (the htmx page), Dev UI at /q/dev
 ./mvnw resources:copy-resources@copy-index-page   # after editing ../index.html in dev mode
@@ -67,7 +69,7 @@ Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Depend
 
 `index.html` at the repo root calls HTML-fragment endpoints and swaps the answers into itself. Full contract in `moby-bank-quarkus/docs/ui-fragments.md`.
 
-- **Served from the root, once.** A `maven-resources-plugin` execution (`copy-index-page`) in `moby-bank-quarkus/pom.xml` copies `../index.html` to `target/classes/META-INF/resources` at build time. The source stays single. **Never list `..` as a `<build><resources>` directory:** Quarkus dev mode and tests copy that whole directory ignoring `<includes>`, which copies the repository (`.git` too) into `target/classes`, nested without end, until the path is too long (`BuildLayoutTest` guards this).
+- **Served from the root, once, to signed-in users.** A `maven-resources-plugin` execution (`copy-index-page`) in `moby-bank-quarkus/pom.xml` copies `../index.html` to `target/classes/pages` at build time, and `PageResource` serves it at `/` (and redirects anyone who is not signed in to `login.html`, which a second execution, `copy-login-page`, copies to `META-INF/resources` as a public static file). The sources stay single. **Never list `..` as a `<build><resources>` directory:** Quarkus dev mode and tests copy that whole directory ignoring `<includes>`, which copies the repository (`.git` too) into `target/classes`, nested without end, until the path is too long (`BuildLayoutTest` guards this).
 - **`/ui` is the page's API prefix.** The page writes `/api/...` and a script rewrites it to the `api-base` meta (`/ui`), so HTML endpoints stay out of the JSON `/api` and out of `openapi.yaml` (`mp.openapi.scan.exclude.packages`). Fragments the server renders also write `/api/...` paths.
 - **Requests wait.** The page has no SSE, so `POST …/messages` and `POST …/move` block (`SessionWaiter`) until the reply or the move ends, up to `harness.ui.wait-timeout` (180s). Steps and reply therefore appear together.
 - **Templates are type-checked** (`@CheckedTemplate`): a typo fails the build. They live in `src/main/resources/templates/`; HTML is auto-escaped, so never use `.raw` on user or agent text.

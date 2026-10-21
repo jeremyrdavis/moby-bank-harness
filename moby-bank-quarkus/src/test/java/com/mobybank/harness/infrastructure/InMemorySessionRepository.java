@@ -28,6 +28,11 @@ public class InMemorySessionRepository implements SessionRepository {
     }
 
     @Override
+    public synchronized List<Session> findAllByOwner(com.mobybank.harness.domain.UserId owner) {
+        return findAllByMostRecentlyUpdated().stream().filter(session -> session.owner().equals(owner)).toList();
+    }
+
+    @Override
     public synchronized List<Session> findAllByMostRecentlyUpdated() {
         return stored.values().stream()
                 .map(session -> copy(session, session.version()))
@@ -51,7 +56,7 @@ public class InMemorySessionRepository implements SessionRepository {
     }
 
     private static Session copy(Session session, long version) {
-        return Session.rehydrate(session.id(), session.title(), session.location(), session.status(),
+        return Session.rehydrate(session.id(), session.owner(), session.title(), session.location(), session.status(),
                 session.moveTarget(), session.messages(), session.started(), session.createdAt(), session.updatedAt(),
                 version);
     }

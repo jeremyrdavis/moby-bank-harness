@@ -336,11 +336,17 @@ paths:
       - User
       responses:
         "200":
-          description: OK
+          description: The signed-in analyst
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserDTO"
+        "401":
+          description: Not signed in (sign-in mode only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/sessions:
     get:
       summary: List the conversation history
@@ -571,7 +577,9 @@ info:
   title: Moby Bank agent harness API
   version: 1.0.0
   description: "HTTP and server-sent-events API used by the harness UI. Every backend\
-    \ implementation (Quarkus, Python) must match this contract."
+    \ implementation (Quarkus, Python) must match this contract. When sign-in is on\
+    \ (harness.auth.mode=login) every call needs the moby-login session cookie and\
+    \ answers 401 without it; another user's session is 404."
 servers:
 - url: http://localhost:8080
   description: Auto generated value

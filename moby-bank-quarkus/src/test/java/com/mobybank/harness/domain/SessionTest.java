@@ -264,6 +264,31 @@ class SessionTest {
         assertTrue(restored.pullPendingEvents().isEmpty());
     }
 
+    // --- ownership ---------------------------------------------------------------------------------------------
+
+    @Test
+    void aSessionBelongsToItsOwnerAndTheShortFormsMeanTheDemoUser() {
+        UserId rana = new UserId("analyst-rana-kapoor");
+
+        assertEquals(rana, Session.start(SessionId.fresh(), rana, Location.LOCAL, T0).owner());
+        assertEquals(UserId.DEMO, Session.start(SessionId.fresh(), Location.LOCAL, T0).owner());
+    }
+
+    @Test
+    void theOwnerSurvivesRehydrating() {
+        UserId rana = new UserId("analyst-rana-kapoor");
+        Session original = Session.start(SessionId.fresh(), rana, Location.CLOUD, T0);
+
+        Session restored = Session.rehydrate(original.id(), original.owner(), original.title(), original.location(),
+                original.status(), original.moveTarget(), original.messages(), original.started(), original.createdAt(),
+                original.updatedAt(), 3L);
+
+        assertEquals(rana, restored.owner());
+        assertEquals(UserId.DEMO, Session.rehydrate(original.id(), original.title(), original.location(),
+                original.status(), original.moveTarget(), original.messages(), original.createdAt(), original.updatedAt(),
+                3L).owner());
+    }
+
     // --- choosing where to run ---------------------------------------------------------------------------------
 
     @Test

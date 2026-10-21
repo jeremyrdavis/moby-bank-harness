@@ -59,6 +59,7 @@ loadScripts(document, 'script');</script>
 <ol class="toc-list">
 <li><a href="#findById(com.mobybank.harness.domain.SessionId)" tabindex="0">findById(SessionId)</a></li>
 <li><a href="#findAllByMostRecentlyUpdated()" tabindex="0">findAllByMostRecentlyUpdated()</a></li>
+<li><a href="#findAllByOwner(com.mobybank.harness.domain.UserId)" tabindex="0">findAllByOwner(UserId)</a></li>
 <li><a href="#persist(com.mobybank.harness.domain.Session)" tabindex="0">persist(Session)</a></li>
 </ol>
 </li>
@@ -96,14 +97,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findAllByMostRecentlyUpdated()" class="member-name-link">findAllByMostRecentlyUpdated</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">All sessions, most recently updated first.</div>
+<div class="block">All sessions of every user, most recently updated first.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#persist(com.mobybank.harness.domain.Session)" class="member-name-link">persist</a><wbr>(<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&nbsp;session)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findAllByOwner(com.mobybank.harness.domain.UserId)" class="member-name-link">findAllByOwner</a><wbr>(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">The sessions that belong to one user, most recently updated first.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findById(com.mobybank.harness.domain.SessionId)" class="member-name-link">findById</a><wbr>(<a href="SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#persist(com.mobybank.harness.domain.Session)" class="member-name-link">persist</a><wbr>(<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&nbsp;session)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Saves the session.</div>
 </div>
 </div>
@@ -133,7 +139,16 @@ loadScripts(document, 'script');</script>
 <h3>findAllByMostRecentlyUpdated</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</span>&nbsp;<span class="element-name">findAllByMostRecentlyUpdated</span>()</div>
-<div class="block">All sessions, most recently updated first.</div>
+<div class="block">All sessions of every user, most recently updated first. For housekeeping; use cases list by owner.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="findAllByOwner(com.mobybank.harness.domain.UserId)">
+<h3>findAllByOwner</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</span>&nbsp;<span class="element-name">findAllByOwner</span><wbr><span class="parameters">(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner)</span></div>
+<div class="block">The sessions that belong to one user, most recently updated first.</div>
 </div>
 </section>
 </li>

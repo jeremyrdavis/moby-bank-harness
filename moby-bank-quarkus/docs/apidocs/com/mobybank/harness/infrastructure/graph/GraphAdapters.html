@@ -58,11 +58,12 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(java.time.Clock,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)" tabindex="0">GraphAdapters(Clock, String, String, Optional, Optional, String, Optional, Optional, Optional, Duration, long)</a></li>
+<li><a href="#%3Cinit%3E(java.time.Clock,com.mobybank.harness.application.UserGraphTokens,boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)" tabindex="0">GraphAdapters(Clock, UserGraphTokens, boolean, Optional, Optional, Optional, Optional, String, String, Optional, Optional, String, Optional, Optional, Optional, Duration, long)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#tokenUrlOf(java.lang.String)" tabindex="0">tokenUrlOf(String)</a></li>
 <li><a href="#catalog()" tabindex="0">catalog()</a></li>
 </ol>
 </li>
@@ -96,7 +97,13 @@ catalog is used, and it is only built when <code>harness.documents.mode=graph</c
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.time.Clock,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)" class="member-name-link">GraphAdapters</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.time.Clock,com.mobybank.harness.application.UserGraphTokens,boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)" class="member-name-link">GraphAdapters</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="../../application/UserGraphTokens.html" title="interface in com.mobybank.harness.application">UserGraphTokens</a>&nbsp;userTokens,
+ boolean&nbsp;microsoftEnabled,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;userTokenUrl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcServerUrl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcClientId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcSecret,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;baseUrl,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;drive,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;foldersRoot,
@@ -116,7 +123,7 @@ catalog is used, and it is only built when <code>harness.documents.mode=graph</c
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -125,6 +132,11 @@ catalog is used, and it is only built when <code>harness.documents.mode=graph</c
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#catalog()" class="member-name-link">catalog</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#tokenUrlOf(java.lang.String)" class="member-name-link">tokenUrlOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authServerUrl)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block"><code>https://login.microsoftonline.com/&lt;tenant&gt;/v2.0</code> has its token endpoint at <code>.../oauth2/v2.0/token</code>.</div>
+</div>
 </div>
 </div>
 </div>
@@ -143,11 +155,17 @@ catalog is used, and it is only built when <code>harness.documents.mode=graph</c
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.time.Clock,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)">
+<section class="detail" id="&lt;init&gt;(java.time.Clock,com.mobybank.harness.application.UserGraphTokens,boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.lang.String,java.lang.String,java.util.Optional,java.util.Optional,java.lang.String,java.util.Optional,java.util.Optional,java.util.Optional,java.time.Duration,long)">
 <h3>GraphAdapters</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Inject
 </span><span class="modifiers">public</span>&nbsp;<span class="element-name">GraphAdapters</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="../../application/UserGraphTokens.html" title="interface in com.mobybank.harness.application">UserGraphTokens</a>&nbsp;userTokens,
+ boolean&nbsp;microsoftEnabled,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;userTokenUrl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcServerUrl,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcClientId,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;oidcSecret,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;baseUrl,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;drive,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;foldersRoot,
@@ -169,6 +187,15 @@ catalog is used, and it is only built when <code>harness.documents.mode=graph</c
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="tokenUrlOf(java.lang.String)">
+<h3>tokenUrlOf</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">tokenUrlOf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authServerUrl)</span></div>
+<div class="block"><code>https://login.microsoftonline.com/&lt;tenant&gt;/v2.0</code> has its token endpoint at <code>.../oauth2/v2.0/token</code>.</div>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="catalog()">
 <h3>catalog</h3>

@@ -58,12 +58,13 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" tabindex="0">CurrentUserApplicationService(String, String)</a></li>
+<li><a href="#%3Cinit%3E(com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.UserRepository,java.lang.String,java.lang.String)" tabindex="0">CurrentUserApplicationService(CurrentUser, UserRepository, String, String)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#me()" tabindex="0">me()</a></li>
+<li><a href="#initials(java.lang.String)" tabindex="0">initials(String)</a></li>
 </ol>
 </li>
 </ol>
@@ -82,7 +83,8 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@ApplicationScoped
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">CurrentUserApplicationService</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Describes the signed-in analyst for the sidebar. Authentication is out of scope, so the identity comes from
+<div class="block">Describes the signed-in analyst for the sidebar: the stored account of whoever is making the request. When there is
+no stored account (the single demo user with sign-in switched off and no seeded users), the name and role come from
 configuration (<code>harness.user.name</code>, <code>harness.user.role</code>).</div>
 </div>
 </section>
@@ -96,8 +98,10 @@ configuration (<code>harness.user.name</code>, <code>harness.user.role</code>).<
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">CurrentUserApplicationService</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;role)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.UserRepository,java.lang.String,java.lang.String)" class="member-name-link">CurrentUserApplicationService</a><wbr>(<a href="CurrentUser.html" title="interface in com.mobybank.harness.application">CurrentUser</a>&nbsp;current,
+ <a href="../domain/UserRepository.html" title="interface in com.mobybank.harness.domain">UserRepository</a>&nbsp;users,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fallbackName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fallbackRole)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -107,15 +111,18 @@ configuration (<code>harness.user.name</code>, <code>harness.user.role</code>).<
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UserDTO.html" title="class in com.mobybank.harness.application">UserDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#me()" class="member-name-link">me</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#initials(java.lang.String)" class="member-name-link">initials</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fullName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UserDTO.html" title="class in com.mobybank.harness.application">UserDTO</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#me()" class="member-name-link">me</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -134,12 +141,14 @@ configuration (<code>harness.user.name</code>, <code>harness.user.role</code>).<
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String)">
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.UserRepository,java.lang.String,java.lang.String)">
 <h3>CurrentUserApplicationService</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Inject
-</span><span class="modifiers">public</span>&nbsp;<span class="element-name">CurrentUserApplicationService</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;role)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">CurrentUserApplicationService</span><wbr><span class="parameters">(<a href="CurrentUser.html" title="interface in com.mobybank.harness.application">CurrentUser</a>&nbsp;current,
+ <a href="../domain/UserRepository.html" title="interface in com.mobybank.harness.domain">UserRepository</a>&nbsp;users,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fallbackName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fallbackRole)</span></div>
 </div>
 </section>
 </li>
@@ -156,6 +165,14 @@ configuration (<code>harness.user.name</code>, <code>harness.user.role</code>).<
 <h3>me</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="UserDTO.html" title="class in com.mobybank.harness.application">UserDTO</a></span>&nbsp;<span class="element-name">me</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="initials(java.lang.String)">
+<h3>initials</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">initials</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fullName)</span></div>
 </div>
 </section>
 </li>

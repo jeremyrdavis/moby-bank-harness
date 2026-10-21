@@ -65,21 +65,25 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.graph">com.mobybank.harness.infrastructure.graph</a></div>
 <div class="col-last even-row-color">
+<div class="block">The OneDrive adapter, which reads documents through Microsoft Graph.</div>
+</div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.sbx">com.mobybank.harness.infrastructure.sbx</a></div>
+<div class="col-last even-row-color">
 <div class="block">The real sandbox adapters, which drive Docker Sandboxes through the <code>sbx</code> command line.</div>
 </div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.rest">com.mobybank.harness.interfaces.rest</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The HTTP surface: JAX-RS resources, request bodies, and the exception mappers that turn failures into error
 responses.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.interfaces.web">com.mobybank.harness.interfaces.web</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.interfaces.web">com.mobybank.harness.interfaces.web</a></div>
+<div class="col-last even-row-color">
 <div class="block">The HTML endpoints behind <code>index.html</code>, the htmx page served at <code>/</code>.</div>
 </div>
 </div>
@@ -95,21 +99,29 @@ responses.</div>
 <div class="col-last even-row-color">
 <div class="block">Asks to store a file the analyst uploaded, so it can be attached to a later message.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/BackgroundRunner.html#com.mobybank.harness.application">BackgroundRunner</a></div>
+<div class="col-first odd-row-color"><a href="class-use/AuthOptionsDTO.html#com.mobybank.harness.application">AuthOptionsDTO</a></div>
 <div class="col-last odd-row-color">
+<div class="block">What the sign-in page offers.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/BackgroundRunner.html#com.mobybank.harness.application">BackgroundRunner</a></div>
+<div class="col-last even-row-color">
 <div class="block">Runs long work (an agent turn, a session move) off the caller's thread.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/CatalogFileDTO.html#com.mobybank.harness.application">CatalogFileDTO</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/CatalogFileDTO.html#com.mobybank.harness.application">CatalogFileDTO</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A document in a connected folder, with the folder details the attach dialog shows.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/ConnectFoldersCommand.html#com.mobybank.harness.application">ConnectFoldersCommand</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/ConnectFoldersCommand.html#com.mobybank.harness.application">ConnectFoldersCommand</a></div>
+<div class="col-last even-row-color">
 <div class="block">Asks to connect the folders with these ids.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/CreateSessionCommand.html#com.mobybank.harness.application">CreateSessionCommand</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/CreateSessionCommand.html#com.mobybank.harness.application">CreateSessionCommand</a></div>
+<div class="col-last odd-row-color">
 <div class="block"><code>location</code> is <code>local</code> or <code>cloud</code>; null or blank means local.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/CurrentUser.html#com.mobybank.harness.application">CurrentUser</a></div>
+<div class="col-last even-row-color">
+<div class="block">Who is making the request being handled.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/FileRefDTO.html#com.mobybank.harness.application">FileRefDTO</a></div>
 <div class="col-last odd-row-color">
@@ -123,13 +135,38 @@ responses.</div>
 <div class="col-last odd-row-color">
 <div class="block"><code>location</code> is <code>local</code> or <code>cloud</code>: where a session that has not started yet will run.</div>
 </div>
+<div class="col-first even-row-color"><a href="class-use/LoginResult.html#com.mobybank.harness.application">LoginResult</a></div>
+<div class="col-last even-row-color">
+<div class="block">A successful sign-in: the token for the browser's cookie and the user who signed in.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/LoginSessionStore.html#com.mobybank.harness.application">LoginSessionStore</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Keeps the sessions of signed-in users, found by the secret token the browser holds.</div>
+</div>
 <div class="col-first even-row-color"><a href="class-use/MessageDTO.html#com.mobybank.harness.application">MessageDTO</a></div>
 <div class="col-last even-row-color">
 <div class="block">A message as the API exposes it.</div>
 </div>
+<div class="col-first odd-row-color"><a href="class-use/MicrosoftSignIn.html#com.mobybank.harness.application">MicrosoftSignIn</a></div>
+<div class="col-last odd-row-color">
+<div class="block">What a completed Microsoft sign-in tells us: the stable subject (the user's id at Microsoft), their email and name,
+and the Graph tokens to act on their behalf.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/MicrosoftTokens.html#com.mobybank.harness.application">MicrosoftTokens</a></div>
+<div class="col-last even-row-color">
+<div class="block">The Microsoft Graph tokens of a user who signed in with Microsoft.</div>
+</div>
 <div class="col-first odd-row-color"><a href="class-use/MoveSessionCommand.html#com.mobybank.harness.application">MoveSessionCommand</a></div>
 <div class="col-last odd-row-color">
 <div class="block"><code>target</code> is <code>local</code> or <code>cloud</code>.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/PasswordHasher.html#com.mobybank.harness.application">PasswordHasher</a></div>
+<div class="col-last even-row-color">
+<div class="block">Hashes passwords for storage and checks a password against a stored hash.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/RequestIdentity.html#com.mobybank.harness.application">RequestIdentity</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Holds who the current request is from.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/SendMessageCommand.html#com.mobybank.harness.application">SendMessageCommand</a></div>
 <div class="col-last even-row-color">
@@ -169,6 +206,10 @@ responses.</div>
 <div class="col-last odd-row-color">
 <div class="block">The signed-in analyst as the sidebar shows them: an id, a display name, a role, and the initials for the avatar.</div>
 </div>
+<div class="col-first even-row-color"><a href="class-use/UserGraphTokens.html#com.mobybank.harness.application">UserGraphTokens</a></div>
+<div class="col-last even-row-color">
+<div class="block">Remembers each user's Microsoft Graph tokens, so the OneDrive adapter can act as that user.</div>
+</div>
 </div>
 </section>
 </li>
@@ -181,6 +222,14 @@ responses.</div>
 <div class="col-first even-row-color"><a href="class-use/BackgroundRunner.html#com.mobybank.harness.infrastructure">BackgroundRunner</a></div>
 <div class="col-last even-row-color">
 <div class="block">Runs long work (an agent turn, a session move) off the caller's thread.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/MicrosoftTokens.html#com.mobybank.harness.infrastructure">MicrosoftTokens</a></div>
+<div class="col-last odd-row-color">
+<div class="block">The Microsoft Graph tokens of a user who signed in with Microsoft.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/PasswordHasher.html#com.mobybank.harness.infrastructure">PasswordHasher</a></div>
+<div class="col-last even-row-color">
+<div class="block">Hashes passwords for storage and checks a password against a stored hash.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/SessionApplicationService.html#com.mobybank.harness.infrastructure">SessionApplicationService</a></div>
 <div class="col-last odd-row-color">
@@ -197,6 +246,27 @@ between the local and cloud sandbox.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/SessionEventStream.Subscription.html#com.mobybank.harness.infrastructure">SessionEventStream.Subscription</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="class-use/UserGraphTokens.html#com.mobybank.harness.infrastructure">UserGraphTokens</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Remembers each user's Microsoft Graph tokens, so the OneDrive adapter can act as that user.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.graph">
+<div class="caption"><span>Classes in <a href="package-summary.html">com.mobybank.harness.application</a> used by <a href="../infrastructure/graph/package-summary.html">com.mobybank.harness.infrastructure.graph</a></span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><a href="class-use/MicrosoftTokens.html#com.mobybank.harness.infrastructure.graph">MicrosoftTokens</a></div>
+<div class="col-last even-row-color">
+<div class="block">The Microsoft Graph tokens of a user who signed in with Microsoft.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/UserGraphTokens.html#com.mobybank.harness.infrastructure.graph">UserGraphTokens</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Remembers each user's Microsoft Graph tokens, so the OneDrive adapter can act as that user.</div>
+</div>
 </div>
 </section>
 </li>
@@ -206,8 +276,12 @@ between the local and cloud sandbox.</div>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><a href="class-use/UploadStore.html#com.mobybank.harness.infrastructure.persistence">UploadStore</a></div>
+<div class="col-first even-row-color"><a href="class-use/LoginSessionStore.html#com.mobybank.harness.infrastructure.persistence">LoginSessionStore</a></div>
 <div class="col-last even-row-color">
+<div class="block">Keeps the sessions of signed-in users, found by the secret token the browser holds.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/UploadStore.html#com.mobybank.harness.infrastructure.persistence">UploadStore</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Holds files an analyst uploaded from their machine until a sandbox agent needs them.</div>
 </div>
 </div>
@@ -238,7 +312,7 @@ between the local and cloud sandbox.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/CurrentUserApplicationService.html#com.mobybank.harness.interfaces.rest">CurrentUserApplicationService</a></div>
 <div class="col-last odd-row-color">
-<div class="block">Describes the signed-in analyst for the sidebar.</div>
+<div class="block">Describes the signed-in analyst for the sidebar: the stored account of whoever is making the request.</div>
 </div>
 <div class="col-first even-row-color"><a href="class-use/FileRefDTO.html#com.mobybank.harness.interfaces.rest">FileRefDTO</a></div>
 <div class="col-last even-row-color">
@@ -286,25 +360,41 @@ between the local and cloud sandbox.</div>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><a href="class-use/AuthenticationApplicationService.html#com.mobybank.harness.interfaces.web">AuthenticationApplicationService</a></div>
+<div class="col-last even-row-color">
+<div class="block">Signs analysts in and out.</div>
+</div>
+<div class="col-first odd-row-color"><a href="class-use/AuthOptionsDTO.html#com.mobybank.harness.interfaces.web">AuthOptionsDTO</a></div>
+<div class="col-last odd-row-color">
+<div class="block">What the sign-in page offers.</div>
+</div>
 <div class="col-first even-row-color"><a href="class-use/CatalogFileDTO.html#com.mobybank.harness.interfaces.web">CatalogFileDTO</a></div>
 <div class="col-last even-row-color">
 <div class="block">A document in a connected folder, with the folder details the attach dialog shows.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/FileRefDTO.html#com.mobybank.harness.interfaces.web">FileRefDTO</a></div>
+<div class="col-first odd-row-color"><a href="class-use/CurrentUserApplicationService.html#com.mobybank.harness.interfaces.web">CurrentUserApplicationService</a></div>
 <div class="col-last odd-row-color">
+<div class="block">Describes the signed-in analyst for the sidebar: the stored account of whoever is making the request.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/FileRefDTO.html#com.mobybank.harness.interfaces.web">FileRefDTO</a></div>
+<div class="col-last even-row-color">
 <div class="block">A file attached to a message.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/FolderApplicationService.html#com.mobybank.harness.interfaces.web">FolderApplicationService</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/FolderApplicationService.html#com.mobybank.harness.interfaces.web">FolderApplicationService</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Orchestrates the document-source use cases: browse the folder library, connect folders, list their files.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/FolderDTO.html#com.mobybank.harness.interfaces.web">FolderDTO</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/FolderDTO.html#com.mobybank.harness.interfaces.web">FolderDTO</a></div>
+<div class="col-last even-row-color">
 <div class="block">A folder in the library.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/MessageDTO.html#com.mobybank.harness.interfaces.web">MessageDTO</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/MessageDTO.html#com.mobybank.harness.interfaces.web">MessageDTO</a></div>
+<div class="col-last odd-row-color">
 <div class="block">A message as the API exposes it.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/RequestIdentity.html#com.mobybank.harness.interfaces.web">RequestIdentity</a></div>
+<div class="col-last even-row-color">
+<div class="block">Holds who the current request is from.</div>
 </div>
 <div class="col-first odd-row-color"><a href="class-use/SessionApplicationService.html#com.mobybank.harness.interfaces.web">SessionApplicationService</a></div>
 <div class="col-last odd-row-color">
@@ -318,6 +408,10 @@ between the local and cloud sandbox.</div>
 <div class="col-first odd-row-color"><a href="class-use/SessionEventStream.html#com.mobybank.harness.interfaces.web">SessionEventStream</a></div>
 <div class="col-last odd-row-color">
 <div class="block">Fans session events out to whoever is listening, such as open browser streams.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/UserDTO.html#com.mobybank.harness.interfaces.web">UserDTO</a></div>
+<div class="col-last even-row-color">
+<div class="block">The signed-in analyst as the sidebar shows them: an id, a display name, a role, and the initials for the avatar.</div>
 </div>
 </div>
 </section>

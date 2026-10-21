@@ -5,11 +5,19 @@ Quarkus app serves it at `/` and answers the page's calls with **fragments of HT
 front end beside the JSON API in [api.md](api.md): same application services, a different shape of answer. The JSON API
 and `openapi.yaml` (the contract the Python backend must match) are untouched by it.
 
+## Signing in
+
+With `harness.auth.mode=login` every `/ui` request needs the session cookie. Without it the answer is **401 with an
+`HX-Redirect: /login.html` header**, which htmx follows by leaving the page. Requests that change something must carry
+`HX-Request` (htmx adds it) or JSON, else 403. See [authentication.md](authentication.md).
+
 ## How it is wired
 
 - **Serving.** The page is not kept in the module. A `maven-resources-plugin` execution in `pom.xml` copies
-  `../index.html` to `target/classes/META-INF/resources` at build time, so Quarkus serves it at `/`. After editing it in
-  dev mode run `./mvnw resources:copy-resources@copy-index-page`. (The parent directory must not be a `<build><resources>` entry: dev mode and tests copy a
+  `../index.html` to `target/classes/pages` at build time, and `PageResource` serves it at the root to
+  signed-in users only (see [authentication.md](authentication.md)); everyone else is redirected to the sign-in page
+  `login.html`, which another execution copies to the public static files. After editing either page in dev mode run
+  `./mvnw resources:copy-resources@copy-index-page` (or `@copy-login-page`). (The parent directory must not be a `<build><resources>` entry: dev mode and tests copy a
   resource directory whole, ignoring `<includes>`, which copied the whole repository into `target/classes`.
   `BuildLayoutTest` fails if it comes back.)
   htmx comes from the `org.webjars.npm:htmx.org` jar (`/webjars/htmx.org/2.0.11/dist/htmx.min.js`) and the Manrope font
@@ -66,6 +74,7 @@ Paths are as the page writes them. Served under `/ui`.
 | `GET /api/conversations/current` (on load) | `#main` | The conversation the cookie names, else the most recent, else a new one |
 | `GET /api/conversations/{id}` | `#main` | That conversation's pane. Sets the cookie; raises `conversations-changed` |
 | `POST /api/conversations` | `#main` | A new empty conversation (always a new session). Raises `conversations-changed` |
+| `GET /api/user` (on load) | `#user-info` | The sidebar card for the signed-in analyst: avatar with initials, name, role, and (when sign-in is on) a *Sign out* form that posts to `/auth/logout` |
 | `GET /api/conversations` (on load, `conversations-changed`) | `#history` | The history grouped Today, Previous 7 days, Earlier; the open one has `aria-current="true"` |
 | `POST /api/conversations/{id}/messages` (multipart: `text`, `files`, `onedrive`) | `#messages`, beforeend | The user's message and the agent's reply; removes `#empty-state` and replaces the whole `#topbar` header out of band (the first message sets the title, and starts the conversation, so the *Run locally* / *Run in cloud* buttons give way to the move buttons without reopening it); raises `conversations-changed` |
 | `POST /api/conversations/{id}/run?at=local` or `?at=cloud` | `#main` | For a conversation that has not started (no message yet, never moved): chooses where it runs and returns the pane at once (no waiting, no toast), with the `conversations-changed` trigger. Nothing is moved, because no sandbox exists yet; the agent starts there on the first message. 409 if it has already started. The header of a conversation that has not started shows two blue buttons, *Run locally* and *Run in cloud* (`data-run-local`, `data-run-cloud`), which send this; once it has started they give way to the move buttons |

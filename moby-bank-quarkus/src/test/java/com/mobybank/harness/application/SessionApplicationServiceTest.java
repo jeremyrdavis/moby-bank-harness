@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.mobybank.harness.application.Fakes.Caller;
+import com.mobybank.harness.application.Fakes.Catalog;
 import com.mobybank.harness.application.Fakes.QueueRunner;
 import com.mobybank.harness.application.Fakes.RecordingEvents;
 import com.mobybank.harness.application.Fakes.ScriptedAgent;
@@ -41,6 +43,8 @@ class SessionApplicationServiceTest {
     private RecordingEvents events;
     private QueueRunner runner;
     private SessionApplicationService service;
+    private Caller caller;
+    private Catalog catalog;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +54,13 @@ class SessionApplicationServiceTest {
         uploads = new Uploads();
         events = new RecordingEvents();
         runner = new QueueRunner();
+        caller = new Caller();
+        catalog = new Catalog();
+        for (String name : new String[] {"Fathom_Q2_2026_10-Q.pdf", "a.pdf", "b.pdf"}) {
+            catalog.content.put(name, ("content of " + name).getBytes());
+        }
         service = new SessionApplicationService(sessions, agent, transfer, uploads, events, runner,
-                Clock.fixed(NOW, ZoneOffset.UTC));
+                Clock.fixed(NOW, ZoneOffset.UTC), caller, catalog);
     }
 
     // --- create / list / get -----------------------------------------------------------------------------------
@@ -293,6 +302,99 @@ class SessionApplicationServiceTest {
 
         assertThrows(InvalidMoveException.class, () -> service.launch(new LaunchSessionCommand(created.id(), "cloud")));
         assertThrows(IllegalArgumentException.class, () -> service.launch(new LaunchSessionCommand(created.id(), null)));
+    }
+
+    // --- who owns what ------------------------------------------------------------------------------------------
+
+    private static final com.mobybank.harness.domain.UserId RANA =
+            new com.mobybank.harness.domain.UserId("analyst-rana-kapoor");
+
+    @Test
+    void aSessionBelongsToWhoeverCreatedIt() {
+        SessionDTO mine = service.create(new CreateSessionCommand("local"));
+        caller.user = RANA;
+        SessionDTO hers = service.create(new CreateSessionCommand("local"));
+
+        assertEquals(List.of(hers.id()), service.list().stream().map(SessionSummaryDTO::id).toList());
+        caller.user = com.mobybank.harness.domain.UserId.DEMO;
+        assertEquals(List.of(mine.id()), service.list().stream().map(SessionSummaryDTO::id).toList());
+    }
+
+    @Test
+    void someoneElsesSessionIsNotFoundForEveryUseCase() {
+        SessionDTO mine = service.create(new CreateSessionCommand("local"));
+        caller.user = RANA;
+
+        assertThrows(ResourceNotFoundException.class, () -> service.get(mine.id()));
+        assertThrows(ResourceNotFoundException.class,
+                () -> service.sendMessage(new SendMessageCommand(mine.id(), "hello", List.of())));
+        assertThrows(ResourceNotFoundException.class,
+                () -> service.attachUpload(new AttachUploadCommand(mine.id(), "a.pdf", new byte[] {1})));
+        assertThrows(ResourceNotFoundException.class, () -> service.move(new MoveSessionCommand(mine.id(), "cloud")));
+        assertThrows(ResourceNotFoundException.class,
+                () -> service.launch(new LaunchSessionCommand(mine.id(), "cloud")));
+        caller.user = com.mobybank.harness.domain.UserId.DEMO;
+        assertEquals("idle", service.get(mine.id()).status(), "nothing she tried changed it");
+        assertTrue(service.get(mine.id()).messages().isEmpty());
+    }
+
+    @Test
+    void backgroundWorkNeedsNoCaller() {
+        SessionDTO mine = service.create(new CreateSessionCommand("local"));
+        service.sendMessage(new SendMessageCommand(mine.id(), "hello", List.of()));
+        caller.user = RANA; // whoever is asking now, the turn finishes for its owner
+
+        runner.drain();
+
+        caller.user = com.mobybank.harness.domain.UserId.DEMO;
+        assertEquals("idle", service.get(mine.id()).status());
+        assertEquals(2, service.get(mine.id()).messages().size());
+        assertEquals("idle", service.statusOf(mine.id()), "statusOf does not look at who is asking");
+    }
+
+    // --- OneDrive files, fetched when the message is sent ------------------------------------------------------------
+
+    @Test
+    void anAttachedOneDriveFileIsDownloadedWhenTheMessageIsSentAndKeptWithTheUploads() {
+        SessionDTO session = service.create(new CreateSessionCommand("local"));
+
+        service.sendMessage(new SendMessageCommand(session.id(), "Summarize",
+                List.of(new FileRefDTO("a.pdf", "onedrive"))));
+
+        com.mobybank.harness.domain.SessionId id = com.mobybank.harness.domain.SessionId.parse(session.id());
+        assertEquals("content of a.pdf", new String(uploads.find(id, "a.pdf").orElseThrow()));
+    }
+
+    @Test
+    void aOneDriveFileThatIsNotThereRejectsTheMessageAndChangesNothing() {
+        SessionDTO session = service.create(new CreateSessionCommand("local"));
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> service.sendMessage(
+                new SendMessageCommand(session.id(), "Summarize", List.of(new FileRefDTO("missing.pdf", "onedrive")))));
+
+        assertTrue(e.getMessage().contains("missing.pdf"), e.getMessage());
+        assertEquals("idle", service.get(session.id()).status());
+        assertTrue(service.get(session.id()).messages().isEmpty());
+    }
+
+    @Test
+    void whenOneDriveNeedsASignInTheMessageIsRefused() {
+        SessionDTO session = service.create(new CreateSessionCommand("local"));
+        catalog.signInRequired = true;
+
+        assertThrows(com.mobybank.harness.domain.SignInRequiredException.class, () -> service.sendMessage(
+                new SendMessageCommand(session.id(), "Summarize", List.of(new FileRefDTO("a.pdf", "onedrive")))));
+        assertTrue(service.get(session.id()).messages().isEmpty());
+    }
+
+    @Test
+    void anUploadIsNotFetchedFromOneDrive() {
+        SessionDTO session = service.create(new CreateSessionCommand("local"));
+        service.attachUpload(new AttachUploadCommand(session.id(), "mine.pdf", new byte[] {1}));
+
+        service.sendMessage(new SendMessageCommand(session.id(), "go", List.of(new FileRefDTO("mine.pdf", "upload"))));
+
+        assertEquals(1, service.get(session.id()).messages().size());
     }
 
     // --- recovery after a restart -------------------------------------------------------------------------------

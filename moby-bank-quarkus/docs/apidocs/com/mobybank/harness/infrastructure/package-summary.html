@@ -128,18 +128,27 @@ real sandboxes:
 The adapter producers are <code>@Startup</code>: an application-scoped bean is otherwise created on first use, which would
 let a misspelt mode or missing credentials go unnoticed until the first request.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="DemoData.html" title="class in com.mobybank.harness.infrastructure">DemoData</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="BcryptPasswordHasher.html" title="class in com.mobybank.harness.infrastructure">BcryptPasswordHasher</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Hashes passwords with bcrypt.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="DemoData.html" title="class in com.mobybank.harness.infrastructure">DemoData</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">The demo content from the prototype: the OneDrive folder library and five seeded conversations.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="DemoDataSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoDataSeeder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Loads the prototype's demo conversations at startup (turn off with harness.seed-demo-data=false), but only into an
 empty database, so a restart does not add them again.</div>
 </div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="DemoUserSeeder.html" title="class in com.mobybank.harness.infrastructure">DemoUserSeeder</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Creates the demo analysts at startup so the sign-in page works at once: Hermione Granger, who owns the demo
+conversations, Rana Kapoor, who starts with none, and Jeremy Davis, the developer's own account.</div>
+</div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="FakeDocumentCatalog.html" title="class in com.mobybank.harness.infrastructure">FakeDocumentCatalog</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">A stand-in for OneDrive that serves the prototype's folder library, so the app runs with no Microsoft account.</div>
+<div class="block">A stand-in for OneDrive that serves the prototype's folder library to every user alike, so the app runs with no Microsoft account.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab3"><a href="FakeMoveFailure.html" title="enum class in com.mobybank.harness.infrastructure">FakeMoveFailure</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab3">
@@ -159,16 +168,21 @@ waits between them, in either direction.</div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Delivers session events to the listeners subscribed to that session, on the publishing thread.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="InterruptedWorkRecovery.html" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="InMemoryUserGraphTokens.html" title="class in com.mobybank.harness.infrastructure">InMemoryUserGraphTokens</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Keeps the users' Microsoft Graph tokens in memory, on purpose: refresh tokens are as good as a password for the
+user's files, so they are never written to the database or sent to the browser.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="InterruptedWorkRecovery.html" title="class in com.mobybank.harness.infrastructure">InterruptedWorkRecovery</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Releases the sessions a restart interrupted, as soon as the application starts.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Pauses.html" title="class in com.mobybank.harness.infrastructure">Pauses</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Sleeping that the fake adapters use to imitate real work.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure">VirtualThreadBackgroundRunner</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="VirtualThreadBackgroundRunner.html" title="class in com.mobybank.harness.infrastructure">VirtualThreadBackgroundRunner</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Runs background work on virtual threads, which suits the blocking calls agent turns and sandbox transfers make.</div>
 </div>
 </div>

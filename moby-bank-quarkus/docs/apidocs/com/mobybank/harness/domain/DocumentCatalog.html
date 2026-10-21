@@ -57,9 +57,9 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#folders()" tabindex="0">folders()</a></li>
-<li><a href="#files(com.mobybank.harness.domain.FolderId)" tabindex="0">files(FolderId)</a></li>
-<li><a href="#fetch(java.lang.String)" tabindex="0">fetch(String)</a></li>
+<li><a href="#folders(com.mobybank.harness.domain.UserId)" tabindex="0">folders(UserId)</a></li>
+<li><a href="#files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)" tabindex="0">files(UserId, FolderId)</a></li>
+<li><a href="#fetch(com.mobybank.harness.domain.UserId,java.lang.String)" tabindex="0">fetch(UserId, String)</a></li>
 </ol>
 </li>
 </ol>
@@ -94,19 +94,21 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#fetch(java.lang.String)" class="member-name-link">fetch</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#fetch(com.mobybank.harness.domain.UserId,java.lang.String)" class="member-name-link">fetch</a><wbr>(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">The content of a document, found by its file name.</div>
+<div class="block">The content of a document, found by its file name among the documents <code>user</code> can open.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#files(com.mobybank.harness.domain.FolderId)" class="member-name-link">files</a><wbr>(<a href="FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)" class="member-name-link">files</a><wbr>(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">The documents inside one folder; empty if the folder is unknown.</div>
+<div class="block">The documents inside one folder as <code>user</code> sees it; empty if the folder is unknown.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#folders()" class="member-name-link">folders</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#folders(com.mobybank.harness.domain.UserId)" class="member-name-link">folders</a><wbr>(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Every folder that can be connected.</div>
+<div class="block">Every folder that <code>user</code> can connect.</div>
 </div>
 </div>
 </div>
@@ -123,41 +125,46 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="folders()">
+<section class="detail" id="folders(com.mobybank.harness.domain.UserId)">
 <h3>folders</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</span>&nbsp;<span class="element-name">folders</span>()</div>
-<div class="block">Every folder that can be connected.</div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</span>&nbsp;<span class="element-name">folders</span><wbr><span class="parameters">(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</span></div>
+<div class="block">Every folder that <code>user</code> can connect.</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="DocumentSourceException.html" title="class in com.mobybank.harness.domain">DocumentSourceException</a></code> - if the source cannot be reached</dd>
+<dd><code><a href="SignInRequiredException.html" title="class in com.mobybank.harness.domain">SignInRequiredException</a></code> - if the source needs the user's own sign-in and they have not signed in</dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="files(com.mobybank.harness.domain.FolderId)">
+<section class="detail" id="files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)">
 <h3>files</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</span>&nbsp;<span class="element-name">files</span><wbr><span class="parameters">(<a href="FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</span></div>
-<div class="block">The documents inside one folder; empty if the folder is unknown.</div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</span>&nbsp;<span class="element-name">files</span><wbr><span class="parameters">(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</span></div>
+<div class="block">The documents inside one folder as <code>user</code> sees it; empty if the folder is unknown.</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="DocumentSourceException.html" title="class in com.mobybank.harness.domain">DocumentSourceException</a></code> - if the source cannot be reached</dd>
+<dd><code><a href="SignInRequiredException.html" title="class in com.mobybank.harness.domain">SignInRequiredException</a></code> - if the source needs the user's own sign-in and they have not signed in</dd>
 </dl>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="fetch(java.lang.String)">
+<section class="detail" id="fetch(com.mobybank.harness.domain.UserId,java.lang.String)">
 <h3>fetch</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;byte[]&gt;</span>&nbsp;<span class="element-name">fetch</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
-<div class="block">The content of a document, found by its file name. Names are assumed unique across the catalog; if two
-folders hold the same name, the first folder's document is returned.</div>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;byte[]&gt;</span>&nbsp;<span class="element-name">fetch</span><wbr><span class="parameters">(<a href="UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
+<div class="block">The content of a document, found by its file name among the documents <code>user</code> can open. Names are
+assumed unique; if two folders hold the same name, the first folder's document is returned.</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="DocumentSourceException.html" title="class in com.mobybank.harness.domain">DocumentSourceException</a></code> - if the source cannot be reached or the file is too large to use</dd>
+<dd><code><a href="SignInRequiredException.html" title="class in com.mobybank.harness.domain">SignInRequiredException</a></code> - if the source needs the user's own sign-in and they have not signed in</dd>
 </dl>
 </div>
 </section>

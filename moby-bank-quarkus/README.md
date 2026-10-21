@@ -22,7 +22,7 @@ guided code review), [architecture](docs/architecture.md), the [domain model](do
 ./mvnw test                 # unit and @QuarkusTest tests
 ```
 
-Open <http://localhost:8080/> for the htmx page (see [`docs/ui-fragments.md`](docs/ui-fragments.md)); it needs nothing else running. After editing `index.html` in dev mode, run `./mvnw resources:copy-resources@copy-index-page` to refresh the served copy.
+Open <http://localhost:8080/> for the htmx page (see [`docs/ui-fragments.md`](docs/ui-fragments.md)); it needs a database (Docker) and nothing else. You are sent to the sign-in page: use `hermione.granger@mobybank.com` or `rana.kapoor@mobybank.com` with the password `moby-demo`, `jeremy.davis@docker.com` with `myawesomepassword`, or **Sign in with Microsoft** once an Entra app is registered ([`docs/authentication.md`](docs/authentication.md)). After editing `index.html` or `login.html` in dev mode, run `./mvnw resources:copy-resources@copy-index-page` (or `@copy-login-page`) to refresh the served copy.
 
 The API is described in `openapi.yaml` (written at build time; commit changes to it). Useful endpoints: `/api/sessions`, `/api/folders`, `/q/health`, `/q/openapi`, `/q/swagger-ui`. The `/events` stream per session is documented on that operation.
 

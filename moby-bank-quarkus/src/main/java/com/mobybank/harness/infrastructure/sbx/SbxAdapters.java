@@ -1,7 +1,6 @@
 package com.mobybank.harness.infrastructure.sbx;
 
 import com.mobybank.harness.application.UploadStore;
-import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.SandboxAgent;
 import com.mobybank.harness.domain.SandboxTransfer;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,7 +27,6 @@ public class SbxAdapters {
     private final SbxCli cli;
     private final SandboxRegistry registry;
     private final UploadStore uploads;
-    private final DocumentCatalog catalog;
     private final SbxSettings settings;
     private final SbxPreflight preflight;
 
@@ -36,7 +34,6 @@ public class SbxAdapters {
     public SbxAdapters(
             SandboxRegistry registry,
             UploadStore uploads,
-            DocumentCatalog catalog,
             @ConfigProperty(name = "harness.sbx.binary", defaultValue = "sbx") String binary,
             @ConfigProperty(name = "harness.sbx.agent", defaultValue = "claude") String agent,
             @ConfigProperty(name = "harness.sbx.agent-args", defaultValue = DEFAULT_AGENT_ARGS) String agentArgs,
@@ -51,7 +48,6 @@ public class SbxAdapters {
         this.cli = new SbxCli(new ProcessCommandRunner(), binary, commandTimeout);
         this.registry = registry;
         this.uploads = uploads;
-        this.catalog = catalog;
         this.settings = new SbxSettings(agent, agentArgs.isBlank() ? java.util.List.of()
                 : Arrays.asList(agentArgs.trim().split("\\s+")), workspaceDir, turnTimeout, moveTimeout,
                 cloudTtl, cloudOnTimeout);
@@ -64,7 +60,7 @@ public class SbxAdapters {
     }
 
     public SandboxAgent agent() {
-        return new SbxSandboxAgent(cli, registry, uploads, catalog, settings);
+        return new SbxSandboxAgent(cli, registry, uploads, settings);
     }
 
     public SandboxTransfer transfer() {

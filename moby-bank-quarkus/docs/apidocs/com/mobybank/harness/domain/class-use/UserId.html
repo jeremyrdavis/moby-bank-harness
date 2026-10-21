@@ -58,17 +58,79 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Package</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><a href="#com.mobybank.harness.domain">com.mobybank.harness.domain</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.application">com.mobybank.harness.application</a></div>
 <div class="col-last even-row-color">
+<div class="block">The use cases.</div>
+</div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.domain">com.mobybank.harness.domain</a></div>
+<div class="col-last odd-row-color">
 <div class="block">The heart of the harness: what a conversation is, and the rules that keep it consistent.</div>
 </div>
-<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure">com.mobybank.harness.infrastructure</a></div>
+<div class="col-last even-row-color">
+<div class="block">The implementations of the ports, and the wiring that chooses between them.</div>
+</div>
+<div class="col-first odd-row-color"><a href="#com.mobybank.harness.infrastructure.graph">com.mobybank.harness.infrastructure.graph</a></div>
 <div class="col-last odd-row-color">
+<div class="block">The OneDrive adapter, which reads documents through Microsoft Graph.</div>
+</div>
+<div class="col-first even-row-color"><a href="#com.mobybank.harness.infrastructure.persistence">com.mobybank.harness.infrastructure.persistence</a></div>
+<div class="col-last even-row-color">
 <div class="block">The PostgreSQL implementations of the repository ports, written with Hibernate ORM and Panache.</div>
 </div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
+<li>
+<section class="detail" id="com.mobybank.harness.application">
+<h2>Uses of <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a> in <a href="../../application/package-summary.html">com.mobybank.harness.application</a></h2>
+<div class="caption"><span>Methods in <a href="../../application/package-summary.html">com.mobybank.harness.application</a> that return <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">CurrentUser.</span><code><a href="../../application/CurrentUser.html#id()" class="member-name-link">id</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RequestCurrentUser.</span><code><a href="../../application/RequestCurrentUser.html#id()" class="member-name-link">id</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../application/package-summary.html">com.mobybank.harness.application</a> that return types with arguments of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoginSessionStore.</span><code><a href="../../application/LoginSessionStore.html#resolve(java.lang.String)" class="member-name-link">resolve</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</code></div>
+<div class="col-last even-row-color">
+<div class="block">The user a token belongs to, unless it is unknown or has expired.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../application/package-summary.html">com.mobybank.harness.application</a> with parameters of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../../application/MicrosoftTokens.html" title="class in com.mobybank.harness.application">MicrosoftTokens</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">UserGraphTokens.</span><code><a href="../../application/UserGraphTokens.html#find(com.mobybank.harness.domain.UserId)" class="member-name-link">find</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UserGraphTokens.</span><code><a href="../../application/UserGraphTokens.html#forget(com.mobybank.harness.domain.UserId)" class="member-name-link">forget</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoginSessionStore.</span><code><a href="../../application/LoginSessionStore.html#open(com.mobybank.harness.domain.UserId,java.time.Duration)" class="member-name-link">open</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeToLive)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Starts a session for the user and returns its token, the only copy of it that exists in readable form.</div>
+</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UserGraphTokens.</span><code><a href="../../application/UserGraphTokens.html#remember(com.mobybank.harness.domain.UserId,com.mobybank.harness.application.MicrosoftTokens)" class="member-name-link">remember</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="../../application/MicrosoftTokens.html" title="class in com.mobybank.harness.application">MicrosoftTokens</a>&nbsp;tokens)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="com.mobybank.harness.domain">
 <h2>Uses of <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a> in <a href="../package-summary.html">com.mobybank.harness.domain</a></h2>
@@ -87,6 +149,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppUser.</span><code><a href="../AppUser.html#id()" class="member-name-link">id</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Session.</span><code><a href="../Session.html#owner()" class="member-name-link">owner</a>()</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The user the session belongs to.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConnectedFolders.</span><code><a href="../ConnectedFolders.html#userId()" class="member-name-link">userId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -95,35 +165,194 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DocumentCatalog.</span><code><a href="../DocumentCatalog.html#fetch(com.mobybank.harness.domain.UserId,java.lang.String)" class="member-name-link">fetch</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last even-row-color">
+<div class="block">The content of a document, found by its file name among the documents <code>user</code> can open.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DocumentCatalog.</span><code><a href="../DocumentCatalog.html#files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)" class="member-name-link">files</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="../FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The documents inside one folder as <code>user</code> sees it; empty if the folder is unknown.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionRepository.</span><code><a href="../SessionRepository.html#findAllByOwner(com.mobybank.harness.domain.UserId)" class="member-name-link">findAllByOwner</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner)</code></div>
+<div class="col-last even-row-color">
+<div class="block">The sessions that belong to one user, most recently updated first.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../AppUser.html" title="class in com.mobybank.harness.domain">AppUser</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">UserRepository.</span><code><a href="../UserRepository.html#findById(com.mobybank.harness.domain.UserId)" class="member-name-link">findById</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConnectedFoldersRepository.</span><code><a href="../ConnectedFoldersRepository.html#findByUser(com.mobybank.harness.domain.UserId)" class="member-name-link">findByUser</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;userId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DocumentCatalog.</span><code><a href="../DocumentCatalog.html#folders(com.mobybank.harness.domain.UserId)" class="member-name-link">folders</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Every folder that <code>user</code> can connect.</div>
+</div>
+<div class="col-first even-row-color"><code>static <a href="../AppUser.html" title="class in com.mobybank.harness.domain">AppUser</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppUser.</span><code><a href="../AppUser.html#fromMicrosoft(com.mobybank.harness.domain.UserId,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">fromMicrosoft</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;email,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;displayName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subject)</code></div>
+<div class="col-last even-row-color">
+<div class="block">An account created by a Microsoft sign-in.</div>
+</div>
 <div class="col-first odd-row-color"><code>static <a href="../ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">ConnectedFolders.</span><code><a href="../ConnectedFolders.html#none(com.mobybank.harness.domain.UserId)" class="member-name-link">none</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;userId)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Starts with no folders connected.</div>
 </div>
-<div class="col-first even-row-color"><code>static <a href="../ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConnectedFolders.</span><code><a href="../ConnectedFolders.html#rehydrate(com.mobybank.harness.domain.UserId,java.util.List,long)" class="member-name-link">rehydrate</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;userId,
+<div class="col-first even-row-color"><code>static <a href="../AppUser.html" title="class in com.mobybank.harness.domain">AppUser</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppUser.</span><code><a href="../AppUser.html#rehydrate(com.mobybank.harness.domain.UserId,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">rehydrate</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;email,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;displayName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordHash,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;microsoftSubject)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Reconstruction path for the persistence layer.</div>
+</div>
+<div class="col-first odd-row-color"><code>static <a href="../ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConnectedFolders.</span><code><a href="../ConnectedFolders.html#rehydrate(com.mobybank.harness.domain.UserId,java.util.List,long)" class="member-name-link">rehydrate</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;userId,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&gt;&nbsp;folderIds,
+ long&nbsp;version)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Reconstruction path for the persistence layer.</div>
+</div>
+<div class="col-first even-row-color"><code>static <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Session.</span><code><a href="../Session.html#rehydrate(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.SessionTitle,com.mobybank.harness.domain.Location,com.mobybank.harness.domain.SessionStatus,com.mobybank.harness.domain.Location,java.util.List,boolean,java.time.Instant,java.time.Instant,long)" class="member-name-link">rehydrate</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
+ <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner,
+ <a href="../SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a>&nbsp;title,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="../SessionStatus.html" title="enum class in com.mobybank.harness.domain">SessionStatus</a>&nbsp;status,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;moveTarget,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../Message.html" title="class in com.mobybank.harness.domain">Message</a>&gt;&nbsp;messages,
+ boolean&nbsp;launched,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;createdAt,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;updatedAt,
  long&nbsp;version)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Reconstruction path for the persistence layer.</div>
 </div>
+<div class="col-first odd-row-color"><code>static <a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Session.</span><code><a href="../Session.html#start(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.Location,java.time.Instant)" class="member-name-link">start</a><wbr>(<a href="../SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;id,
+ <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner,
+ <a href="../Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;now)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Starts an empty session that belongs to <code>owner</code>, at the given location.</div>
+</div>
+<div class="col-first even-row-color"><code>static <a href="../AppUser.html" title="class in com.mobybank.harness.domain">AppUser</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppUser.</span><code><a href="../AppUser.html#withPassword(com.mobybank.harness.domain.UserId,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">withPassword</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;email,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;displayName,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;role,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordHash)</code></div>
+<div class="col-last even-row-color">
+<div class="block">An account that signs in with an email and a password.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure">
+<h2>Uses of <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a> in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a></h2>
+<div class="caption"><span>Methods in <a href="../../infrastructure/package-summary.html">com.mobybank.harness.infrastructure</a> with parameters of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FakeDocumentCatalog.</span><code><a href="../../infrastructure/FakeDocumentCatalog.html#fetch(com.mobybank.harness.domain.UserId,java.lang.String)" class="member-name-link">fetch</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Every listed document "exists" and contains a one-line placeholder.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FakeDocumentCatalog.</span><code><a href="../../infrastructure/FakeDocumentCatalog.html#files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)" class="member-name-link">files</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="../FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../../application/MicrosoftTokens.html" title="class in com.mobybank.harness.application">MicrosoftTokens</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">InMemoryUserGraphTokens.</span><code><a href="../../infrastructure/InMemoryUserGraphTokens.html#find(com.mobybank.harness.domain.UserId)" class="member-name-link">find</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FakeDocumentCatalog.</span><code><a href="../../infrastructure/FakeDocumentCatalog.html#folders(com.mobybank.harness.domain.UserId)" class="member-name-link">folders</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">InMemoryUserGraphTokens.</span><code><a href="../../infrastructure/InMemoryUserGraphTokens.html#forget(com.mobybank.harness.domain.UserId)" class="member-name-link">forget</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">InMemoryUserGraphTokens.</span><code><a href="../../infrastructure/InMemoryUserGraphTokens.html#remember(com.mobybank.harness.domain.UserId,com.mobybank.harness.application.MicrosoftTokens)" class="member-name-link">remember</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="../../application/MicrosoftTokens.html" title="class in com.mobybank.harness.application">MicrosoftTokens</a>&nbsp;microsoftTokens)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="com.mobybank.harness.infrastructure.graph">
+<h2>Uses of <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a> in <a href="../../infrastructure/graph/package-summary.html">com.mobybank.harness.infrastructure.graph</a></h2>
+<div class="caption"><span>Methods in <a href="../../infrastructure/graph/package-summary.html">com.mobybank.harness.infrastructure.graph</a> with parameters of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;byte[]&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GraphDocumentCatalog.</span><code><a href="../../infrastructure/graph/GraphDocumentCatalog.html#fetch(com.mobybank.harness.domain.UserId,java.lang.String)" class="member-name-link">fetch</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../CatalogFile.html" title="class in com.mobybank.harness.domain">CatalogFile</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GraphDocumentCatalog.</span><code><a href="../../infrastructure/graph/GraphDocumentCatalog.html#files(com.mobybank.harness.domain.UserId,com.mobybank.harness.domain.FolderId)" class="member-name-link">files</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="../FolderId.html" title="class in com.mobybank.harness.domain">FolderId</a>&nbsp;folderId)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Folder.html" title="class in com.mobybank.harness.domain">Folder</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GraphDocumentCatalog.</span><code><a href="../../infrastructure/graph/GraphDocumentCatalog.html#folders(com.mobybank.harness.domain.UserId)" class="member-name-link">folders</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GraphTokenSource.</span><code><a href="../../infrastructure/graph/GraphTokenSource.html#tokenFor(com.mobybank.harness.domain.UserId)" class="member-name-link">tokenFor</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">The token to send to Microsoft Graph for this user.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">UserGraphTokenSource.</span><code><a href="../../infrastructure/graph/UserGraphTokenSource.html#tokenFor(com.mobybank.harness.domain.UserId)" class="member-name-link">tokenFor</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
 <li>
 <section class="detail" id="com.mobybank.harness.infrastructure.persistence">
 <h2>Uses of <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a> in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a></h2>
+<div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> that return types with arguments of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PostgresLoginSessionStore.</span><code><a href="../../infrastructure/persistence/PostgresLoginSessionStore.html#resolve(java.lang.String)" class="member-name-link">resolve</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
 <div class="caption"><span>Methods in <a href="../../infrastructure/persistence/package-summary.html">com.mobybank.harness.infrastructure.persistence</a> with parameters of type <a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../Session.html" title="class in com.mobybank.harness.domain">Session</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PostgresSessionRepository.</span><code><a href="../../infrastructure/persistence/PostgresSessionRepository.html#findAllByOwner(com.mobybank.harness.domain.UserId)" class="member-name-link">findAllByOwner</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;owner)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../AppUser.html" title="class in com.mobybank.harness.domain">AppUser</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresUserRepository.</span><code><a href="../../infrastructure/persistence/PostgresUserRepository.html#findById(com.mobybank.harness.domain.UserId)" class="member-name-link">findById</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../ConnectedFolders.html" title="class in com.mobybank.harness.domain">ConnectedFolders</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">PostgresConnectedFoldersRepository.</span><code><a href="../../infrastructure/persistence/PostgresConnectedFoldersRepository.html#findByUser(com.mobybank.harness.domain.UserId)" class="member-name-link">findByUser</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;userId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PostgresLoginSessionStore.</span><code><a href="../../infrastructure/persistence/PostgresLoginSessionStore.html#open(com.mobybank.harness.domain.UserId,java.time.Duration)" class="member-name-link">open</a><wbr>(<a href="../UserId.html" title="class in com.mobybank.harness.domain">UserId</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeToLive)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

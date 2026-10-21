@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Moby Bank Analyst Agent</title>
+<!-- Moby Bank Analyst Agent sign-in page. The form posts to /auth/login; "Sign in with Microsoft" goes to /auth/microsoft.
+     Fonts come from the same jars as index.html, so the page works without internet access. -->
+<link rel="stylesheet" href="/_static/at/fontsource/manrope/5.3.0/400.css">
+<link rel="stylesheet" href="/_static/at/fontsource/manrope/5.3.0/500.css">
+<link rel="stylesheet" href="/_static/at/fontsource/manrope/5.3.0/700.css">
+<style>
+  :root{
+    --bg:oklch(98.5% .004 245);--fg:oklch(18.4% .008 245);--card:oklch(100% 0 0);--muted:oklch(96.8% .005 245);
+    --muted-fg:oklch(46.2% .014 245);--border:oklch(91.3% .007 245);--border-subtle:oklch(91.3% .007 245);
+    --primary:oklch(54.6% .219 262);--primary-fg:oklch(98.5% .004 245);--destructive:oklch(55% .2 25);
+    --input-bg:oklch(100% 0 0);--ring:oklch(54.6% .219 262/.35);--hover:oklch(0% 0 0/.04);
+    --shadow:0 1px 2px oklch(0% 0 0/.06),0 4px 12px oklch(0% 0 0/.06);
+    --r:5px;--r-lg:8px;--sans:"Manrope",system-ui,sans-serif;
+  }
+  .dark{
+    --bg:oklch(10% .008 245);--fg:oklch(91.3% .007 245);--card:oklch(16% .012 245);--muted:oklch(20% .014 245);
+    --muted-fg:oklch(66.1% .014 245);--border:oklch(36.6% .012 245);--border-subtle:oklch(21.4% .008 245);
+    --primary:oklch(64% .169 249.4);--primary-fg:oklch(18.4% .008 245);--destructive:oklch(70% .18 25);
+    --input-bg:oklch(13% .01 245);--ring:oklch(64% .169 249.4/.4);--hover:oklch(100% 0 0/.06);
+    --shadow:0 1px 2px oklch(0% 0 0/.4),0 4px 12px oklch(0% 0 0/.4);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font:420 14px/1.5 var(--sans)}
+  a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px}
+  .col{width:100%;max-width:380px;display:flex;flex-direction:column;gap:24px}
+  .head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+  .mark{width:40px;height:40px;border-radius:var(--r);background:var(--primary);color:var(--primary-fg);display:grid;place-items:center;font-weight:680;font-size:15px}
+  h1{margin:0;font-size:22px;line-height:1.3;font-weight:680;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted-fg)}
+  .card{display:flex;flex-direction:column;gap:20px;padding:24px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:36px;padding:0 12px;border-radius:var(--r);font-weight:520;font-size:14px;border:1px solid transparent}
+  .btn:disabled{opacity:.6;cursor:default}
+  .btn-primary{background:var(--primary);color:var(--primary-fg)}.btn-primary:hover:not(:disabled){filter:brightness(1.08)}
+  .btn-outline{border-color:var(--border);background:var(--card)}.btn-outline:hover:not(:disabled){background:var(--hover)}
+  .btn-icon{width:28px;height:28px;padding:0;color:var(--muted-fg)}.btn-icon:hover{background:var(--hover);color:var(--fg)}
+  .divider{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted-fg)}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border-subtle)}
+  form{display:flex;flex-direction:column;gap:16px;margin:0}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field-top{display:flex;align-items:center;justify-content:space-between}.field-top a{font-size:12px}
+  label{font-size:13px;font-weight:520}
+  input{height:32px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--input-bg);color:var(--fg);font:inherit;font-size:14px;outline:0}
+  input::placeholder{color:var(--muted-fg)}
+  input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+  input[aria-invalid="true"]{border-color:var(--destructive)}
+  .error{margin:0;font-size:13px;color:var(--destructive)}.error:empty{display:none}
+  .note{margin:0;font-size:12px;line-height:1.5;color:var(--muted-fg);text-align:center;text-wrap:pretty}
+  footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;font-size:12px;color:var(--muted-fg)}
+  .spinner{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:999px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="col">
+    <div class="head">
+      <div class="mark">MB</div>
+      <div><h1>Sign in to Analyst Agent</h1><p>Moby Bank</p></div>
+    </div>
+    <div class="card">
+      <button type="button" class="btn btn-outline" id="sso">
+        <svg width="16" height="16" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+        <span>Sign in with Microsoft</span>
+      </button>
+      <div class="divider" id="divider">or use your bank credentials</div>
+      <form id="form" method="post" action="/auth/login" novalidate>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" autocomplete="username" placeholder="name@mobybank.com">
+        </div>
+        <div class="field">
+          <div class="field-top"><label for="password">Password</label><a href="#">Forgot password?</a></div>
+          <input id="password" name="password" type="password" autocomplete="current-password">
+        </div>
+        <p class="error" id="error" role="alert"></p>
+        <button type="submit" class="btn btn-primary" id="submit"><span>Sign in</span></button>
+      </form>
+    </div>
+    <p class="note">For authorized Moby Bank staff only. Sessions are logged and monitored in line with the bank’s acceptable use policy.</p>
+  </div>
+</div>
+<footer>
+  <span>© 2026 Moby Bank</span>
+  <button class="btn-icon btn" id="theme" aria-label="Toggle theme">
+    <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</footer>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)},root=document.documentElement,KEY='moby-agent-theme';
+  var MESSAGES={
+    credentials:'The email or password is not right.',
+    locked:'Too many sign-in attempts. Try again in a few minutes.',
+    microsoft:'Microsoft sign-in did not complete. Try again.',
+    unavailable:'Sign in with Microsoft is not set up here.'
+  };
+  function theme(d){root.classList.toggle('dark',d);document.querySelector('.moon').style.display=d?'none':'';document.querySelector('.sun').style.display=d?'':'none';}
+  try{theme(localStorage.getItem(KEY)==='dark');}catch(e){theme(false);}
+  $('theme').onclick=function(){var d=!root.classList.contains('dark');try{localStorage.setItem(KEY,d?'dark':'light');}catch(e){}theme(d);};
+  function err(msg,field){$('error').textContent=msg||'';['email','password'].forEach(function(f){$(f).setAttribute('aria-invalid',String(f===field))});}
+  ['email','password'].forEach(function(f){$(f).addEventListener('input',function(){err('')})});
+  var code=new URLSearchParams(location.search).get('error');
+  if(code)err(MESSAGES[code]||MESSAGES.credentials);
+  // Offer Microsoft only when the server has it set up.
+  fetch('/auth/options').then(function(r){return r.json()}).then(function(o){
+    if(!o.microsoft){$('sso').hidden=true;$('divider').textContent='Use your bank credentials';}
+  }).catch(function(){});
+  function busy(btn){
+    $('sso').disabled=$('submit').disabled=true;
+    btn.insertAdjacentHTML('afterbegin','<span class="spinner"></span>');
+  }
+  $('sso').onclick=function(){err('');busy(this);location.href='/auth/microsoft';};
+  $('form').onsubmit=function(e){
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('email').value)){e.preventDefault();return err('Enter a valid work email.','email');}
+    if(!$('password').value){e.preventDefault();return err('Enter your password.','password');}
+    err('');busy($('submit'));
+  };
+})();
+</script>
+</body>
+</html>

@@ -16,6 +16,7 @@ public class Session {
     static final String DEFAULT_ATTACHMENT_PROMPT = "Review the attached files.";
 
     private final SessionId id;
+    private final UserId owner;
     private long version;
     private SessionTitle title;
     private Location location;
@@ -27,9 +28,11 @@ public class Session {
     private Instant updatedAt;
     private final List<DomainEvent> pendingEvents = new ArrayList<>();
 
-    private Session(SessionId id, SessionTitle title, Location location, SessionStatus status, Location moveTarget,
-                    List<Message> messages, boolean launched, Instant createdAt, Instant updatedAt, long version) {
+    private Session(SessionId id, UserId owner, SessionTitle title, Location location, SessionStatus status,
+                    Location moveTarget, List<Message> messages, boolean launched, Instant createdAt, Instant updatedAt,
+                    long version) {
         this.id = id;
+        this.owner = owner;
         this.title = title;
         this.location = location;
         this.status = status;
@@ -41,30 +44,46 @@ public class Session {
         this.version = version;
     }
 
-    /** Starts an empty session at the given location. */
+    /** Starts an empty session for the single demo user ({@link UserId#DEMO}) at the given location. */
     public static Session start(SessionId id, Location location, Instant now) {
+        return start(id, UserId.DEMO, location, now);
+    }
+
+    /** Starts an empty session that belongs to {@code owner}, at the given location. Only the owner may reach it. */
+    public static Session start(SessionId id, UserId owner, Location location, Instant now) {
         Objects.requireNonNull(id, "session id required");
+        Objects.requireNonNull(owner, "owner required");
         Objects.requireNonNull(location, "location required");
         Objects.requireNonNull(now, "now required");
-        return new Session(id, SessionTitle.NEW_CONVERSATION, location, SessionStatus.IDLE, null, List.of(), false, now,
-                now, 0L);
+        return new Session(id, owner, SessionTitle.NEW_CONVERSATION, location, SessionStatus.IDLE, null, List.of(),
+                false, now, now, 0L);
     }
 
     /**
      * Reconstruction path for the persistence layer. It trusts stored state and raises no events. Domain code never
      * calls it.
      */
+    public static Session rehydrate(SessionId id, UserId owner, SessionTitle title, Location location,
+                                    SessionStatus status, Location moveTarget, List<Message> messages, boolean launched,
+                                    Instant createdAt, Instant updatedAt, long version) {
+        return new Session(id, owner, title, location, status, moveTarget, messages, launched, createdAt, updatedAt,
+                version);
+    }
+
+    /** {@link #rehydrate} for a session of the demo user ({@link UserId#DEMO}). */
     public static Session rehydrate(SessionId id, SessionTitle title, Location location, SessionStatus status,
                                     Location moveTarget, List<Message> messages, boolean launched, Instant createdAt,
                                     Instant updatedAt, long version) {
-        return new Session(id, title, location, status, moveTarget, messages, launched, createdAt, updatedAt, version);
+        return rehydrate(id, UserId.DEMO, title, location, status, moveTarget, messages, launched, createdAt, updatedAt,
+                version);
     }
 
     /** {@link #rehydrate} for a session that has not been launched on its own (it has started if it has messages). */
     public static Session rehydrate(SessionId id, SessionTitle title, Location location, SessionStatus status,
                                     Location moveTarget, List<Message> messages, Instant createdAt, Instant updatedAt,
                                     long version) {
-        return rehydrate(id, title, location, status, moveTarget, messages, false, createdAt, updatedAt, version);
+        return rehydrate(id, UserId.DEMO, title, location, status, moveTarget, messages, false, createdAt, updatedAt,
+                version);
     }
 
     /**
@@ -204,6 +223,11 @@ public class Session {
 
     public SessionId id() {
         return id;
+    }
+
+    /** The user the session belongs to. Nobody else may read it or send to it. */
+    public UserId owner() {
+        return owner;
     }
 
     public SessionTitle title() {

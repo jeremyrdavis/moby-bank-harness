@@ -8,6 +8,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 /** Endpoint for the signed-in analyst shown in the sidebar. */
@@ -25,6 +28,10 @@ public class MeResource {
 
     @GET
     @Operation(summary = "The signed-in analyst", description = "Name, role and initials for the sidebar card.")
+    @APIResponse(responseCode = "200", description = "The signed-in analyst",
+            content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    @APIResponse(responseCode = "401", description = "Not signed in (sign-in mode only)",
+            content = @Content(schema = @Schema(implementation = ApiError.class)))
     public UserDTO me() {
         return currentUser.me();
     }

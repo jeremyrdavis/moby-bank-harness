@@ -7,24 +7,27 @@ import java.util.Optional;
 public interface DocumentCatalog {
 
     /**
-     * Every folder that can be connected.
+     * Every folder that {@code user} can connect.
      *
      * @throws DocumentSourceException if the source cannot be reached
+     * @throws SignInRequiredException if the source needs the user's own sign-in and they have not signed in
      */
-    List<Folder> folders();
+    List<Folder> folders(UserId user);
 
     /**
-     * The documents inside one folder; empty if the folder is unknown.
+     * The documents inside one folder as {@code user} sees it; empty if the folder is unknown.
      *
      * @throws DocumentSourceException if the source cannot be reached
+     * @throws SignInRequiredException if the source needs the user's own sign-in and they have not signed in
      */
-    List<CatalogFile> files(FolderId folderId);
+    List<CatalogFile> files(UserId user, FolderId folderId);
 
     /**
-     * The content of a document, found by its file name. Names are assumed unique across the catalog; if two
-     * folders hold the same name, the first folder's document is returned.
+     * The content of a document, found by its file name among the documents {@code user} can open. Names are
+     * assumed unique; if two folders hold the same name, the first folder's document is returned.
      *
      * @throws DocumentSourceException if the source cannot be reached or the file is too large to use
+     * @throws SignInRequiredException if the source needs the user's own sign-in and they have not signed in
      */
-    Optional<byte[]> fetch(String fileName);
+    Optional<byte[]> fetch(UserId user, String fileName);
 }

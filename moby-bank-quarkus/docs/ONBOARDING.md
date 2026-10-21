@@ -352,7 +352,7 @@ Use this checklist for every change. It is deliberately ordered: architecture pr
 - [ ] `api.md` is updated (the documentation test fails if an endpoint is missing; it cannot tell if the prose is right).
 - [ ] The UI and the planned Python backend are not broken by the change (who else reads this field?).
 
-**Security** (there is no authentication in this demo, so these matter more, not less)
+**Security** (sign-in is a demo-grade password and Microsoft login; see authentication.md)
 - [ ] Any client-supplied name that reaches a file path or a command is reduced to a base name or validated
       (see `attachUpload`, and `SbxSandboxAgent.stage`).
 - [ ] Commands are built as argument lists through `SbxCli`; nothing is concatenated into a shell string.
@@ -408,8 +408,9 @@ None is a secret; they are here so you learn to see them, and so you can decide 
    location and, while the registry knows a sandbox, ignores older ones (a source an earlier move left behind). After a
    restart the registry is empty, so if the newest sandbox was deleted meanwhile, an older retained one can be picked.
 7. **Stopped source sandboxes accumulate.** `sbx move` stops the source; nothing removes it.
-8. **No authentication, and one user.** Every caller is the same analyst; anyone who can reach the port can read and
-   start conversations. CORS limits browsers, not other clients.
+8. **Demo-grade sign-in.** The seeded analysts share one public password (`harness.auth.seed-password`), sessions live in
+   the database for 8 hours, and there is no password reset, no roles and no single sign-out from Microsoft. The cross-origin
+   prototype UI does not sign in (it works only with `harness.auth.mode=none`).
 9. **No way to delete a session, and the history is unpaged.** `GET /api/sessions` returns everything.
 10. **Unverified against the real thing.** The `sbx` commands, the agent's headless flags and stream format, and a real
     Microsoft tenant have not been exercised (see [integrations.md](integrations.md)). These are assumptions with tests

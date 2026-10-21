@@ -58,6 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#main(com.mobybank.harness.application.SessionDTO)" tabindex="0">main(SessionDTO)</a></li>
+<li><a href="#user(com.mobybank.harness.application.UserDTO,boolean)" tabindex="0">user(UserDTO, boolean)</a></li>
 <li><a href="#history(java.util.List)" tabindex="0">history(List)</a></li>
 <li><a href="#topbar(com.mobybank.harness.application.SessionDTO,boolean)" tabindex="0">topbar(SessionDTO, boolean)</a></li>
 <li><a href="#messages(java.util.List)" tabindex="0">messages(List)</a></li>
@@ -149,6 +150,12 @@ message gives the conversation its title and starts it, which turns the Run butt
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">The header: title, location, and the Run or Move buttons.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static io.quarkus.qute.TemplateInstance</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#user(com.mobybank.harness.application.UserDTO,boolean)" class="member-name-link">user</a><wbr>(<a href="../../application/UserDTO.html" title="class in com.mobybank.harness.application">UserDTO</a>&nbsp;user,
+ boolean&nbsp;signOut)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">The signed-in analyst's card for the sidebar: avatar, name, role and (when sign-in is on) the sign-out button.</div>
+</div>
 </div>
 </div>
 </div>
@@ -172,6 +179,16 @@ message gives the conversation its title and starts it, which turns the Run butt
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type">io.quarkus.qute.TemplateInstance</span>&nbsp;<span class="element-name">main</span><wbr><span class="parameters">(<a href="../../application/SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a>&nbsp;session)</span></div>
 <div class="block">Everything inside <code>&lt;main id="main"&gt;</code>: header, thread and composer for one conversation.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="user(com.mobybank.harness.application.UserDTO,boolean)">
+<h3>user</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type">io.quarkus.qute.TemplateInstance</span>&nbsp;<span class="element-name">user</span><wbr><span class="parameters">(<a href="../../application/UserDTO.html" title="class in com.mobybank.harness.application">UserDTO</a>&nbsp;user,
+ boolean&nbsp;signOut)</span></div>
+<div class="block">The signed-in analyst's card for the sidebar: avatar, name, role and (when sign-in is on) the sign-out button.</div>
 </div>
 </section>
 </li>

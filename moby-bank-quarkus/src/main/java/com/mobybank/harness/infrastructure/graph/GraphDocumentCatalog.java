@@ -7,6 +7,7 @@ import com.mobybank.harness.domain.DocumentCatalog;
 import com.mobybank.harness.domain.DocumentSourceException;
 import com.mobybank.harness.domain.Folder;
 import com.mobybank.harness.domain.FolderId;
+import com.mobybank.harness.domain.UserId;
 import io.quarkus.logging.Log;
 
 import java.io.IOException;
@@ -37,11 +38,11 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
     private static final int MAX_PAGES = 25;
 
     private final GraphSettings settings;
-    private final GraphTokenProvider tokens;
+    private final GraphTokenSource tokens;
     private final HttpClient http;
     private final URI graphOrigin;
 
-    public GraphDocumentCatalog(GraphSettings settings, GraphTokenProvider tokens, HttpClient http) {
+    public GraphDocumentCatalog(GraphSettings settings, GraphTokenSource tokens, HttpClient http) {
         this.settings = settings;
         this.tokens = tokens;
         this.http = http;
@@ -51,13 +52,13 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
     }
 
     @Override
-    public List<Folder> folders() {
+    public List<Folder> folders(UserId user) {
         String start = settings.foldersRoot().filter(path -> !path.isBlank())
                 .map(path -> settings.driveUrl() + "/root:/" + encodePath(path) + ":/children")
                 .orElse(settings.driveUrl() + "/root/children");
         List<JsonNode> items;
         try {
-            items = pages(start + "?$select=id,name,folder,parentReference&$orderby=name&$top=" + PAGE_SIZE);
+            items = pages(user, start + "?$select=id,name,folder,parentReference&$orderby=name&$top=" + PAGE_SIZE);
         } catch (NotFound e) {
             throw new DocumentSourceException("The folder '" + settings.foldersRoot().orElse("") + "' set in "
                     + "harness.graph.folders-root was not found in OneDrive");
@@ -75,11 +76,11 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
     }
 
     @Override
-    public List<CatalogFile> files(FolderId folderId) {
+    public List<CatalogFile> files(UserId user, FolderId folderId) {
         String url = settings.driveUrl() + "/items/" + encodeSegment(folderId.value())
                 + "/children?$select=id,name,file&$orderby=name&$top=" + PAGE_SIZE;
         try {
-            List<CatalogFile> files = pages(url).stream()
+            List<CatalogFile> files = pages(user, url).stream()
                     .filter(item -> item.has("file"))
                     .map(item -> new CatalogFile(folderId, item.path("name").asText()))
                     .toList();
@@ -92,9 +93,9 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
     }
 
     @Override
-    public Optional<byte[]> fetch(String fileName) {
+    public Optional<byte[]> fetch(UserId user, String fileName) {
         Log.debugf("Fetching a document (name of %d chars)", fileName.length());
-        Optional<JsonNode> hit = search(fileName);
+        Optional<JsonNode> hit = search(user, fileName);
         if (hit.isEmpty()) {
             Log.debug("No document by that name in OneDrive");
             return Optional.empty();
@@ -102,7 +103,7 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         String id = hit.get().path("id").asText();
         JsonNode item;
         try {
-            item = get(URI.create(settings.driveUrl() + "/items/" + encodeSegment(id)
+            item = get(user, URI.create(settings.driveUrl() + "/items/" + encodeSegment(id)
                     + "?$select=id,name,size"));
         } catch (NotFound e) {
             Log.debugf("Item %s disappeared between the search and the lookup", id);
@@ -114,17 +115,17 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
             throw new DocumentSourceException(fileName + " is " + size + " bytes, over the limit of "
                     + settings.maxDownloadBytes());
         }
-        return Optional.of(download(downloadLink(id, fileName), fileName));
+        return Optional.of(download(downloadLink(user, id, fileName), fileName));
     }
 
     // --- search ------------------------------------------------------------------------------------------------
 
     /** The file with exactly this name, preferring one inside the configured folders root. */
-    private Optional<JsonNode> search(String fileName) {
+    private Optional<JsonNode> search(UserId user, String fileName) {
         // Graph wants the quotes raw and a quote inside the name doubled; only the name itself is percent-encoded.
         String url = settings.driveUrl() + "/root/search(q='" + encodeSegment(fileName.replace("'", "''"))
                 + "')?$select=id,name,file,parentReference&$top=" + PAGE_SIZE;
-        List<JsonNode> matches = pages(url).stream()
+        List<JsonNode> matches = pages(user, url).stream()
                 .filter(item -> item.has("file") && fileName.equals(item.path("name").asText()))
                 .toList();
         Log.debugf("Search returned %d exact matches", matches.size());
@@ -140,11 +141,11 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
 
     // --- HTTP --------------------------------------------------------------------------------------------------
 
-    private List<JsonNode> pages(String firstUrl) {
+    private List<JsonNode> pages(UserId user, String firstUrl) {
         List<JsonNode> items = new ArrayList<>();
         URI next = URI.create(firstUrl);
         for (int page = 0; next != null && page < MAX_PAGES; page++) {
-            JsonNode body = get(next);
+            JsonNode body = get(user, next);
             body.path("value").forEach(items::add);
             Log.debugf("Page %d: %d items so far", page + 1, items.size());
             next = body.hasNonNull("@odata.nextLink") ? sameHostOrFail(body.get("@odata.nextLink").asText()) : null;
@@ -171,10 +172,10 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
         return "https".equalsIgnoreCase(uri.getScheme()) ? 443 : 80;
     }
 
-    private JsonNode get(URI uri) {
+    private JsonNode get(UserId user, URI uri) {
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .timeout(settings.requestTimeout())
-                .header("Authorization", "Bearer " + tokens.token())
+                .header("Authorization", "Bearer " + tokens.tokenFor(user))
                 .header("Accept", "application/json")
                 .GET()
                 .build();
@@ -195,11 +196,11 @@ public final class GraphDocumentCatalog implements DocumentCatalog {
      * fetched without it. This does not depend on the {@code @microsoft.graph.downloadUrl} annotation, which a
      * {@code $select} does not reliably return.
      */
-    private URI downloadLink(String itemId, String fileName) {
+    private URI downloadLink(UserId user, String itemId, String fileName) {
         URI uri = URI.create(settings.driveUrl() + "/items/" + encodeSegment(itemId) + "/content");
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .timeout(settings.requestTimeout())
-                .header("Authorization", "Bearer " + tokens.token())
+                .header("Authorization", "Bearer " + tokens.tokenFor(user))
                 .GET()
                 .build();
         Log.debugf("Requesting the download link for item %s", itemId);

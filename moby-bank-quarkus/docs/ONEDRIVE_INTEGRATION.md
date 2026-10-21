@@ -3,6 +3,12 @@
 How to take the OneDrive integration from "works against a stand-in" to "analysts use it against the bank's real
 Microsoft 365 tenant, each seeing only their own documents".
 
+> **Update (issue #19).** Parts of P2 and P4 are built: sign-in (password and Microsoft, see
+> [authentication.md](authentication.md)), session ownership, each user's own Graph token (`UserGraphTokenSource`, renewed
+> with `MicrosoftTokenRefresher`), and OneDrive files downloaded when a message is sent, so the background agent needs no
+> token (option A of section 4.3). Files are still found by name and there is one drive, so P3 and the rest of P4 are
+> open. The text below was written before that and still describes the plan.
+>
 > **Status of this document.** It is a **plan**. A first OneDrive adapter already exists
 > ([integrations.md](integrations.md#onedrive-through-microsoft-graph)) and is tested against an in-process stand-in for
 > Microsoft Graph, but it has never run against a real tenant, and it reads **one configured drive with one

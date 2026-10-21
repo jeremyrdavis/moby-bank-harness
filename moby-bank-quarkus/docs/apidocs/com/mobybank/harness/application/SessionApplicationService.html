@@ -58,7 +58,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock)" tabindex="0">SessionApplicationService(SessionRepository, SandboxAgent, SandboxTransfer, UploadStore, SessionEventStream, BackgroundRunner, Clock)</a></li>
+<li><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock,com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.DocumentCatalog)" tabindex="0">SessionApplicationService(SessionRepository, SandboxAgent, SandboxTransfer, UploadStore, SessionEventStream, BackgroundRunner, Clock, CurrentUser, DocumentCatalog)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -68,6 +68,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#recoverInterruptedWork()" tabindex="0">recoverInterruptedWork()</a></li>
 <li><a href="#list()" tabindex="0">list()</a></li>
 <li><a href="#get(java.lang.String)" tabindex="0">get(String)</a></li>
+<li><a href="#statusOf(java.lang.String)" tabindex="0">statusOf(String)</a></li>
 <li><a href="#sendMessage(com.mobybank.harness.application.SendMessageCommand)" tabindex="0">sendMessage(SendMessageCommand)</a></li>
 <li><a href="#attachUpload(com.mobybank.harness.application.AttachUploadCommand)" tabindex="0">attachUpload(AttachUploadCommand)</a></li>
 <li><a href="#move(com.mobybank.harness.application.MoveSessionCommand)" tabindex="0">move(MoveSessionCommand)</a></li>
@@ -104,13 +105,15 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock)" class="member-name-link">SessionApplicationService</a><wbr>(<a href="../domain/SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a>&nbsp;sessions,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock,com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.DocumentCatalog)" class="member-name-link">SessionApplicationService</a><wbr>(<a href="../domain/SessionRepository.html" title="interface in com.mobybank.harness.domain">SessionRepository</a>&nbsp;sessions,
  <a href="../domain/SandboxAgent.html" title="interface in com.mobybank.harness.domain">SandboxAgent</a>&nbsp;agent,
  <a href="../domain/SandboxTransfer.html" title="interface in com.mobybank.harness.domain">SandboxTransfer</a>&nbsp;transfer,
  <a href="UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
  <a href="SessionEventStream.html" title="interface in com.mobybank.harness.application">SessionEventStream</a>&nbsp;events,
  <a href="BackgroundRunner.html" title="interface in com.mobybank.harness.application">BackgroundRunner</a>&nbsp;runner,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="CurrentUser.html" title="interface in com.mobybank.harness.application">CurrentUser</a>&nbsp;currentUser,
+ <a href="../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -162,6 +165,11 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds the analyst's message and starts the agent on it in the background.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#statusOf(java.lang.String)" class="member-name-link">statusOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sessionId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">The session's status (<code>idle</code>, <code>running</code> or <code>moving</code>) without checking who is asking.</div>
+</div>
 </div>
 </div>
 </div>
@@ -180,7 +188,7 @@ happened. Agent turns and moves run in the background; callers follow progress t
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock)">
+<section class="detail" id="&lt;init&gt;(com.mobybank.harness.domain.SessionRepository,com.mobybank.harness.domain.SandboxAgent,com.mobybank.harness.domain.SandboxTransfer,com.mobybank.harness.application.UploadStore,com.mobybank.harness.application.SessionEventStream,com.mobybank.harness.application.BackgroundRunner,java.time.Clock,com.mobybank.harness.application.CurrentUser,com.mobybank.harness.domain.DocumentCatalog)">
 <h3>SessionApplicationService</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Inject
@@ -190,7 +198,9 @@ happened. Agent turns and moves run in the background; callers follow progress t
  <a href="UploadStore.html" title="interface in com.mobybank.harness.application">UploadStore</a>&nbsp;uploads,
  <a href="SessionEventStream.html" title="interface in com.mobybank.harness.application">SessionEventStream</a>&nbsp;events,
  <a href="BackgroundRunner.html" title="interface in com.mobybank.harness.application">BackgroundRunner</a>&nbsp;runner,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html" title="class or interface in java.time" class="external-link">Clock</a>&nbsp;clock,
+ <a href="CurrentUser.html" title="interface in com.mobybank.harness.application">CurrentUser</a>&nbsp;currentUser,
+ <a href="../domain/DocumentCatalog.html" title="interface in com.mobybank.harness.domain">DocumentCatalog</a>&nbsp;catalog)</span></div>
 </div>
 </section>
 </li>
@@ -249,6 +259,16 @@ stays where it was (the move is abandoned, and the sandbox record still points a
 <h3>get</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SessionDTO.html" title="class in com.mobybank.harness.application">SessionDTO</a></span>&nbsp;<span class="element-name">get</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sessionId)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="statusOf(java.lang.String)">
+<h3>statusOf</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">statusOf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sessionId)</span></div>
+<div class="block">The session's status (<code>idle</code>, <code>running</code> or <code>moving</code>) without checking who is asking. For code
+that follows a session from a background thread, where there is no request and so no current user.</div>
 </div>
 </section>
 </li>
