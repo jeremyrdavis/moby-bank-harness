@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moby Bank · Analyst Agent</title>
+<title>moby-cars · Analyst Agent</title>
 <!--
-  Moby Bank Analyst Agent — single-file htmx client.
+  moby-cars Analyst Agent — single-file htmx client.
   Drop this file into any app that serves the API below. Set the API prefix in <meta name="api-base">.
   Every endpoint returns an HTML fragment (see htmx/API.md for the contract and element ids).
 -->
@@ -131,8 +131,8 @@
 
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-mark">MB</div>
-    <div><strong>Moby Bank</strong><span>Analyst Agent</span></div>
+    <div class="brand-mark">MC</div>
+    <div><strong>moby-cars</strong><span>Analyst Agent</span></div>
   </div>
   <div style="padding:0 12px 12px">
     <button class="btn btn-outline w-full" hx-post="/api/conversations" hx-target="#main" hx-swap="innerHTML">
@@ -176,13 +176,13 @@
   </header>
   <div class="thread" id="thread">
     <div class="thread-inner" id="messages">
-      <div class="empty"><h2>What should we analyze?</h2><p>Attach filings or pull documents from a connected OneDrive folder.</p></div>
+      <div class="empty"><h2>What should we analyze?</h2><p>Attach used-vehicle reports and data, or pull documents from a connected OneDrive folder.</p></div>
     </div>
   </div>
   <div class="composer-wrap">
     <form class="composer" id="composer" hx-post="/api/conversations/new/messages" hx-target="#messages" hx-swap="beforeend" hx-encoding="multipart/form-data" hx-indicator="#thinking" hx-disabled-elt="find button[type=submit]">
       <div id="pending"></div>
-      <textarea name="text" rows="2" placeholder="Ask about a filing, or tell the agent what to do…"></textarea>
+      <textarea name="text" rows="2" placeholder="Ask about a report, or tell the agent what to do…"></textarea>
       <div class="composer-bar">
         <input type="file" name="files" multiple hidden id="file-input">
         <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('file-input').click()">
@@ -288,7 +288,7 @@
     var t=e.target; if(!t||!t.matches) return;
     if(t.matches('[data-move-cloud]')){
       moveTarget='cloud';
-      toast({id:'move-cloud',variant:'loading',title:'Moving session to Moby Private Cloud…',description:'Packaging context and files'});
+      toast({id:'move-cloud',variant:'loading',title:'Moving session to moby-cars Private Cloud…',description:'Packaging context and files'});
     } else if(t.matches('[data-move-local]')){
       moveTarget='local';
       toast({id:'move-cloud',variant:'loading',title:'Moving session back to this machine…',description:'This can take several minutes'});

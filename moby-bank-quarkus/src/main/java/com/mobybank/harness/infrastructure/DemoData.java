@@ -29,7 +29,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The demo content from the prototype: the OneDrive folder library and five seeded conversations. Ids are derived
+ * The demo content: a used-vehicle OneDrive folder library (its files are in the repository's {@code data/onedrive/})
+ * and five seeded conversations, the first being the Q2 2026 quarterly report. The figures in the conversations come from
+ * those files ({@code data/scripts/analyze_demo_data.py} prints them). Ids are derived
  * from fixed keys so they are the same on every start.
  */
 final class DemoData {
@@ -41,19 +43,19 @@ final class DemoData {
     private static final Map<Folder, List<String>> LIBRARY = new LinkedHashMap<>();
 
     static {
-        LIBRARY.put(new Folder(F1, "Earnings 2026", "Credit Research / Coverage / Earnings 2026", 24), List.of(
-                "Fathom_Q2_2026_10-Q.pdf", "Fathom_Q2_2026_Call_Transcript.docx",
-                "Kestrel_Q2_2026_Earnings_Release.pdf"));
-        LIBRARY.put(new Folder(F2, "Client Financials", "Corporate Banking / Clients / Financials", 58), List.of(
-                "Harborline_Logistics_FY25_Audited.pdf", "Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx"));
-        LIBRARY.put(new Folder(F3, "Peer Comps", "Credit Research / Models / Peer Comps", 12), List.of(
-                "Industrials_Peer_Comps_Q2.xlsx", "Regional_Banks_NIM_Tracker.xlsx"));
-        LIBRARY.put(new Folder(new FolderId("f4"), "Covenant Models", "Risk / Credit / Covenant Models", 9),
-                List.of("Harborline_Covenant_Model_v3.xlsx"));
-        LIBRARY.put(new Folder(new FolderId("f5"), "ALM Reports", "Treasury / ALM / Monthly", 31),
-                List.of("ALM_Aug_2026.pdf"));
-        LIBRARY.put(new Folder(new FolderId("f6"), "Analyst Templates", "Shared / Credit Research / Templates", 7),
-                List.of("Earnings_Summary_Template.docx"));
+        LIBRARY.put(new Folder(F1, "Used Vehicle Sales", "Used Vehicles / Reporting / Sales", 24), List.of(
+                "Used_Vehicle_Sales_Q3_2026.csv", "Used_Vehicle_Sales_Q2_2026.csv"));
+        LIBRARY.put(new Folder(F2, "Wholesale Pricing", "Used Vehicles / Pricing / Wholesale", 58), List.of(
+                "Wholesale_Price_Index_Q3_2026.csv", "Wholesale_Price_Index_Q2_2026.csv",
+                "Auction_Volumes_Q3_2026.csv"));
+        LIBRARY.put(new Folder(F3, "Inventory and Days-to-Turn", "Used Vehicles / Inventory / Turn", 12), List.of(
+                "Days_To_Turn_By_Segment_Q3_2026.csv", "Days_To_Turn_By_Segment_Q2_2026.csv"));
+        LIBRARY.put(new Folder(new FolderId("f4"), "Loan Performance", "Finance / Auto Lending / Performance", 9),
+                List.of("Auto_Loan_Performance_Q3_2026.csv", "Auto_Loan_Performance_Q2_2026.csv"));
+        LIBRARY.put(new Folder(new FolderId("f5"), "Quarterly Reports", "Used Vehicles / Reporting / Quarterly", 31),
+                List.of("Used_Car_Quarterly_Report_Q2_2026.md"));
+        LIBRARY.put(new Folder(new FolderId("f6"), "Analyst Templates", "Shared / Used Vehicles / Templates", 7),
+                List.of("Quarterly_Report_Template.md"));
     }
 
     private DemoData() {
@@ -70,6 +72,22 @@ final class DemoData {
                 .toList();
     }
 
+    /**
+     * Where a library file's contents are on the classpath: {@code demo-data/onedrive/<folder>/<file>}, copied from the
+     * repository's {@code data/onedrive/} by the build ({@code copy-demo-data} in the pom). The folder's directory is
+     * its name in lower case with dashes, so "Inventory and Days-to-Turn" is {@code inventory-and-days-to-turn}.
+     */
+    static Optional<String> resourcePath(String fileName) {
+        return LIBRARY.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(fileName))
+                .map(entry -> "demo-data/onedrive/" + directoryOf(entry.getKey()) + "/" + fileName)
+                .findFirst();
+    }
+
+    static String directoryOf(Folder folder) {
+        return folder.name().toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+    }
+
     /** The folders connected when the demo starts. */
     static List<FolderId> initiallyConnected() {
         return List.of(F1, F2, F3);
@@ -82,74 +100,84 @@ final class DemoData {
         Instant earlierToday = startOfToday.toInstant().plus(Duration.between(startOfToday.toInstant(), now).dividedBy(2));
         List<Session> sessions = new ArrayList<>();
 
-        sessions.add(session("c1", "Fathom Industrial — Q2 2026 earnings", Location.LOCAL, now, List.of(
-                user("c1", 1, "Summarize Fathom’s Q2 results against consensus and flag anything that changes our credit view.",
-                        "Fathom_Q2_2026_10-Q.pdf", "Fathom_Q2_2026_Call_Transcript.docx",
-                        "Industrials_Peer_Comps_Q2.xlsx"),
+        sessions.add(session("c1", "Used cars — Q2 2026 quarterly report", Location.LOCAL, now, List.of(
+                user("c1", 1, "Write our Q2 2026 used-car quarterly report: volume, pricing, days to turn and anything "
+                        + "that changes our view on auto-loan risk.",
+                        "Used_Vehicle_Sales_Q2_2026.csv", "Wholesale_Price_Index_Q2_2026.csv",
+                        "Days_To_Turn_By_Segment_Q2_2026.csv"),
                 assistant("c1", 2,
-                        List.of(read("OneDrive/Earnings 2026/Fathom_Q2_2026_10-Q.pdf"),
-                                read("OneDrive/Earnings 2026/Fathom_Q2_2026_Call_Transcript.docx"),
-                                read("OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx"),
-                                compute("variance_vs_consensus(revenue, ebitda, eps)"),
-                                compute("leverage(net_debt, ltm_ebitda)")),
-                        List.of("Fathom beat on revenue but missed on margin. Revenue of $4.12B was 2.1% above consensus, "
-                                        + "driven by aftermarket services. Adjusted EBITDA margin fell 80 bps year over year to "
-                                        + "17.4% on input costs and a one-time restructuring charge in the Fluid Systems segment.",
-                                "For credit, the main change is leverage. Net debt rose $310M after the Dunmore acquisition "
-                                        + "closed in May, taking net leverage to 2.9x from 2.4x. Management reiterated a 2.5x "
-                                        + "target by year-end 2027 on the call, but free cash flow guidance was cut by $120M."),
-                        Optional.of(new ResultTable(List.of("Metric", "Q2 2026", "Consensus", "Q2 2025"), List.of(
-                                List.of("Revenue", "$4.12B", "$4.04B", "$3.87B"),
-                                List.of("Adj. EBITDA margin", "17.4%", "18.0%", "18.2%"),
-                                List.of("Adj. EPS", "$1.86", "$1.91", "$1.79"),
-                                List.of("Net leverage", "2.9x", "—", "2.4x"))))),
-                user("c1", 3, "How does 2.9x compare with peers?"),
+                        List.of(read("OneDrive/Used Vehicle Sales/Used_Vehicle_Sales_Q2_2026.csv"),
+                                read("OneDrive/Wholesale Pricing/Wholesale_Price_Index_Q2_2026.csv"),
+                                read("OneDrive/Inventory and Days-to-Turn/Days_To_Turn_By_Segment_Q2_2026.csv"),
+                                compute("weighted_average(units, avg_retail_price, wholesale_index)"),
+                                compute("days_to_turn(by_segment)")),
+                        List.of("Used-vehicle sales reached 612,000 units in Q2, building every month to 216,040 in "
+                                        + "June. The average retail price was $28,938. Wholesale prices softened 1.3% "
+                                        + "over the quarter on the composite index, led by electric vehicles at −5.2%.",
+                                "For risk, the item to watch is turn time. The average vehicle took 43.7 days to sell; "
+                                        + "sedans (52) and electric vehicles (58) are the slow segments, and 19% of "
+                                        + "electric stock has been on the lot for more than 60 days. Falling wholesale "
+                                        + "values also erode the collateral behind loans written at last year’s peak "
+                                        + "prices."),
+                        Optional.of(new ResultTable(List.of("Segment", "Units", "Avg retail price", "Wholesale QoQ",
+                                "Days to turn"), List.of(
+                                List.of("SUV", "231,000", "$30,420", "−0.8%", "39.0"),
+                                List.of("Truck", "168,000", "$34,150", "−0.4%", "37.0"),
+                                List.of("Sedan", "142,000", "$19,980", "−1.9%", "52.0"),
+                                List.of("Electric", "71,000", "$29,700", "−5.2%", "58.0"))))),
+                user("c1", 3, "Where is inventory aging the most?"),
                 assistant("c1", 4,
-                        List.of(read("OneDrive/Peer Comps/Industrials_Peer_Comps_Q2.xlsx"),
-                                compute("rank(net_leverage, peer_set=7)")),
-                        List.of("Fathom is now fifth of seven in the peer set on net leverage. The peer median is 2.3x, "
-                                + "and only Ormond (3.4x) and Calder (3.1x) are higher. Before the acquisition Fathom "
-                                + "ranked second."),
+                        List.of(read("OneDrive/Inventory and Days-to-Turn/Days_To_Turn_By_Segment_Q2_2026.csv"),
+                                compute("rank(avg_days_to_turn, by=segment_region)")),
+                        List.of("Electric vehicles hold the most aging stock: 19% of electric inventory is older than "
+                                + "60 days, against 7% for trucks. The single slowest market is sedans in the Midwest "
+                                + "at 61 days to turn, followed by electric vehicles in the Southwest (60.7) and the "
+                                + "Northeast (60.1)."),
                         Optional.empty()))));
 
-        sessions.add(session("c2", "Kestrel Foods — earnings release review", Location.CLOUD, earlierToday, List.of(
-                user("c2", 1, "Pull the key numbers from Kestrel’s Q2 release.", "Kestrel_Q2_2026_Earnings_Release.pdf"),
+        sessions.add(session("c2", "Electric used-price softness", Location.CLOUD, earlierToday, List.of(
+                user("c2", 1, "How far did used EV prices fall in Q2?", "Wholesale_Price_Index_Q2_2026.csv"),
                 assistant("c2", 2,
-                        List.of(read("OneDrive/Earnings 2026/Kestrel_Q2_2026_Earnings_Release.pdf")),
-                        List.of("Net sales of $1.38B were flat year over year; organic volume declined 1.2%, offset by "
-                                + "price. Gross margin expanded 60 bps to 31.9%. Full-year EPS guidance was narrowed to "
-                                + "$2.40–$2.48."),
+                        List.of(read("OneDrive/Wholesale Pricing/Wholesale_Price_Index_Q2_2026.csv")),
+                        List.of("The electric wholesale index fell 5.2% in Q2, from 156.2 to 148.1, and is 14.8% below "
+                                + "a year ago. The average electric auction price closed the quarter at $22,510. No "
+                                + "other segment fell by more than 1.9%."),
                         Optional.empty()))));
 
-        sessions.add(session("c3", "Harborline Logistics — cash flow vs covenants", Location.LOCAL,
+        sessions.add(session("c3", "Subprime auto delinquency watch", Location.LOCAL,
                 now.minus(Duration.ofDays(2)), List.of(
-                        user("c3", 1, "Check Harborline’s Q2 management accounts against the fixed charge coverage covenant.",
-                                "Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx", "Harborline_Covenant_Model_v3.xlsx"),
+                        user("c3", 1, "Check 30 and 60 day delinquencies on the used-vehicle loan book.",
+                                "Auto_Loan_Performance_Q2_2026.csv", "Used_Vehicle_Sales_Q2_2026.csv"),
                         assistant("c3", 2,
-                                List.of(read("OneDrive/Client Financials/Harborline_Logistics_Q2_2026_Mgmt_Accounts.xlsx"),
-                                        read("OneDrive/Covenant Models/Harborline_Covenant_Model_v3.xlsx"),
-                                        compute("fccr(ltm)")),
-                                List.of("LTM fixed charge coverage is 1.34x against a 1.25x minimum, down from 1.48x last "
-                                        + "quarter. Headroom is about 7%. The decline comes mainly from higher lease costs "
-                                        + "on the two new depots."),
+                                List.of(read("OneDrive/Loan Performance/Auto_Loan_Performance_Q2_2026.csv"),
+                                        read("OneDrive/Used Vehicle Sales/Used_Vehicle_Sales_Q2_2026.csv"),
+                                        compute("delinquency_rate(30d, 60d, by=cohort, tier)")),
+                                List.of("30-day delinquency on the auto-loan book is 3.90% and 60-day is 1.60%. Subprime "
+                                        + "loans run at 12.66% 30+. The 2025-Q1 and 2025-Q2 cohorts, written at peak "
+                                        + "prices, are the worst at about 6.2%, and subprime loans from 2025-Q2 and "
+                                        + "2025-Q3 now owe more than the vehicle is worth (current loan-to-value about "
+                                        + "104%)."),
                                 Optional.empty()))));
 
-        sessions.add(session("c4", "Regional banks — NIM trend comparison", Location.CLOUD,
+        sessions.add(session("c4", "Wholesale-to-retail spread by segment", Location.CLOUD,
                 now.minus(Duration.ofDays(4)), List.of(
-                        user("c4", 1, "Compare net interest margin trends for our regional bank coverage over the last four quarters.",
-                                "Regional_Banks_NIM_Tracker.xlsx"),
+                        user("c4", 1, "Compare the gap between retail and auction prices by segment at the end of Q2.",
+                                "Wholesale_Price_Index_Q2_2026.csv", "Used_Vehicle_Sales_Q2_2026.csv"),
                         assistant("c4", 2,
-                                List.of(read("OneDrive/Peer Comps/Regional_Banks_NIM_Tracker.xlsx")),
-                                List.of("Median NIM compressed 14 bps over four quarters to 3.21%. Deposit repricing slowed "
-                                        + "in Q2, and three of nine banks reported sequential expansion."),
+                                List.of(read("OneDrive/Wholesale Pricing/Wholesale_Price_Index_Q2_2026.csv"),
+                                        read("OneDrive/Used Vehicle Sales/Used_Vehicle_Sales_Q2_2026.csv")),
+                                List.of("The gap between the average retail price and the closing auction price is "
+                                        + "widest for electric vehicles ($7,190) and SUVs ($6,190), against about $4,850 "
+                                        + "for trucks and sedans. Retail EV prices have not yet followed the wholesale "
+                                        + "decline."),
                                 Optional.empty()))));
 
-        sessions.add(session("c5", "Segment revenue bridge FY25 → FY26", Location.LOCAL,
+        sessions.add(session("c5", "Days-to-turn bridge Q1 → Q2", Location.LOCAL,
                 now.minus(Duration.ofDays(20)), List.of(
-                        user("c5", 1, "Build a segment revenue bridge for Fathom from FY25 to FY26 guidance."),
+                        user("c5", 1, "Build a days-to-turn bridge by segment from Q1 to Q2."),
                         assistant("c5", 2, List.of(),
-                                List.of("Share the FY25 10-K and the latest guidance deck and I’ll build the bridge by "
-                                        + "segment, separating organic growth, acquisitions and FX."),
+                                List.of("Share the Q1 and Q2 days-to-turn files and I’ll build the bridge by segment, "
+                                        + "separating mix, seasonality and pricing effects."),
                                 Optional.empty()))));
         return sessions;
     }

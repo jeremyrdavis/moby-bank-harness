@@ -97,7 +97,7 @@ app restart even though the app's state does not.
    (`UploadStore` for uploads, `DocumentCatalog.fetch(name)` for OneDrive), write them to a temporary directory and
    `sbx cp` each in. The temporary directory is deleted afterwards. A file that is no longer available fails the
    turn with its name, before the agent runs. A name containing a path is refused.
-3. **Run the agent** headless with the prompt. The prompt is a short fixed preamble ("You are a credit-research
+3. **Run the agent** headless with the prompt. The prompt is a short fixed preamble ("You are a used-vehicle market analyst
    assistant… give exactly one Markdown table when a table helps"), then the analyst's request, then the attached
    file names and where they are. It is one argument, never split or interpreted.
 4. **Stream the output.** Each stdout line goes to `ClaudeStreamParser`; every tool call becomes a step **as it

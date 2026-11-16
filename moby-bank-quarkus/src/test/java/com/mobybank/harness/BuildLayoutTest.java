@@ -60,5 +60,8 @@ class BuildLayoutTest {
         assertEquals(false, Files.exists(classes.resolve("META-INF/resources/index.html")),
                 "index.html must not be a public static file");
         assertEquals(true, Files.exists(classes.resolve("META-INF/resources/login.html")));
+        assertEquals(true, Files.exists(classes.resolve("demo-data/onedrive/used-vehicle-sales/Used_Vehicle_Sales_Q3_2026.csv")),
+                "the demo OneDrive is copied from ../data/onedrive by the copy-demo-data execution");
+        assertEquals(false, Files.exists(classes.resolve("demo-data/onedrive/scripts")), "only data/onedrive is copied");
     }
 }

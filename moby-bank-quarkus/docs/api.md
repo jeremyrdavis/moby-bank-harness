@@ -60,7 +60,7 @@ Operational endpoints: `GET /q/health`, `GET /q/openapi`, `GET /q/swagger-ui`.
 ### `GET /api/me`
 
 ```json
-{"id": "demo-analyst", "name": "Hermione Granger", "role": "Credit Research", "initials": "HG"}
+{"id": "demo-analyst", "name": "Hermione Granger", "role": "Used-Vehicle Analytics", "initials": "HG"}
 ```
 
 The stored account of whoever is signed in. With `harness.auth.mode=login` (the default) **every `/api` call needs the
@@ -77,9 +77,9 @@ server's time zone).
 
 ```json
 [
-  {"id": "c08cdbec-aade-3b8f-ac14-926ce00dbcde", "title": "Fathom Industrial — Q2 2026 earnings",
+  {"id": "c08cdbec-aade-3b8f-ac14-926ce00dbcde", "title": "Used cars — Q2 2026 quarterly report",
    "location": "local", "status": "idle", "group": "Today", "updatedAt": "2026-09-30T21:43:46.104503786Z"},
-  {"id": "34849100-4927-3785-84a5-33ee31ccbccc", "title": "Kestrel Foods — earnings release review",
+  {"id": "34849100-4927-3785-84a5-33ee31ccbccc", "title": "Electric used-price softness",
    "location": "cloud", "status": "idle", "group": "Today", "updatedAt": "2026-09-30T12:51:53.052251893Z"}
 ]
 ```
@@ -110,19 +110,19 @@ The whole conversation. After one exchange (trimmed):
   "messages": [
     {"id": "0427ca0a-…", "role": "user", "text": "Summarize these for me",
      "files": [{"name": "notes.txt", "source": "upload"},
-               {"name": "Fathom_Q2_2026_10-Q.pdf", "source": "onedrive"}],
+               {"name": "Used_Vehicle_Sales_Q3_2026.csv", "source": "onedrive"}],
      "steps": [], "paragraphs": [], "table": null, "notice": null, "createdAt": "2026-09-30T21:43:48.042802662Z"},
     {"id": "f6e1ed37-…", "role": "assistant", "text": "", "files": [],
      "steps": [{"kind": "read", "label": "notes.txt"},
-               {"kind": "read", "label": "Fathom_Q2_2026_10-Q.pdf"},
-               {"kind": "compute", "label": "extract_financials(income_statement, balance_sheet, cash_flow)"}],
-     "paragraphs": ["I read notes.txt, Fathom_Q2_2026_10-Q.pdf and extracted the income statement, …"],
-     "table": {"cols": ["Metric", "Current", "Prior year", "Change"],
-               "rows": [["Revenue", "$2.46B", "$2.31B", "+6.5%"], …]},
+               {"kind": "read", "label": "Used_Vehicle_Sales_Q3_2026.csv"},
+               {"kind": "compute", "label": "build_quarterly_report(used_sales, wholesale_prices, days_to_turn)"}],
+     "paragraphs": ["I read notes.txt, Used_Vehicle_Sales_Q3_2026.csv and put together the Q3 2026 used-car quarterly report. …"],
+     "table": {"cols": ["Segment", "Units", "Avg retail price", "Wholesale QoQ", "Days to turn"],
+               "rows": [["SUV", "237,000", "$30,310", "−0.5%", "38.0"], …]},
      "notice": null,
      "createdAt": "2026-09-30T21:43:48.486489829Z"}
   ],
-  "files": [{"name": "notes.txt", "source": "upload"}, {"name": "Fathom_Q2_2026_10-Q.pdf", "source": "onedrive"}]
+  "files": [{"name": "notes.txt", "source": "upload"}, {"name": "Used_Vehicle_Sales_Q3_2026.csv", "source": "onedrive"}]
 }
 ```
 
@@ -139,7 +139,7 @@ The whole conversation. After one exchange (trimmed):
 
 ```json
 {"text": "Summarize these for me",
- "files": [{"name": "notes.txt", "source": "upload"}, {"name": "Fathom_Q2_2026_10-Q.pdf", "source": "onedrive"}]}
+ "files": [{"name": "notes.txt", "source": "upload"}, {"name": "Used_Vehicle_Sales_Q3_2026.csv", "source": "onedrive"}]}
 ```
 
 Returns **202 Accepted** with the stored user message (its `steps`, `paragraphs` and `table` are empty and null yet).
@@ -202,7 +202,7 @@ event:step
 data:{"sessionId":"00ca3b14-…","step":{"kind":"read","label":"notes.txt"}}
 
 event:step
-data:{"sessionId":"00ca3b14-…","step":{"kind":"compute","label":"extract_financials(income_statement, balance_sheet, cash_flow)"}}
+data:{"sessionId":"00ca3b14-…","step":{"kind":"compute","label":"build_quarterly_report(used_sales, wholesale_prices, days_to_turn)"}}
 
 event:message
 data:{"sessionId":"00ca3b14-…","message":{"id":"f6e1ed37-…","role":"assistant","steps":[…],"paragraphs":[…],"table":{…},"notice":null}}
@@ -240,9 +240,9 @@ The same message can be seen twice by a client that also reads the `202` respons
 
 ```json
 [
-  {"id": "f1", "name": "Earnings 2026", "path": "Credit Research / Coverage / Earnings 2026",
+  {"id": "f1", "name": "Used Vehicle Sales", "path": "Used Vehicles / Reporting / Sales",
    "fileCount": 24, "connected": true},
-  {"id": "f2", "name": "Client Financials", "path": "Corporate Banking / Clients / Financials",
+  {"id": "f2", "name": "Wholesale Pricing", "path": "Used Vehicles / Pricing / Wholesale",
    "fileCount": 58, "connected": true}
 ]
 ```
@@ -265,8 +265,8 @@ nothing is connected; **502** if OneDrive can't be reached.
 The documents in the connected folders, with their folder's details, for the attach dialog:
 
 ```json
-[{"folderId": "f1", "folderName": "Earnings 2026", "folderPath": "Credit Research / Coverage / Earnings 2026",
-  "name": "Fathom_Q2_2026_10-Q.pdf"}]
+[{"folderId": "f1", "folderName": "Used Vehicle Sales", "folderPath": "Used Vehicles / Reporting / Sales",
+  "name": "Used_Vehicle_Sales_Q3_2026.csv"}]
 ```
 
 ## Changing the API

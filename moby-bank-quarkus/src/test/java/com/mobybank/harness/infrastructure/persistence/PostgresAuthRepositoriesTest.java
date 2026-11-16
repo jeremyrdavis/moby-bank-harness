@@ -95,11 +95,11 @@ class PostgresAuthRepositoriesTest {
 
     @Test
     void theSeededDemoAnalystsExistAndCanBeUsedToSignIn() {
-        AppUser hermione = users.findByEmail("hermione.granger@mobybank.com").orElseThrow();
+        AppUser hermione = users.findByEmail("hermione.granger@mobycars.com").orElseThrow();
         assertEquals(UserId.DEMO, hermione.id(), "Hermione owns the demo data");
         assertTrue(hermione.passwordHash().orElseThrow().startsWith("$2"), "stored as a bcrypt hash");
         assertNotEquals("moby-demo", hermione.passwordHash().orElseThrow());
-        assertEquals("Rana Kapoor", users.findByEmail("rana.kapoor@mobybank.com").orElseThrow().displayName());
+        assertEquals("Rana Kapoor", users.findByEmail("rana.kapoor@mobycars.com").orElseThrow().displayName());
     }
 
     // --- login sessions ----------------------------------------------------------------------------------------

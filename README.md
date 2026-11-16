@@ -1,6 +1,6 @@
-# Moby Bank agent harness
+# moby-cars agent harness
 
-A demo for engineering and platform teams of a **custom agent harness**: a chat UI for a fictional bank credit analyst, backed by an agent that runs in a **Docker Sandbox, locally or in the cloud**. A session can move between the two, in either direction, and the agent can read documents from OneDrive.
+A demo for engineering and platform teams of a **custom agent harness**: a chat UI for a fictional used-vehicle analyst at moby-cars, backed by an agent that runs in a **Docker Sandbox, locally or in the cloud**. A session can move between the two, in either direction, and the agent can read documents from OneDrive.
 
 | Folder | What it is |
 |---|---|
@@ -25,7 +25,9 @@ cd moby-bank-prototype && npm start
 
 Open <http://localhost:8080> for the htmx page, or <http://localhost:4173> for the prototype. Pick a conversation, send a message with an attached file, and use **Move to cloud** in the header, then **Move to local** to bring it back (both pages offer both).
 
-To use real Docker Sandboxes or a real OneDrive, see [`moby-bank-quarkus/README.md`](moby-bank-quarkus/README.md): `-Dharness.sandbox.mode=sbx` and `-Dharness.documents.mode=graph`.
+The demo OneDrive's files are real CSV and Markdown documents in [`data/onedrive/`](data/README.md), so a real agent can write a genuine Q3 report from them without OneDrive.
+
+Sandboxes (`harness.sandbox.mode`, default `sbx`) and documents (`harness.documents.mode`, default `fake`) are chosen independently, so real sandboxes work without OneDrive. See [`moby-bank-quarkus/README.md`](moby-bank-quarkus/README.md): `-Dharness.sandbox.mode=fake` simulates the sandbox, `-Dharness.documents.mode=graph` reads a real OneDrive.
 
 ## How it fits together
 

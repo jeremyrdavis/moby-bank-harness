@@ -45,8 +45,8 @@ class WiringTest {
     @Test
     void theDemoHistoryIsSeededAtStartup() {
         List<String> titles = sessions.list().stream().map(SessionSummaryDTO::title).toList();
-        assertTrue(titles.contains("Fathom Industrial — Q2 2026 earnings"), titles.toString());
-        assertTrue(titles.contains("Segment revenue bridge FY25 → FY26"), titles.toString());
+        assertTrue(titles.contains("Used cars — Q2 2026 quarterly report"), titles.toString());
+        assertTrue(titles.contains("Days-to-turn bridge Q1 → Q2"), titles.toString());
     }
 
     @Test
@@ -70,7 +70,7 @@ class WiringTest {
         awaitEvent(session.id(), types,
                 e -> e instanceof MessageAdded added && "assistant".equals(added.message().role()),
                 () -> sessions.sendMessage(new SendMessageCommand(session.id(), "Summarize the filing",
-                        List.of(new FileRefDTO("Fathom_Q2_2026_10-Q.pdf", "onedrive")))));
+                        List.of(new FileRefDTO("Used_Vehicle_Sales_Q3_2026.csv", "onedrive")))));
 
         SessionDTO after = sessions.get(session.id());
         assertEquals("idle", after.status());

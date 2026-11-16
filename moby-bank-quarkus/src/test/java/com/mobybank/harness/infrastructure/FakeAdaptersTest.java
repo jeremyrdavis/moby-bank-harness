@@ -56,9 +56,9 @@ class FakeAdaptersTest {
                 reply.steps().stream().map(Step::kind).toList());
         assertEquals(reply.steps(), streamed, "steps are streamed in the same order as the final trace");
         assertEquals("a.pdf", reply.steps().get(0).label());
-        assertTrue(reply.paragraphs().get(0).startsWith("I read a.pdf, b.xlsx and extracted"));
-        assertEquals(List.of("Metric", "Current", "Prior year", "Change"), reply.table().orElseThrow().cols());
-        assertEquals(3, reply.table().orElseThrow().rows().size());
+        assertTrue(reply.paragraphs().get(0).startsWith("I read a.pdf, b.xlsx and put together"));
+        assertEquals(List.of("Segment", "Units", "Avg retail price", "Wholesale QoQ", "Days to turn"), reply.table().orElseThrow().cols());
+        assertEquals(4, reply.table().orElseThrow().rows().size());
     }
 
     @Test
@@ -66,7 +66,7 @@ class FakeAdaptersTest {
         AgentReply reply = new FakeSandboxAgent(Duration.ZERO).runTurn(turn("hello"), step -> { });
 
         assertEquals(List.of(StepKind.COMPUTE), reply.steps().stream().map(Step::kind).toList());
-        assertTrue(reply.paragraphs().get(0).contains("attach the documents directly"));
+        assertTrue(reply.paragraphs().get(0).contains("days-to-turn files directly"));
         assertTrue(reply.table().isEmpty());
     }
 
@@ -206,13 +206,13 @@ class FakeAdaptersTest {
         FakeDocumentCatalog catalog = new FakeDocumentCatalog();
         List<Folder> folders = catalog.folders(USER);
 
-        assertEquals(List.of("Earnings 2026", "Client Financials", "Peer Comps", "Covenant Models", "ALM Reports",
-                "Analyst Templates"), folders.stream().map(Folder::name).toList());
+        assertEquals(List.of("Used Vehicle Sales", "Wholesale Pricing", "Inventory and Days-to-Turn", "Loan Performance",
+                "Quarterly Reports", "Analyst Templates"), folders.stream().map(Folder::name).toList());
         assertEquals(24, folders.get(0).fileCount());
 
         List<CatalogFile> files = catalog.files(USER, new FolderId("f1"));
-        assertEquals(3, files.size());
-        assertEquals("Fathom_Q2_2026_10-Q.pdf", files.get(0).name());
+        assertEquals(2, files.size());
+        assertEquals("Used_Vehicle_Sales_Q3_2026.csv", files.get(0).name());
         assertTrue(catalog.files(USER, new FolderId("missing")).isEmpty());
     }
 
@@ -274,10 +274,32 @@ class FakeAdaptersTest {
     }
 
     @Test
-    void theFakeCatalogServesPlaceholderContentForListedFilesOnly() {
+    void theFakeCatalogServesTheRealDemoFileForListedFilesOnly() {
         FakeDocumentCatalog catalog = new FakeDocumentCatalog();
-        assertEquals("Demo content of Fathom_Q2_2026_10-Q.pdf\n",
-                new String(catalog.fetch(USER, "Fathom_Q2_2026_10-Q.pdf").orElseThrow()));
+        String sales = new String(catalog.fetch(USER, "Used_Vehicle_Sales_Q3_2026.csv").orElseThrow(),
+                java.nio.charset.StandardCharsets.UTF_8);
+        assertTrue(sales.startsWith("month,region,segment,units_sold,avg_retail_price_usd,"), sales);
+        assertEquals(61, sales.lines().count(), "a header and 3 months x 5 regions x 4 segments");
         assertTrue(catalog.fetch(USER, "not-in-the-library.pdf").isEmpty());
+    }
+
+    @Test
+    void everyLibraryFileHasContentAndEveryDemoFileIsInTheLibrary() throws java.io.IOException {
+        FakeDocumentCatalog catalog = new FakeDocumentCatalog();
+        java.util.Set<String> listed = new java.util.TreeSet<>();
+        for (Folder folder : catalog.folders(USER)) {
+            for (CatalogFile file : catalog.files(USER, folder.id())) {
+                listed.add(DemoData.directoryOf(folder) + "/" + file.name());
+                assertTrue(catalog.fetch(USER, file.name()).orElseThrow().length > 100, file.name() + " has real content");
+            }
+        }
+        java.nio.file.Path root = java.nio.file.Path.of("../data/onedrive");
+        java.util.Set<String> onDisk;
+        try (var files = java.nio.file.Files.walk(root)) {
+            onDisk = files.filter(java.nio.file.Files::isRegularFile)
+                    .map(f -> root.relativize(f).toString().replace('\\', '/'))
+                    .collect(java.util.stream.Collectors.toCollection(java.util.TreeSet::new));
+        }
+        assertEquals(onDisk, listed, "data/onedrive and DemoData's library must list the same files");
     }
 }

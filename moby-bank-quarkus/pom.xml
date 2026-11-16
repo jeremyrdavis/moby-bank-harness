@@ -147,6 +147,23 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!-- The demo OneDrive's files (fictional used-car data) live once, in ../data/onedrive; the fake
+                             document catalog serves them from the classpath. Only that folder is copied, never .. -->
+                        <id>copy-demo-data</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/demo-data/onedrive</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../data/onedrive</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -184,8 +201,8 @@
                 <version>3.12.0</version>
                 <configuration>
                     <outputDirectory>${project.basedir}/docs</outputDirectory>
-                    <doctitle>Moby Bank agent harness: Quarkus backend</doctitle>
-                    <windowtitle>Moby Bank agent harness</windowtitle>
+                    <doctitle>moby-cars agent harness: Quarkus backend</doctitle>
+                    <windowtitle>moby-cars agent harness</windowtitle>
                     <overview>${project.basedir}/src/main/javadoc/overview.html</overview>
                     <show>package</show>
                     <notimestamp>true</notimestamp>

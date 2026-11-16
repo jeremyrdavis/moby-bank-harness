@@ -42,7 +42,7 @@ class GraphModeTest {
 
     @Test
     void theDemoConversationsAreStillThere() {
-        given().get("/api/sessions").then().statusCode(200).body("title", hasItems("Fathom Industrial — Q2 2026 earnings"));
+        given().get("/api/sessions").then().statusCode(200).body("title", hasItems("Used cars — Q2 2026 quarterly report"));
     }
 
     @Test

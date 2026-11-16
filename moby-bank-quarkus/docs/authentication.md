@@ -15,8 +15,8 @@ only their own conversations, and (after a Microsoft sign-in) reads *their* OneD
 ## The sign-in page
 
 `login.html` (at the repository root, next to `index.html`) is public. Its form posts the email and password to
-`POST /auth/login`; **Sign in with Microsoft** goes to `GET /auth/microsoft` and is shown only when
-`GET /auth/options` says Microsoft is set up. Failures return to the page with an `error` code it words for the user.
+`POST /auth/login`. The page no longer shows **Sign in with Microsoft** (removed for the moby-cars demo); the backend
+still answers `GET /auth/microsoft` and `GET /auth/options` when `harness.auth.microsoft.enabled` is on. Failures return to the page with an `error` code it words for the user.
 
 Both ways end in the same session: a random 256-bit token in the `moby-login` cookie (HttpOnly, `SameSite=Lax`, and Secure over https). The database keeps only a SHA-256 hash of the token and when it expires
 (`harness.auth.session-ttl`, default 8 hours). **Sign out** (the button in the sidebar card) ends the session and forgets
@@ -31,8 +31,8 @@ the user's Microsoft tokens.
 
 | Email | Name | Password | Owns |
 |---|---|---|---|
-| `hermione.granger@mobybank.com` | Hermione Granger | `moby-demo` (`harness.auth.seed-password`) | the demo conversations and connected folders |
-| `rana.kapoor@mobybank.com` | Rana Kapoor | `moby-demo` | nothing, so she shows that users cannot see each other's work |
+| `hermione.granger@mobycars.com` | Hermione Granger | `moby-demo` (`harness.auth.seed-password`) | the demo conversations and connected folders |
+| `rana.kapoor@mobycars.com` | Rana Kapoor | `moby-demo` | nothing, so she shows that users cannot see each other's work |
 | `jeremy.davis@docker.com` | Jeremy Davis | `myawesomepassword` (`harness.auth.seed-developer-password`) | nothing yet: the developer's own account |
 
 The passwords are public in this repository: **change them or turn seeding off anywhere that is not a demo** (the app warns

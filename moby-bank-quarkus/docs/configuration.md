@@ -4,9 +4,9 @@ Every setting is a Quarkus property, read from `src/main/resources/application.p
 start-up without editing the file:
 
 ```bash
-./mvnw quarkus:dev -Dharness.sandbox.mode=sbx                       # a system property
-HARNESS_SANDBOX_MODE=sbx ./mvnw quarkus:dev                         # an environment variable
-java -Dharness.sandbox.mode=sbx -jar target/quarkus-app/quarkus-run.jar   # the packaged app
+./mvnw quarkus:dev -Dharness.sandbox.mode=fake                      # a system property
+HARNESS_SANDBOX_MODE=fake ./mvnw quarkus:dev                        # an environment variable
+java -Dharness.sandbox.mode=fake -jar target/quarkus-app/quarkus-run.jar  # the packaged app
 ```
 
 (An environment variable is the property name in upper case with dots and dashes replaced by underscores. Put `-D`
@@ -21,7 +21,7 @@ environment (`HARNESS_GRAPH_CLIENT_SECRET`, `HARNESS_GRAPH_ACCESS_TOKEN`).
 
 | Property | Default | Values | Meaning |
 |---|---|---|---|
-| `harness.sandbox.mode` | `fake` | `fake`, `sbx` | What runs the agent and moves sessions: the simulation, or Docker Sandboxes through the `sbx` CLI |
+| `harness.sandbox.mode` | `sbx` | `fake`, `sbx` | What runs the agent and moves sessions: the simulation, or Docker Sandboxes through the `sbx` CLI |
 | `harness.documents.mode` | `fake` | `fake`, `graph` | Where documents come from: the demo library, or OneDrive through Microsoft Graph |
 
 Any other value stops the app at startup with a message naming the property and the allowed values.
@@ -31,7 +31,7 @@ Any other value stops the app at startup with a message naming the property and 
 | Property | Default | Meaning |
 |---|---|---|
 | `harness.user.name` | `Hermione Granger` | The analyst's name in the sidebar when there is no stored account for the user (the demo user, with `harness.auth.mode=none` and no seeded users) |
-| `harness.user.role` | `Credit Research` | Their role, in the same case |
+| `harness.user.role` | `Used-Vehicle Analytics` | Their role, in the same case |
 | `harness.auth.mode` | `login` | `login`: every page and API call needs a signed-in user, and the sign-in page is login.html. `none`: everybody is the demo user, as before. The tests run with `none` (`%test`). See [authentication.md](authentication.md) |
 | `harness.auth.session-ttl` | `8h` | How long a sign-in lasts |
 | `harness.auth.seed-users` | `true` | Create the demo analysts (Hermione Granger, Rana Kapoor, and the developer account Jeremy Davis) at startup, each only if no account has its email yet |
@@ -109,7 +109,7 @@ Set in `application.properties`, these are standard Quarkus properties rather th
 
 | You want | Run |
 |---|---|
-| The demo, nothing installed | `./mvnw quarkus:dev` |
-| Real sandboxes, demo documents | `./mvnw quarkus:dev -Dharness.sandbox.mode=sbx` |
-| Fake sandboxes, your OneDrive | `HARNESS_GRAPH_ACCESS_TOKEN=… ./mvnw quarkus:dev -Dharness.documents.mode=graph` |
-| Both real | add both `-D` options and the settings above |
+| Real sandboxes, demo documents (the default) | `./mvnw quarkus:dev` |
+| The demo, nothing installed | `./mvnw quarkus:dev -Dharness.sandbox.mode=fake` |
+| Fake sandboxes, your OneDrive | `HARNESS_GRAPH_ACCESS_TOKEN=… ./mvnw quarkus:dev -Dharness.sandbox.mode=fake -Dharness.documents.mode=graph` |
+| Both real | `./mvnw quarkus:dev -Dharness.documents.mode=graph` and the settings above |

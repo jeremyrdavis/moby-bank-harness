@@ -1,6 +1,6 @@
 # moby-bank-quarkus
 
-Quarkus backend for the Moby Bank agent harness (implementation #1; a Python implementation follows). It serves the JSON API the `moby-bank-prototype/` UI uses, and also the htmx page `index.html` (repository root) at `/` with the HTML endpoints behind it, and drives an agent running in a Docker Sandbox, local or cloud. Run the prototype UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
+Quarkus backend for the moby-cars agent harness (implementation #1; a Python implementation follows). It serves the JSON API the `moby-bank-prototype/` UI uses, and also the htmx page `index.html` (repository root) at `/` with the HTML endpoints behind it, and drives an agent running in a Docker Sandbox, local or cloud. Run the prototype UI against it with `npm start` in `moby-bank-prototype/` (see that README). See `agent-os/specs/2026-09-30-1452-quarkus-mvp-backend/` for the spec.
 
 ## Documentation
 
@@ -22,18 +22,20 @@ guided code review), [architecture](docs/architecture.md), the [domain model](do
 ./mvnw test                 # unit and @QuarkusTest tests
 ```
 
-Open <http://localhost:8080/> for the htmx page (see [`docs/ui-fragments.md`](docs/ui-fragments.md)); it needs a database (Docker) and nothing else. You are sent to the sign-in page: use `hermione.granger@mobybank.com` or `rana.kapoor@mobybank.com` with the password `moby-demo`, `jeremy.davis@docker.com` with `myawesomepassword`, or **Sign in with Microsoft** once an Entra app is registered ([`docs/authentication.md`](docs/authentication.md)). After editing `index.html` or `login.html` in dev mode, run `./mvnw resources:copy-resources@copy-index-page` (or `@copy-login-page`) to refresh the served copy.
+Open <http://localhost:8080/> for the htmx page (see [`docs/ui-fragments.md`](docs/ui-fragments.md)); it needs a database (Docker) and nothing else. You are sent to the sign-in page: use `hermione.granger@mobycars.com` or `rana.kapoor@mobycars.com` with the password `moby-demo`, `jeremy.davis@docker.com` with `myawesomepassword`, or Microsoft sign-in, which the login page no longer offers but the backend still supports once an Entra app is registered ([`docs/authentication.md`](docs/authentication.md)). After editing `index.html` or `login.html` in dev mode, run `./mvnw resources:copy-resources@copy-index-page` (or `@copy-login-page`) to refresh the served copy.
 
 The API is described in `openapi.yaml` (written at build time; commit changes to it). Useful endpoints: `/api/sessions`, `/api/folders`, `/q/health`, `/q/openapi`, `/q/swagger-ui`. The `/events` stream per session is documented on that operation.
 
 ## Running against real Docker Sandboxes
 
-By default everything is simulated (`harness.sandbox.mode=fake`). To drive real sandboxes, install the
+Sandboxes are real by default (`harness.sandbox.mode=sbx`), independent of where documents come from. Install the
 [`sbx` CLI](https://docs.docker.com/ai/sandboxes/), sign in with `sbx login`, and start the app with:
 
 ```bash
-./mvnw quarkus:dev -Dharness.sandbox.mode=sbx
+./mvnw quarkus:dev
 ```
+
+To simulate the agent and sandboxes instead (nothing installed), add `-Dharness.sandbox.mode=fake`.
 
 - **Local and cloud** use the same commands; cloud adds the global `--cloud` flag (`sbx --cloud exec ...`).
   The cloud needs sbx 0.45.0 or newer, a subscription and its own agent credential
