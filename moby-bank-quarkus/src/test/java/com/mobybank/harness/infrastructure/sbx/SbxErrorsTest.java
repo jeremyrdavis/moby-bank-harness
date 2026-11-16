@@ -19,6 +19,7 @@ class SbxErrorsTest {
             {"error: sandbox 'no-such-sandbox' not found\n  try: sbx --cloud ls", "no longer exists"},
             {"Invalid API key · Fix external API key", "credential was rejected"},
             {"API Error: 401 authentication_error", "credential was rejected"},
+            {"Failed to authenticate. API Error: 401 OAuth access token is invalid.", "credential was rejected"},
             {"Error: not authenticated; run sbx secret set anthropic", "has no credential"},
             {"Error: sign in to Docker first", "Not signed in"},
             {"error: platform mismatch: source linux/arm64, destination linux/amd64", "different platforms"},
