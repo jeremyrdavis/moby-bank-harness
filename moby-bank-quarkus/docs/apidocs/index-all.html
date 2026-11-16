@@ -247,9 +247,9 @@ too long.</div>
 <dd>
 <div class="block">A sandbox's name without the agent prefix <code>sbx --cloud ls</code> adds (<code>claude/name</code>).</div>
 </dd>
-<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#baseName(com.mobybank.harness.domain.SessionId)" class="member-name-link">baseName(SessionId)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#baseName(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)" class="member-name-link">baseName(SessionId, Location)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
 <dd>
-<div class="block">The name prefix shared by every generation of a session's sandbox.</div>
+<div class="block">The name prefix of a session's sandboxes at a location: <code>moby-local-&lt;12 hex&gt;</code> or <code>moby-cloud-&lt;12 hex&gt;</code>.</div>
 </dd>
 <dt><a href="com/mobybank/harness/infrastructure/graph/GraphSettings.html#baseUrl()" class="member-name-link">baseUrl()</a> - Method in record class com.mobybank.harness.infrastructure.graph.<a href="com/mobybank/harness/infrastructure/graph/GraphSettings.html" title="class in com.mobybank.harness.infrastructure.graph">GraphSettings</a></dt>
 <dd>
@@ -2230,7 +2230,7 @@ new sandbox from it at the destination.</div>
 </dd>
 <dt><a href="com/mobybank/harness/application/Dtos.html#name(java.lang.Enum)" class="member-name-link">name(Enum)</a> - Static method in class com.mobybank.harness.application.<a href="com/mobybank/harness/application/Dtos.html" title="class in com.mobybank.harness.application">Dtos</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor(SessionId, int)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#nameFor(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,int)" class="member-name-link">nameFor(SessionId, Location, int)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/mobybank/harness/domain/SessionTitle.html#NEW_CONVERSATION" class="member-name-link">NEW_CONVERSATION</a> - Static variable in record class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/SessionTitle.html" title="class in com.mobybank.harness.domain">SessionTitle</a></dt>
 <dd>&nbsp;</dd>
@@ -2453,6 +2453,10 @@ new sandbox from it at the destination.</div>
 <dt><a href="com/mobybank/harness/domain/Session.html#postUserMessage(java.lang.String,java.util.List,java.time.Instant)" class="member-name-link">postUserMessage(String, List, Instant)</a> - Method in class com.mobybank.harness.domain.<a href="com/mobybank/harness/domain/Session.html" title="class in com.mobybank.harness.domain">Session</a></dt>
 <dd>
 <div class="block">Adds the analyst's message and marks the session as running.</div>
+</dd>
+<dt><a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html#prefixOf(com.mobybank.harness.domain.Location)" class="member-name-link">prefixOf(Location)</a> - Static method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SandboxRegistry.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry</a></dt>
+<dd>
+<div class="block"><code>moby-local-</code> or <code>moby-cloud-</code>: where a sandbox runs, as the start of its name.</div>
 </dd>
 <dt><a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html#preflight()" class="member-name-link">preflight()</a> - Method in class com.mobybank.harness.infrastructure.sbx.<a href="com/mobybank/harness/infrastructure/sbx/SbxAdapters.html" title="class in com.mobybank.harness.infrastructure.sbx">SbxAdapters</a></dt>
 <dd>

@@ -190,7 +190,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
     }
 
     private Handle createSandbox(SessionId session, Location location, int generation) {
-        String name = SandboxRegistry.nameFor(session, generation);
+        String name = SandboxRegistry.nameFor(session, location, generation);
         cli.create(location, name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
         Handle created = new Handle(location, name, generation);
         registry.set(session, created);

@@ -74,8 +74,9 @@ loadScripts(document, 'script');</script>
 <li><a href="#bareName(java.lang.String)" tabindex="0">bareName(String)</a></li>
 <li><a href="#discover(com.mobybank.harness.infrastructure.sbx.SbxCli,com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)" tabindex="0">discover(SbxCli, SessionId, Location)</a></li>
 <li><a href="#forgetAgentSession(com.mobybank.harness.domain.SessionId)" tabindex="0">forgetAgentSession(SessionId)</a></li>
-<li><a href="#baseName(com.mobybank.harness.domain.SessionId)" tabindex="0">baseName(SessionId)</a></li>
-<li><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" tabindex="0">nameFor(SessionId, int)</a></li>
+<li><a href="#baseName(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)" tabindex="0">baseName(SessionId, Location)</a></li>
+<li><a href="#nameFor(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,int)" tabindex="0">nameFor(SessionId, Location, int)</a></li>
+<li><a href="#prefixOf(com.mobybank.harness.domain.Location)" tabindex="0">prefixOf(Location)</a></li>
 <li><a href="#generationOf(java.lang.String,com.mobybank.harness.domain.SessionId)" tabindex="0">generationOf(String, SessionId)</a></li>
 </ol>
 </li>
@@ -96,8 +97,10 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">SandboxRegistry</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Remembers which sandbox currently backs each session, and the agent's own conversation id inside it so the next
-turn can resume. Sandbox names follow <code>moby-bank-&lt;session&gt;-g&lt;generation&gt;</code>; each move creates the next
-generation. The records are kept in a <a href="SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx"><code>SandboxRecordStore</code></a> (PostgreSQL in the application), so they survive a
+turn can resume. Sandbox names follow <code>moby-local-&lt;session&gt;-g&lt;generation&gt;</code> or
+<code>moby-cloud-&lt;session&gt;-g&lt;generation&gt;</code>, after where the sandbox runs; each move creates the next generation at the
+other location. Names from before that convention (<code>moby-bank-&lt;session&gt;-g&lt;generation&gt;</code>) are still recognised,
+so their sandboxes are found again. The records are kept in a <a href="SandboxRecordStore.html" title="interface in com.mobybank.harness.infrastructure.sbx"><code>SandboxRecordStore</code></a> (PostgreSQL in the application), so they survive a
 restart; when a record is missing the adapters still find a session's sandbox again by listing sandboxes.</div>
 </div>
 </section>
@@ -153,9 +156,10 @@ restart; when a record is missing the adapters still find a session's sandbox ag
 <div class="block">A sandbox's name without the agent prefix <code>sbx --cloud ls</code> adds (<code>claude/name</code>).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#baseName(com.mobybank.harness.domain.SessionId)" class="member-name-link">baseName</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#baseName(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)" class="member-name-link">baseName</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">The name prefix shared by every generation of a session's sandbox.</div>
+<div class="block">The name prefix of a session's sandboxes at a location: <code>moby-local-&lt;12 hex&gt;</code> or <code>moby-cloud-&lt;12 hex&gt;</code>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#current(com.mobybank.harness.domain.SessionId)" class="member-name-link">current</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</code></div>
@@ -195,17 +199,23 @@ into it (a sandbox the turn creates itself gets them as part of the turn).</div>
 cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#nameFor(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,int)" class="member-name-link">nameFor</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
  int&nbsp;generation)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>(package private) static <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#prefixOf(com.mobybank.harness.domain.Location)" class="member-name-link">prefixOf</a><wbr>(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block"><code>moby-local-</code> or <code>moby-cloud-</code>: where a sandbox runs, as the start of its name.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
- <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(com.mobybank.harness.domain.SessionId,com.mobybank.harness.infrastructure.sbx.SandboxRegistry.Handle)" class="member-name-link">set</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="SandboxRegistry.Handle.html" title="class in com.mobybank.harness.infrastructure.sbx">SandboxRegistry.Handle</a>&nbsp;handle)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAgentSession(com.mobybank.harness.domain.SessionId,java.lang.String)" class="member-name-link">setAgentSession</a><wbr>(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;agentSessionId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -336,20 +346,31 @@ since (for example after the newer sandbox was deleted).</div>
 </section>
 </li>
 <li>
-<section class="detail" id="baseName(com.mobybank.harness.domain.SessionId)">
+<section class="detail" id="baseName(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location)">
 <h3>baseName</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">baseName</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
-<div class="block">The name prefix shared by every generation of a session's sandbox.</div>
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">baseName</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</span></div>
+<div class="block">The name prefix of a session's sandboxes at a location: <code>moby-local-&lt;12 hex&gt;</code> or <code>moby-cloud-&lt;12 hex&gt;</code>.</div>
 </div>
 </section>
 </li>
 <li>
-<section class="detail" id="nameFor(com.mobybank.harness.domain.SessionId,int)">
+<section class="detail" id="nameFor(com.mobybank.harness.domain.SessionId,com.mobybank.harness.domain.Location,int)">
 <h3>nameFor</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">nameFor</span><wbr><span class="parameters">(<a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session,
+ <a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location,
  int&nbsp;generation)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="prefixOf(com.mobybank.harness.domain.Location)">
+<h3>prefixOf</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">prefixOf</span><wbr><span class="parameters">(<a href="../../domain/Location.html" title="enum class in com.mobybank.harness.domain">Location</a>&nbsp;location)</span></div>
+<div class="block"><code>moby-local-</code> or <code>moby-cloud-</code>: where a sandbox runs, as the start of its name.</div>
 </div>
 </section>
 </li>
@@ -360,7 +381,9 @@ since (for example after the newer sandbox was deleted).</div>
 <div class="member-signature"><span class="modifiers">static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&gt;</span>&nbsp;<span class="element-name">generationOf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listedName,
  <a href="../../domain/SessionId.html" title="class in com.mobybank.harness.domain">SessionId</a>&nbsp;session)</span></div>
 <div class="block">Reads the generation out of a name listed by <code>sbx ls</code>, which may carry an <code>agent/</code> prefix and, for
-cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>.</div>
+cloud sandboxes, a suffix the service added after <code>-g&lt;generation&gt;</code>. Any of the session's names counts
+(<code>moby-local-</code>, <code>moby-cloud-</code> or the older <code>moby-bank-</code>): a move to the cloud carries the name it
+was given, and the generation alone says which sandbox is newest.</div>
 </div>
 </section>
 </li>

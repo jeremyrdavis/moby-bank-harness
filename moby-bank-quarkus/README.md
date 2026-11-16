@@ -40,7 +40,8 @@ To simulate the agent and sandboxes instead (nothing installed), add `-Dharness.
 - **Local and cloud** use the same commands; cloud adds the global `--cloud` flag (`sbx --cloud exec ...`).
   The cloud needs sbx 0.45.0 or newer, a subscription and its own agent credential
   (`sbx --cloud secret set anthropic --oauth`). `/q/health/ready` shows whether the host is set up.
-- **One sandbox per session**, created on its first turn and named `moby-bank-<session>-g<generation>`. Attached
+- **One sandbox per session**, created on its first turn and named `moby-local-<session>-g<generation>` or
+  `moby-cloud-<session>-g<generation>` after where it runs (older `moby-bank-…` names are still recognised). Attached
   files are copied into `<workspace-dir>/files` with `sbx cp`, then the agent runs headless:
   `sbx exec <sandbox> claude -p <prompt> --output-format stream-json --verbose`. Its tool calls appear as steps,
   and its final answer becomes the reply (the first Markdown table in it becomes the table).

@@ -46,15 +46,15 @@ class SbxSandboxTransferTest {
 
     @Test
     void movesALocalSandboxToTheCloudAndFindsTheNewOne() {
-        registry.set(SESSION, new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g0", 0));
-        runner.on(has("--cloud", "ls"), Response.ok("claude/other-thing", "claude/moby-bank-0a1b2c3d4e5f-g1-k3j2x"));
+        registry.set(SESSION, new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g0", 0));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/other-thing", "claude/moby-cloud-0a1b2c3d4e5f-g1-k3j2x"));
 
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertEquals(List.of(
-                "sbx move moby-bank-0a1b2c3d4e5f-g0 --to cloud --name moby-bank-0a1b2c3d4e5f-g1 --force --ttl 8h --on-timeout stop",
+                "sbx move moby-local-0a1b2c3d4e5f-g0 --to cloud --name moby-cloud-0a1b2c3d4e5f-g1 --force --ttl 8h --on-timeout stop",
                 "sbx --cloud ls -q"), runner.lines());
-        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1-k3j2x", 1)),
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1-k3j2x", 1)),
                 registry.current(SESSION));
         assertEquals(List.of(MoveStage.PACKAGING, MoveStage.TRANSFERRING),
                 progress.stream().map(MoveProgress::stage).toList());
@@ -64,32 +64,32 @@ class SbxSandboxTransferTest {
 
     @Test
     void movesACloudSandboxBackToLocalUsingItsListedName() {
-        registry.set(SESSION, new Handle(Location.CLOUD, "claude/moby-bank-0a1b2c3d4e5f-g1-k3j2x", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "claude/moby-cloud-0a1b2c3d4e5f-g1-k3j2x", 1));
         runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
-                Response.ok("moby-bank-0a1b2c3d4e5f-g2"));
+                Response.ok("moby-local-0a1b2c3d4e5f-g2"));
 
         transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add);
 
         assertEquals(List.of(
-                "sbx move claude/moby-bank-0a1b2c3d4e5f-g1-k3j2x --to local --name moby-bank-0a1b2c3d4e5f-g2 --force",
+                "sbx move claude/moby-cloud-0a1b2c3d4e5f-g1-k3j2x --to local --name moby-local-0a1b2c3d4e5f-g2 --force",
                 "sbx ls -q"), runner.lines());
-        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g2", 2)), registry.current(SESSION));
+        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g2", 2)), registry.current(SESSION));
     }
 
     @Test
     void aSessionThatNeverStartedASandboxGetsANewOneAtTheDestination() {
-        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g0-k3j2x"));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g0-k3j2x"));
 
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertEquals(List.of(
                 "sbx ls -q",
-                "sbx --cloud create --name moby-bank-0a1b2c3d4e5f-g0 --ttl 8h --on-timeout stop claude",
+                "sbx --cloud create --name moby-cloud-0a1b2c3d4e5f-g0 --ttl 8h --on-timeout stop claude",
                 "sbx --cloud ls -q"), runner.lines(), "nothing to move, so one is created where the session now runs");
         assertEquals(List.of(MoveStage.PACKAGING, MoveStage.TRANSFERRING),
                 progress.stream().map(MoveProgress::stage).toList());
         assertTrue(progress.get(0).detail().startsWith("No sandbox to package yet"), progress.get(0).detail());
-        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g0-k3j2x", 0)),
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g0-k3j2x", 0)),
                 registry.current(SESSION));
         assertTrue(registry.expectsFiles(SESSION), "the next turn copies the shared files in");
     }
@@ -106,35 +106,35 @@ class SbxSandboxTransferTest {
     @Test
     void theSourceIsFoundAfterARestartFromTheListing() {
         runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
-                Response.ok("moby-bank-0a1b2c3d4e5f-g0", "moby-bank-0a1b2c3d4e5f-g3", "moby-bank-ffffffffffff-g7"));
-        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g4-zz"));
+                Response.ok("moby-local-0a1b2c3d4e5f-g0", "moby-bank-0a1b2c3d4e5f-g3", "moby-local-ffffffffffff-g7"));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g4-zz"));
 
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
         assertTrue(runner.lines().get(1).startsWith("sbx move moby-bank-0a1b2c3d4e5f-g3 --to cloud --name "
-                + "moby-bank-0a1b2c3d4e5f-g4 "), runner.lines().get(1));
+                + "moby-cloud-0a1b2c3d4e5f-g4 "), runner.lines().get(1));
         assertEquals(4, registry.current(SESSION).orElseThrow().generation());
     }
 
     @Test
     void otherSessionsAndOlderGenerationsAtTheDestinationAreNotMistakenForTheNewSandbox() {
-        registry.set(SESSION, new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g1", 1));
-        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g1-old", "claude/moby-bank-ffffffffffff-g2-x"));
+        registry.set(SESSION, new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g1", 1));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g1-old", "claude/moby-cloud-ffffffffffff-g2-x"));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add));
 
-        assertTrue(e.getMessage().contains("moby-bank-0a1b2c3d4e5f-g2"), e.getMessage());
-        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g1", 1)), registry.current(SESSION),
+        assertTrue(e.getMessage().contains("moby-cloud-0a1b2c3d4e5f-g2"), e.getMessage());
+        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g1", 1)), registry.current(SESSION),
                 "the session stays registered where it was");
     }
 
     @Test
     void aFailedMoveCommandFailsTheTransferAndKeepsTheSessionWhereItWas() {
-        Handle before = new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g0", 0);
+        Handle before = new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g0", 0);
         registry.set(SESSION, before);
         runner.on(has("move"), Response.fail(1, "Error: sign in to Docker first"));
-        runner.on(has("ls"), Response.ok("moby-bank-0a1b2c3d4e5f-g0"));
+        runner.on(has("ls"), Response.ok("moby-local-0a1b2c3d4e5f-g0"));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add));
@@ -146,23 +146,23 @@ class SbxSandboxTransferTest {
 
     @Test
     void movingThereAndBackAdvancesTheGenerationEachTime() {
-        registry.set(SESSION, new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g0", 0));
-        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g1-aa"));
+        registry.set(SESSION, new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g0", 0));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g1-aa"));
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
-        runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok("moby-bank-0a1b2c3d4e5f-g2"));
+        runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok("moby-local-0a1b2c3d4e5f-g2"));
         transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add);
 
-        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-bank-0a1b2c3d4e5f-g2", 2)), registry.current(SESSION));
-        assertTrue(runner.linesWith("move").get(1).contains(" moby-bank-0a1b2c3d4e5f-g1-aa "),
+        assertEquals(Optional.of(new Handle(Location.LOCAL, "moby-local-0a1b2c3d4e5f-g2", 2)), registry.current(SESSION));
+        assertTrue(runner.linesWith("move").get(1).contains(" moby-cloud-0a1b2c3d4e5f-g1-aa "),
                 "the agent prefix is dropped: " + runner.linesWith("move").get(1));
     }
 
     @Test
     void aSourceThatIsGoneIsNotAFailureTheSessionStartsFreshAtTheDestination() {
-        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1));
         registry.setAgentSession(SESSION, "agent-1");
-        runner.on(has("move"), Response.fail(1, "error: sandbox 'moby-bank-0a1b2c3d4e5f-g1' not found"));
+        runner.on(has("move"), Response.fail(1, "error: sandbox 'moby-cloud-0a1b2c3d4e5f-g1' not found"));
         runner.on(has("--cloud", "ls"), Response.ok("claude/something-else"));
 
         transfer.move(request(Location.CLOUD, Location.LOCAL), progress::add);
@@ -172,7 +172,7 @@ class SbxSandboxTransferTest {
         assertTrue(progress.get(1).detail().contains("no longer there"), progress.get(1).detail());
         assertTrue(progress.get(1).detail().contains("conversation history"), progress.get(1).detail());
         assertTrue(registry.agentSession(SESSION).isEmpty(), "the agent's conversation was in the sandbox that is gone");
-        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1)), registry.current(SESSION),
+        assertEquals(Optional.of(new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1)), registry.current(SESSION),
                 "the old generation is remembered so the next sandbox gets the next number");
         assertTrue(runner.linesWith("ls").stream().noneMatch(line -> !line.contains("--cloud")),
                 "the destination is not searched");
@@ -181,10 +181,10 @@ class SbxSandboxTransferTest {
     @Test
     void anOlderSourceLeftByAnEarlierMoveIsNotMovedAgainAfterTheNewerSandboxWasDeleted() {
         // the session is local again after cloud g1 vanished, but local g0 (the source of the first move) still exists
-        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1));
         runner.on(command -> command.contains("ls") && !command.contains("--cloud"),
-                Response.ok("moby-bank-0a1b2c3d4e5f-g0"));
-        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g2-zz"));
+                Response.ok("moby-local-0a1b2c3d4e5f-g0"));
+        runner.on(has("--cloud", "ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g2-zz"));
 
         transfer.move(request(Location.LOCAL, Location.CLOUD), progress::add);
 
@@ -194,7 +194,7 @@ class SbxSandboxTransferTest {
 
     @Test
     void ifTheListingFailsTooTheMoveFailureIsReported() {
-        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1));
         runner.on(has("move"), Response.fail(1, "error: could not reach the service"));
         runner.on(has("ls"), Response.fail(1, "error: not signed in"));
 

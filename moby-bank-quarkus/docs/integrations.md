@@ -74,20 +74,25 @@ real host (sbx 0.47/0.48); the results are in
 
 ### Sandbox names and generations
 
-A session gets one sandbox, created on its first turn, named:
+A session gets one sandbox, created on its first turn and named for where it runs:
 
 ```
-moby-bank-<first 12 hex digits of the session id>-g<generation>        e.g. moby-bank-0a1b2c3d4e5f-g0
+moby-local-<first 12 hex digits of the session id>-g<generation>       e.g. moby-local-0a1b2c3d4e5f-g0
+moby-cloud-<first 12 hex digits of the session id>-g<generation>       e.g. moby-cloud-0a1b2c3d4e5f-g1
 ```
 
-Every move creates the **next generation** (`…-g1`, `…-g2`), because `sbx move` makes a new sandbox at the destination.
-The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/moby-bank-0a1b2c3d4e5f-g1` (an
+Every move creates the **next generation** (`…-g1`, `…-g2`) at the other location, because `sbx move` makes a new
+sandbox at the destination: a local `moby-local-…-g0` moved to the cloud becomes `moby-cloud-…-g1`, and moving it back
+gives `moby-local-…-g2`. Sandboxes named before this convention (`moby-bank-<session>-g<generation>`) are still
+recognised, so a session created earlier finds its sandbox again; its next generation gets the new name.
+The service may decorate the name: `sbx --cloud ls -q` lists a cloud sandbox as `claude/moby-cloud-0a1b2c3d4e5f-g1` (an
 agent prefix; a move destination kept exactly the requested name with no suffix on a real host, but the adapter still
 accepts one). `SandboxRegistry.generationOf` reads the generation out of any of these forms. Later commands are given
 the **bare name** (the agent prefix is dropped), the form that was run against a real host.
 
 The registry is in memory. After a restart it is empty, so both adapters **rediscover** a session's sandbox by
-listing names at the right location and taking the highest generation that matches. Sandboxes therefore survive an
+listing names at the right location and taking the highest generation that matches (the prefix does not decide it:
+the generation does). Sandboxes therefore survive an
 app restart even though the app's state does not.
 
 ### A turn (`SbxSandboxAgent.runTurn`)

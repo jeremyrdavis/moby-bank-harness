@@ -17,7 +17,8 @@ import java.util.function.Consumer;
  * sandbox from it at the destination. The conversation files, the agent's own history and everything it installed
  * travel with it, so the next turn can carry on where the last one stopped.
  *
- * <p>Each move asks for the next generation's name ({@code moby-bank-<session>-g<n>}); the service may add a suffix,
+ * <p>Each move asks for the next generation's name at the destination ({@code moby-cloud-<session>-g<n>} or
+ * {@code moby-local-<session>-g<n>}); the service may add a suffix,
  * so the new sandbox is found afterwards by listing the destination. A session that has not started a sandbox yet has
  * nothing to transfer: it simply starts at the destination on its next turn.
  */
@@ -45,7 +46,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         }
         Handle from = source.get();
         int generation = from.generation() + 1;
-        String requested = SandboxRegistry.nameFor(session, generation);
+        String requested = SandboxRegistry.nameFor(session, request.to(), generation);
         String summary = request.history().size() + " messages · " + request.files().size() + " files";
 
         onProgress.accept(new MoveProgress(MoveStage.PACKAGING, "Packaging the sandbox · " + summary));
@@ -81,7 +82,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
     private void startAtDestination(MoveRequest request, Consumer<MoveProgress> onProgress) {
         SessionId session = request.sessionId();
         int generation = registry.current(session).map(handle -> handle.generation() + 1).orElse(0);
-        String name = SandboxRegistry.nameFor(session, generation);
+        String name = SandboxRegistry.nameFor(session, request.to(), generation);
         Log.debugf("Session %s has no sandbox to move; creating %s at %s", session.value(), name, request.to());
         onProgress.accept(new MoveProgress(MoveStage.PACKAGING,
                 "No sandbox to package yet · creating a new one at the destination"));
@@ -126,7 +127,7 @@ public final class SbxSandboxTransfer implements SandboxTransfer {
         if (found == null) {
             Log.debugf("Generation %d of session %s is not listed at %s", generation, session.value(), destination);
             throw new SandboxFailureException("The move finished but the new sandbox "
-                    + SandboxRegistry.nameFor(session, generation) + " is not listed at the "
+                    + SandboxRegistry.nameFor(session, destination, generation) + " is not listed at the "
                     + destination.name().toLowerCase() + " destination");
         }
         return found;
