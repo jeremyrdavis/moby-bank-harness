@@ -10,24 +10,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `moby-bank-prototype/` | The chat UI: a Claude Design "dc" component served by a tiny Node server. Front end only; it uses the JSON API (as the Python backend's UI will). |
 | `moby-bank-quarkus/` | Backend implementation #1 (Java/Quarkus). A Python implementation is planned and must match the same API. |
 | `agent-os/` | Product docs (`product/`: mission, roadmap, tech stack) and the spec for the Quarkus backend (`specs/`). |
+| `data/` | Fictional used-car data: the demo OneDrive's files (`onedrive/`) and the scripts that generate and analyse them. |
 | `.claude/` | Claude tooling: agent-os commands and the Python, Quarkus and DDD skills used to build the backends. |
 
 Commands run from inside the module folder. Paths below are relative to it unless they start with a module name.
 
 ## What this is
 
-A demo for engineering/platform teams of a custom agent harness: a chat UI for a fictional bank credit analyst, backed by an agent that runs in a Docker Sandbox, **locally or in the cloud**, where a session can move between the two in either direction. The agent, the sandboxes and OneDrive are simulated by default so everything runs with nothing installed; real ones are switched on by config. See `agent-os/product/` for the goals and `agent-os/specs/` for the backend spec.
+A demo for engineering/platform teams of a custom agent harness: a chat UI for a fictional used-vehicle analyst at moby-cars (re-skinned from the original Moby Bank credit-analyst demo for a Cox Automotive meeting; see `agent-os/specs/2026-11-16-1407-moby-cars-reskin/`), backed by an agent that runs in a Docker Sandbox, **locally or in the cloud**, where a session can move between the two in either direction. The sandboxes and OneDrive are two independent switches, `harness.sandbox.mode` (`fake`|`sbx`) and `harness.documents.mode` (`fake`|`graph`); `application.properties` defaults to real sandboxes with the built-in demo documents, and tests run both fake. Pass `-Dharness.sandbox.mode=fake` to `quarkus:dev` to simulate the sandbox too. The demo OneDrive's files have real (fictional) contents in `data/onedrive/` at the repo root, copied onto the classpath by the `copy-demo-data` execution in the pom, so a real agent can build a genuine Q3 report with no OneDrive; `data/README.md` describes them and its scripts regenerate the data and print the figures the seeded conversations quote. See `agent-os/product/` for the goals and `agent-os/specs/` for the backend spec.
 
 ## Commands
 
 ```bash
 # Backend (Java 25, Maven wrapper; PostgreSQL via Quarkus Dev Services, so Docker must be running).
-# The page needs a sign-in: hermione.granger@mobybank.com or rana.kapoor@mobybank.com (password moby-demo), or the
+# The page needs a sign-in: hermione.granger@mobycars.com or rana.kapoor@mobycars.com (password moby-demo), or the
 # developer account jeremy.davis@docker.com (password myawesomepassword); -Dharness.auth.mode=none skips it, and the tests run that way
 cd moby-bank-quarkus
-./mvnw quarkus:dev                      # http://localhost:8080 (the htmx page), Dev UI at /q/dev
+./mvnw quarkus:dev                      # http://localhost:8080 (the htmx page), Dev UI at /q/dev; real sandboxes (needs sbx), demo documents
+./mvnw quarkus:dev -Dharness.sandbox.mode=fake   # same, with the sandbox simulated too (nothing installed)
 ./mvnw resources:copy-resources@copy-index-page   # after editing ../index.html in dev mode
-./mvnw test                             # ~320 tests
+./mvnw test                             # ~500 tests
 ./mvnw test -Dtest=SessionTest          # one class (or -Dtest='SessionTest#methodName')
 
 # UI (Node 22; nothing to install)
@@ -57,13 +59,21 @@ Packages under `com.mobybank.harness` follow the `ddd-foundations` skill. Depend
 ### Things that aren't obvious
 
 - **`openapi.yaml` is generated at build time and committed.** It is the contract the Python backend must match, so commit changes to it when an endpoint or DTO changes. `OpenApiContractTest` guards the endpoint list and allowed values. The SSE event payloads are described in the `/events` operation's description.
+- **There are no database migrations.** Hibernate manages the schema: `update` in dev and prod (never drops tables), `drop-and-create` under `%test`. `update` adds tables and columns but never renames or drops them, so a renamed JPA field leaves the old column behind in an existing database. See `docs/persistence.md`.
+- **Auth is on by default** (`harness.auth.mode=login`; tests force `none`). Sessions are a random token in the `moby-login` cookie, stored as a SHA-256 hash; every conversation and connected-folders record is scoped to its owner, and another user's session is a 404, not a 403. The seeded demo passwords are public, so a non-demo deployment must turn off `harness.auth.seed-users` or change them. See `docs/authentication.md`.
+- **Real `sbx` behaviour is recorded in `moby-bank-quarkus/docs/LEARNINGS.md`** (credentials are separate for local and cloud sandboxes, cloud→local moves can take 5–17 minutes, a cloud sandbox can vanish and is rebuilt, the agent's conversation does not travel in a move so history is replayed). Read it before changing `sbx/` adapters or move timeouts; the fake-runner tests can't catch these.
 - **Quarkus validates every bean's injection points at startup**, including unused ones, so a new port needs an implementation (or a producer) before the app boots.
 - **Ports with more than one implementation are chosen by producers in `Adapters`**, and the implementations are deliberately *not* CDI beans (they'd be ambiguous). The fakes and the `sbx`/`graph` adapters are plain classes built by the producers.
 - **`sbx` assumptions.** The adapters issue exactly the commands in `SbxCli` (`create`, `exec`, `cp`, `ls -q`, `move --to … --force`; `--cloud` for the cloud). The automated tests assert those argument lists through a fake `CommandRunner`. They cannot prove the real CLI accepts them, nor the agent's headless flags or stream format, so `moby-bank-quarkus/README.md` lists what to check on a host with `sbx`. `sbx` isn't installed in this sandbox.
-- **Sandbox names** are `moby-bank-<12 hex of session id>-g<generation>`; every move creates the next generation, and a session's sandbox is found again after a restart by listing names. A cloud sandbox may be listed as `agent/name` with a suffix; the registry accepts both.
+- **Sandbox names** are `moby-local-<12 hex of session id>-g<generation>` or `moby-cloud-…` after where the sandbox runs (`SandboxRegistry.nameFor`); every move creates the next generation at the other location. A session's sandbox is found again after a restart by listing names, and older `moby-bank-…` names are still recognised there (`generationOf`). The cloud probe sandbox is `moby-cloud-probe-<8 hex>`. A cloud sandbox may be listed as `agent/name` with a suffix; the registry accepts both.
 - **Graph token hygiene:** the bearer token goes only to the configured Graph host (a paging link to another host is refused), and downloads use the pre-authenticated URL without it.
 - **Tests that need a server** use embedded stand-ins: `FakeGraphServer` (Graph, the token endpoint, downloads) and `FakeRunner` (for `sbx`). Slow fakes (`SlowFakesProfile`) make a session observably busy for the 409 tests.
 - Reading the skills: `ddd-foundations`, `ddd-value-objects`, `ddd-aggregates` and `ddd-services` in `.claude/skills/` govern new domain and application code. Their companion skills (`ddd-repositories`, `quarkus-rest`, …) are not installed. The `quarkus-ddd` layout is deliberately **not** used (it conflicts with `ddd-foundations`).
+
+## Specs and sandbox setup
+
+- `agent-os/specs/<date>-<time>-<name>/` holds one folder per feature (plan, shape, and for the cloud work a `verification.md` of commands run on a real host). Add a new folder there when shaping a feature with the `agent-os:*` skills; `agent-os/standards/index.yml` is the standards index they inject.
+- `SANDBOX-KIT.md` (repo root) is the host-side recipe for a Docker Sandbox kit with Java, Maven, the Quarkus CLI and JBang; it explains where `~/tools` and `~/.jbang` come from.
 
 ## The htmx page (`index.html`)
 

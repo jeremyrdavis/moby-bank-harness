@@ -9,8 +9,10 @@ import java.util.Optional;
 
 /**
  * Remembers which sandbox currently backs each session, and the agent's own conversation id inside it so the next
- * turn can resume. Sandbox names follow {@code moby-bank-<session>-g<generation>}; each move creates the next
- * generation. The records are kept in a {@link SandboxRecordStore} (PostgreSQL in the application), so they survive a
+ * turn can resume. Sandbox names follow {@code moby-local-<session>-g<generation>} or
+ * {@code moby-cloud-<session>-g<generation>}, after where the sandbox runs; each move creates the next generation at the
+ * other location. Names from before that convention ({@code moby-bank-<session>-g<generation>}) are still recognised,
+ * so their sandboxes are found again. The records are kept in a {@link SandboxRecordStore} (PostgreSQL in the application), so they survive a
  * restart; when a record is missing the adapters still find a session's sandbox again by listing sandboxes.
  */
 @ApplicationScoped
@@ -19,6 +21,9 @@ public class SandboxRegistry {
     /** The sandbox a session runs in now. {@code name} is exactly as {@code sbx ls} lists it. */
     public record Handle(Location location, String name, int generation) {
     }
+
+    /** The prefix every sandbox had before names said where they run; such sandboxes are still found. */
+    private static final String LEGACY_PREFIX = "moby-bank-";
 
     private final SandboxRecordStore store;
 
@@ -110,26 +115,45 @@ public class SandboxRegistry {
         }
     }
 
-    /** The name prefix shared by every generation of a session's sandbox. */
-    static String baseName(SessionId session) {
-        return "moby-bank-" + session.value().toString().replace("-", "").substring(0, 12);
+    /** The name prefix of a session's sandboxes at a location: {@code moby-local-<12 hex>} or {@code moby-cloud-<12 hex>}. */
+    static String baseName(SessionId session, Location location) {
+        return prefixOf(location) + sessionPart(session);
     }
 
-    static String nameFor(SessionId session, int generation) {
-        return baseName(session) + "-g" + generation;
+    static String nameFor(SessionId session, Location location, int generation) {
+        return baseName(session, location) + "-g" + generation;
+    }
+
+    /** {@code moby-local-} or {@code moby-cloud-}: where a sandbox runs, as the start of its name. */
+    static String prefixOf(Location location) {
+        return switch (location) {
+            case LOCAL -> "moby-local-";
+            case CLOUD -> "moby-cloud-";
+        };
+    }
+
+    private static String sessionPart(SessionId session) {
+        return session.value().toString().replace("-", "").substring(0, 12);
     }
 
     /**
      * Reads the generation out of a name listed by {@code sbx ls}, which may carry an {@code agent/} prefix and, for
-     * cloud sandboxes, a suffix the service added after {@code -g<generation>}.
+     * cloud sandboxes, a suffix the service added after {@code -g<generation>}. Any of the session's names counts
+     * ({@code moby-local-}, {@code moby-cloud-} or the older {@code moby-bank-}): a move to the cloud carries the name it
+     * was given, and the generation alone says which sandbox is newest.
      */
     static Optional<Integer> generationOf(String listedName, SessionId session) {
         String name = bareName(listedName);
-        String prefix = baseName(session) + "-g";
-        if (!name.startsWith(prefix)) {
-            return Optional.empty();
-        }
-        String rest = name.substring(prefix.length());
+        String sessionPart = sessionPart(session) + "-g";
+        Optional<String> rest = java.util.stream.Stream.of(prefixOf(Location.LOCAL), prefixOf(Location.CLOUD), LEGACY_PREFIX)
+                .map(prefix -> prefix + sessionPart)
+                .filter(name::startsWith)
+                .map(prefix -> name.substring(prefix.length()))
+                .findFirst();
+        return rest.flatMap(SandboxRegistry::generationDigits);
+    }
+
+    private static Optional<Integer> generationDigits(String rest) {
         int end = 0;
         while (end < rest.length() && Character.isDigit(rest.charAt(end))) {
             end++;

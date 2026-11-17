@@ -60,8 +60,8 @@ public class DemoUserSeeder {
 
     void seed() {
         String shared = hasher.hash(password);
-        ensure(UserId.DEMO, "hermione.granger@mobybank.com", "Hermione Granger", "Credit Research", shared);
-        ensure(new UserId("analyst-rana-kapoor"), "rana.kapoor@mobybank.com", "Rana Kapoor", "Credit Research", shared);
+        ensure(UserId.DEMO, "hermione.granger@mobycars.com", "Hermione Granger", "Used-Vehicle Analytics", shared);
+        ensure(new UserId("analyst-rana-kapoor"), "rana.kapoor@mobycars.com", "Rana Kapoor", "Used-Vehicle Analytics", shared);
         ensure(new UserId("developer-jeremy-davis"), "jeremy.davis@docker.com", "Jeremy Davis", "Developer",
                 hasher.hash(developerPassword));
     }

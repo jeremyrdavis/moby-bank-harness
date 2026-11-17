@@ -40,7 +40,8 @@ import org.junit.jupiter.api.Test;
 class SbxSandboxAgentTest {
 
     private static final SessionId SESSION = SandboxRegistryTest.SESSION;
-    private static final String NAME = "moby-bank-0a1b2c3d4e5f-g0";
+    private static final String LOCAL_NAME = "moby-local-0a1b2c3d4e5f-g0";
+    private static final String CLOUD_NAME = "moby-cloud-0a1b2c3d4e5f-g0";
     private static final Instant T0 = Instant.parse("2026-09-30T12:00:00Z");
 
     private static final String INIT = "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"agent-1\"}";
@@ -136,10 +137,10 @@ class SbxSandboxAgentTest {
 
         List<String> lines = runner.lines();
         assertEquals("sbx ls -q", lines.get(0), "looks for an existing sandbox first");
-        assertEquals("sbx create --name " + NAME + " claude", lines.get(1));
-        assertTrue(lines.get(2).startsWith("sbx exec " + NAME + " claude -p "), lines.get(2));
+        assertEquals("sbx create --name " + LOCAL_NAME + " claude", lines.get(1));
+        assertTrue(lines.get(2).startsWith("sbx exec " + LOCAL_NAME + " claude -p "), lines.get(2));
 
-        assertEquals(Optional.of(new Handle(Location.LOCAL, NAME, 0)), registry.current(SESSION));
+        assertEquals(Optional.of(new Handle(Location.LOCAL, LOCAL_NAME, 0)), registry.current(SESSION));
         assertEquals(Optional.of("agent-1"), registry.agentSession(SESSION));
     }
 
@@ -149,7 +150,7 @@ class SbxSandboxAgentTest {
         agent.runTurn(turn(sessionAt(Location.LOCAL), "hello"), streamed::add);
 
         List<String> exec = execOf(runner);
-        assertEquals(List.of("sbx", "exec", NAME, "claude", "-p"), exec.subList(0, 5));
+        assertEquals(List.of("sbx", "exec", LOCAL_NAME, "claude", "-p"), exec.subList(0, 5));
         assertEquals(List.of("--output-format", "stream-json", "--verbose", "--dangerously-skip-permissions"),
                 exec.subList(6, exec.size()));
         assertTrue(exec.get(5).contains("Analyst request:\nhello"), exec.get(5));
@@ -162,8 +163,8 @@ class SbxSandboxAgentTest {
         agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add);
 
         assertEquals("sbx --cloud ls -q", runner.lines().get(0));
-        assertEquals("sbx --cloud create --name " + NAME + " --ttl 8h --on-timeout stop claude", runner.lines().get(1));
-        assertTrue(runner.lines().get(2).startsWith("sbx --cloud exec " + NAME + " claude"), runner.lines().get(2));
+        assertEquals("sbx --cloud create --name " + CLOUD_NAME + " --ttl 8h --on-timeout stop claude", runner.lines().get(1));
+        assertTrue(runner.lines().get(2).startsWith("sbx --cloud exec " + CLOUD_NAME + " claude"), runner.lines().get(2));
         assertEquals(Location.CLOUD, registry.current(SESSION).orElseThrow().location());
     }
 
@@ -206,7 +207,7 @@ class SbxSandboxAgentTest {
         Session session = sessionAt(Location.LOCAL);
         session.postUserMessage("earlier question", List.of(), T0);
         session.recordAgentReply(new AgentReply(List.of(), List.of("earlier answer"), Optional.empty()), T0);
-        registry.set(SESSION, new Handle(Location.LOCAL, NAME, 0));
+        registry.set(SESSION, new Handle(Location.LOCAL, LOCAL_NAME, 0));
         registry.setAgentSession(SESSION, "stale-id");
         runner.on(command -> command.contains("--resume"), Response.fail(1, "No conversation found with session ID"));
         agentPrints(INIT, RESULT);
@@ -224,14 +225,14 @@ class SbxSandboxAgentTest {
 
     @Test
     void aSandboxFromBeforeARestartIsFoundAgainByItsName() {
-        runner.on(has("ls"), Response.ok("claude/moby-bank-0a1b2c3d4e5f-g0", "claude/moby-bank-0a1b2c3d4e5f-g2-ab12",
-                "moby-bank-ffffffffffff-g9", "unrelated"));
+        runner.on(has("ls"), Response.ok("claude/moby-cloud-0a1b2c3d4e5f-g0", "claude/moby-cloud-0a1b2c3d4e5f-g2-ab12",
+                "moby-cloud-ffffffffffff-g9", "unrelated"));
         agentPrints(INIT, RESULT);
 
         agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add);
 
         assertTrue(runner.linesWith("create").isEmpty(), "reuses the newest generation instead of creating one");
-        assertTrue(runner.lines().get(1).startsWith("sbx --cloud exec moby-bank-0a1b2c3d4e5f-g2-ab12 claude"),
+        assertTrue(runner.lines().get(1).startsWith("sbx --cloud exec moby-cloud-0a1b2c3d4e5f-g2-ab12 claude"),
                 "the agent prefix is dropped: " + runner.lines().get(1));
         assertEquals(2, registry.current(SESSION).orElseThrow().generation());
     }
@@ -249,11 +250,11 @@ class SbxSandboxAgentTest {
                 streamed::add);
 
         List<String> lines = runner.lines();
-        int mkdir = lines.indexOf("sbx exec " + NAME + " mkdir -p /home/agent/workspace/files");
+        int mkdir = lines.indexOf("sbx exec " + LOCAL_NAME + " mkdir -p /home/agent/workspace/files");
         int exec = lines.indexOf(agentRunLines().get(0));
         assertTrue(mkdir > 0 && mkdir < exec, lines.toString());
-        assertEquals("uploaded text", copied.get(NAME + ":/home/agent/workspace/files/notes.docx"));
-        assertEquals("onedrive text", copied.get(NAME + ":/home/agent/workspace/files/Fathom_10-Q.pdf"));
+        assertEquals("uploaded text", copied.get(LOCAL_NAME + ":/home/agent/workspace/files/notes.docx"));
+        assertEquals("onedrive text", copied.get(LOCAL_NAME + ":/home/agent/workspace/files/Fathom_10-Q.pdf"));
         assertTrue(lines.indexOf(lines.stream().filter(l -> l.contains(" cp ")).findFirst().orElseThrow()) < exec);
 
         String prompt = execOf(runner).get(5);
@@ -262,7 +263,7 @@ class SbxSandboxAgentTest {
 
     @Test
     void aSandboxCreatedEmptyByAMoveGetsTheSessionsSharedFilesOnItsFirstTurn() {
-        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, NAME, 0));
+        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, CLOUD_NAME, 0));
         registry.expectFiles(SESSION);
         uploads.put("notes.docx", "uploaded text".getBytes(StandardCharsets.UTF_8));
         agentPrints(INIT, RESULT);
@@ -274,15 +275,15 @@ class SbxSandboxAgentTest {
         agent.runTurn(turn, streamed::add);
 
         assertTrue(runner.linesWith("create").isEmpty(), "the sandbox already exists");
-        assertEquals("uploaded text", copied.get(NAME + ":/home/agent/workspace/files/notes.docx"));
+        assertEquals("uploaded text", copied.get(CLOUD_NAME + ":/home/agent/workspace/files/notes.docx"));
         assertTrue(!registry.expectsFiles(SESSION), "only the first turn copies them");
     }
 
     @Test
     void ifCopyingTheSharedFilesFailsTheNextTurnTriesThemAgain() {
-        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, NAME, 0));
+        registry.set(SESSION, new SandboxRegistry.Handle(Location.CLOUD, CLOUD_NAME, 0));
         registry.expectFiles(SESSION);
-        runner.on(has("ls"), Response.ok("claude/" + NAME)); // the sandbox is there, so this is not a lost sandbox
+        runner.on(has("ls"), Response.ok("claude/" + CLOUD_NAME)); // the sandbox is there, so this is not a lost sandbox
         agentPrints(INIT, RESULT);
         Session session = sessionAt(Location.CLOUD);
         var message = session.postUserMessage("go on", List.of(), T0);
@@ -297,7 +298,7 @@ class SbxSandboxAgentTest {
         uploads.put("notes.docx", "uploaded text".getBytes(StandardCharsets.UTF_8));
         agent.runTurn(turn, streamed::add);
 
-        assertEquals("uploaded text", copied.get(NAME + ":/home/agent/workspace/files/notes.docx"));
+        assertEquals("uploaded text", copied.get(CLOUD_NAME + ":/home/agent/workspace/files/notes.docx"));
         assertTrue(!registry.expectsFiles(SESSION), "cleared once the files are in");
     }
 
@@ -333,13 +334,13 @@ class SbxSandboxAgentTest {
 
     @Test
     void aFailedAgentRunWithNoAnswerFailsTheTurnWithWhatItSaid() {
-        runner.on(has("ls"), Response.ok(NAME));
+        runner.on(has("ls"), Response.ok(LOCAL_NAME));
         runner.on(SbxSandboxAgentTest::isAgentRun, Response.fail(1, "Error: not authenticated; run sbx secret set anthropic"));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> agent.runTurn(turn(sessionAt(Location.LOCAL), "hello"), streamed::add));
 
-        assertTrue(e.getMessage().contains(NAME), e.getMessage());
+        assertTrue(e.getMessage().contains(LOCAL_NAME), e.getMessage());
         assertTrue(e.getMessage().contains("not authenticated"), e.getMessage());
         assertTrue(registry.agentSession(SESSION).isEmpty());
         assertTrue(runner.linesWith("create").isEmpty(), "a sandbox that still exists is not replaced");
@@ -347,7 +348,7 @@ class SbxSandboxAgentTest {
 
     @Test
     void anErrorResultFromTheAgentFailsTheTurn() {
-        runner.on(has("ls"), Response.ok(NAME));
+        runner.on(has("ls"), Response.ok(LOCAL_NAME));
         agentPrints(INIT, "{\"type\":\"result\",\"is_error\":true,\"result\":\"Credit balance is too low\"}");
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> agent.runTurn(turn(sessionAt(Location.LOCAL), "hello"), streamed::add));
@@ -379,7 +380,8 @@ class SbxSandboxAgentTest {
 
     // --- a sandbox that is gone --------------------------------------------------------------------------------
 
-    private static final String NEXT = "moby-bank-0a1b2c3d4e5f-g1";
+    private static final String LOCAL_NEXT = "moby-local-0a1b2c3d4e5f-g1";
+    private static final String CLOUD_NEXT = "moby-cloud-0a1b2c3d4e5f-g1";
 
     /** A session that has already had a turn in {@code location}, with one attached file and the agent's own id. */
     private Session earlierTurnAt(Location location) {
@@ -387,11 +389,11 @@ class SbxSandboxAgentTest {
         Session session = sessionAt(location);
         session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
         session.recordAgentReply(new AgentReply(List.of(), List.of("It is a 10-Q."), Optional.empty()), T0);
-        registry.set(SESSION, new Handle(location, NAME, 0));
+        registry.set(SESSION, new Handle(location, SandboxRegistry.nameFor(SESSION, location, 0), 0));
         registry.setAgentSession(SESSION, "agent-0");
         // The old sandbox is gone: every command against it fails, and it is not listed.
-        runner.on(command -> command.contains("exec") && command.contains(NAME),
-                Response.fail(1, "error: sandbox '" + NAME + "' not found"));
+        runner.on(command -> command.contains("exec") && command.contains(SandboxRegistry.nameFor(SESSION, location, 0)),
+                Response.fail(1, "error: sandbox '" + SandboxRegistry.nameFor(SESSION, location, 0) + "' not found"));
         return session;
     }
 
@@ -408,14 +410,14 @@ class SbxSandboxAgentTest {
         assertTrue(notice.contains("Files you attached earlier were copied in again"), notice);
 
         assertEquals(1, runner.linesWith("create").size());
-        assertEquals("sbx create --name " + NEXT + " claude", runner.linesWith("create").get(0));
-        assertEquals("pdf text", copied.get(NEXT + ":/home/agent/workspace/files/a.pdf"), "the earlier file is back");
+        assertEquals("sbx create --name " + LOCAL_NEXT + " claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get(LOCAL_NEXT + ":/home/agent/workspace/files/a.pdf"), "the earlier file is back");
         List<String> rerun = runner.calls.stream().map(FakeRunner.Call::command).filter(SbxSandboxAgentTest::isAgentRun)
-                .filter(command -> command.contains(NEXT)).findFirst().orElseThrow();
+                .filter(command -> command.contains(LOCAL_NEXT)).findFirst().orElseThrow();
         assertFalse(rerun.contains("--resume"), "the old agent conversation is gone with the sandbox");
         assertTrue(rerun.get(5).contains("Earlier in this conversation:\nAnalyst: Summarize a.pdf\nYou: It is a 10-Q."),
                 rerun.get(5));
-        assertEquals(Optional.of(new Handle(Location.LOCAL, NEXT, 1)), registry.current(SESSION));
+        assertEquals(Optional.of(new Handle(Location.LOCAL, LOCAL_NEXT, 1)), registry.current(SESSION));
         assertEquals(Optional.of("agent-1"), registry.agentSession(SESSION));
     }
 
@@ -430,7 +432,7 @@ class SbxSandboxAgentTest {
         assertTrue(notice.startsWith("The cloud sandbox was no longer there (cloud sandboxes can time out or be deleted)"),
                 notice);
         assertTrue(notice.contains("a new cloud sandbox"), notice);
-        assertEquals("sbx --cloud create --name " + NEXT + " --ttl 8h --on-timeout stop claude",
+        assertEquals("sbx --cloud create --name " + CLOUD_NEXT + " --ttl 8h --on-timeout stop claude",
                 runner.linesWith("create").get(0));
     }
 
@@ -444,8 +446,8 @@ class SbxSandboxAgentTest {
                 streamed::add);
 
         assertTrue(reply.notice().isPresent());
-        assertEquals("pdf text", copied.get(NEXT + ":/home/agent/workspace/files/a.pdf"));
-        assertEquals("second", copied.get(NEXT + ":/home/agent/workspace/files/b.pdf"));
+        assertEquals("pdf text", copied.get(LOCAL_NEXT + ":/home/agent/workspace/files/a.pdf"));
+        assertEquals("second", copied.get(LOCAL_NEXT + ":/home/agent/workspace/files/b.pdf"));
     }
 
     @Test
@@ -462,14 +464,14 @@ class SbxSandboxAgentTest {
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> agent.runTurn(turn(session, "again"), streamed::add));
 
-        assertTrue(e.getMessage().contains("The agent failed in " + NAME), e.getMessage());
+        assertTrue(e.getMessage().contains("The agent failed in " + LOCAL_NAME), e.getMessage());
         assertTrue(runner.linesWith("create").isEmpty(), "nothing is replaced when it cannot be checked");
     }
 
     @Test
     void aSessionThatMovedAwayFromAGoneSandboxStartsTheNextGenerationAtTheDestination() {
         uploads.put("a.pdf", "pdf text".getBytes(StandardCharsets.UTF_8));
-        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1));
         Session session = sessionAt(Location.LOCAL);
         session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
         session.recordAgentReply(new AgentReply(List.of(), List.of("It is a 10-Q."), Optional.empty()), T0);
@@ -477,8 +479,8 @@ class SbxSandboxAgentTest {
 
         agent.runTurn(turn(session, "next"), streamed::add);
 
-        assertEquals("sbx create --name moby-bank-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
-        assertEquals("pdf text", copied.get("moby-bank-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"),
+        assertEquals("sbx create --name moby-local-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get("moby-local-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"),
                 "a fresh sandbox gets every file shared so far, not only the new message's");
     }
 
@@ -486,8 +488,8 @@ class SbxSandboxAgentTest {
     void aSourceLeftBehindByAnEarlierMoveIsNotReusedAfterTheNewerSandboxWasDeleted() {
         // local g0 moved to cloud g1, and g1 was deleted: g0 is still listed locally but is older than the session
         uploads.put("a.pdf", "pdf text".getBytes(StandardCharsets.UTF_8));
-        registry.set(SESSION, new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1", 1));
-        runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok(NAME));
+        registry.set(SESSION, new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1", 1));
+        runner.on(command -> command.contains("ls") && !command.contains("--cloud"), Response.ok(LOCAL_NAME));
         Session session = sessionAt(Location.LOCAL);
         session.postUserMessage("Summarize a.pdf", List.of(new FileRef("a.pdf", FileSource.UPLOAD)), T0);
         session.recordAgentReply(new AgentReply(List.of(), List.of("It is a 10-Q."), Optional.empty()), T0);
@@ -495,10 +497,10 @@ class SbxSandboxAgentTest {
 
         agent.runTurn(turn(session, "next"), streamed::add);
 
-        assertEquals("sbx create --name moby-bank-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
-        assertEquals("pdf text", copied.get("moby-bank-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"));
-        assertTrue(agentRunLines().get(0).contains("moby-bank-0a1b2c3d4e5f-g2"), agentRunLines().get(0));
-        assertTrue(agentRunLines().stream().noneMatch(line -> line.contains(" " + NAME + " ")),
+        assertEquals("sbx create --name moby-local-0a1b2c3d4e5f-g2 claude", runner.linesWith("create").get(0));
+        assertEquals("pdf text", copied.get("moby-local-0a1b2c3d4e5f-g2:/home/agent/workspace/files/a.pdf"));
+        assertTrue(agentRunLines().get(0).contains("moby-local-0a1b2c3d4e5f-g2"), agentRunLines().get(0));
+        assertTrue(agentRunLines().stream().noneMatch(line -> line.contains(" " + LOCAL_NAME + " ")),
                 "the stale local g0 is never used");
     }
 
@@ -522,13 +524,13 @@ class SbxSandboxAgentTest {
 
     @Test
     void aRejectedCredentialInTheCloudSaysWhichSecretToSetAndKeepsWhatTheAgentSaid() {
-        runner.on(has("ls"), Response.ok(NAME));
+        runner.on(has("ls"), Response.ok(CLOUD_NAME));
         agentPrints(INIT, "{\"type\":\"result\",\"is_error\":true,\"result\":\"Invalid API key · Fix external API key\"}");
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
                 () -> agent.runTurn(turn(sessionAt(Location.CLOUD), "hello"), streamed::add));
 
-        assertTrue(e.getMessage().startsWith("The agent failed in " + NAME + ": The agent's credential was rejected (401)"),
+        assertTrue(e.getMessage().startsWith("The agent failed in " + CLOUD_NAME + ": The agent's credential was rejected (401)"),
                 e.getMessage());
         assertTrue(e.getMessage().contains("`sbx --cloud secret set anthropic --oauth`"), e.getMessage());
         assertTrue(e.getMessage().contains("(Invalid API key · Fix external API key)"), e.getMessage());

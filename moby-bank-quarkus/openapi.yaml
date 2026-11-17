@@ -574,7 +574,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiError"
 info:
-  title: Moby Bank agent harness API
+  title: moby-cars agent harness API
   version: 1.0.0
   description: "HTTP and server-sent-events API used by the harness UI. Every backend\
     \ implementation (Quarkus, Python) must match this contract. When sign-in is on\

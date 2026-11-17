@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 public final class SbxSandboxAgent implements SandboxAgent {
 
     private static final String PREAMBLE = """
-            You are a credit-research assistant helping a bank analyst. Work from the attached files when there are \
+            You are a used-vehicle market analyst assistant at moby-cars, helping an analyst who writes quarterly reports on used-car sales, pricing, days to turn and auto-loan performance. Work from the attached files when there are \
             any. Answer in short paragraphs. When a table helps, give exactly one Markdown table.""";
 
     private static final int HISTORY_CHARS_PER_MESSAGE = 1500;
@@ -190,7 +190,7 @@ public final class SbxSandboxAgent implements SandboxAgent {
     }
 
     private Handle createSandbox(SessionId session, Location location, int generation) {
-        String name = SandboxRegistry.nameFor(session, generation);
+        String name = SandboxRegistry.nameFor(session, location, generation);
         cli.create(location, name, settings.agent(), settings.cloudTtl(), settings.cloudOnTimeout());
         Handle created = new Handle(location, name, generation);
         registry.set(session, created);

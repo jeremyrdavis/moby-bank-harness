@@ -19,6 +19,7 @@ class SbxErrorsTest {
             {"error: sandbox 'no-such-sandbox' not found\n  try: sbx --cloud ls", "no longer exists"},
             {"Invalid API key · Fix external API key", "credential was rejected"},
             {"API Error: 401 authentication_error", "credential was rejected"},
+            {"Failed to authenticate. API Error: 401 OAuth access token is invalid.", "credential was rejected"},
             {"Error: not authenticated; run sbx secret set anthropic", "has no credential"},
             {"Error: sign in to Docker first", "Not signed in"},
             {"error: platform mismatch: source linux/arm64, destination linux/amd64", "different platforms"},
@@ -55,15 +56,15 @@ class SbxErrorsTest {
     @Test
     void aFailingCommandKeepsTheRawTextBesideTheHint() {
         FakeRunner runner = new FakeRunner();
-        runner.on(has("exec"), Response.fail(1, "error: sandbox 'moby-bank-abc-g0' not found\n  try: sbx ls"));
+        runner.on(has("exec"), Response.fail(1, "error: sandbox 'moby-local-abc-g0' not found\n  try: sbx ls"));
         SbxCli cli = new SbxCli(runner, "sbx", Duration.ofSeconds(30));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.makeDirectory(Location.LOCAL, "moby-bank-abc-g0", "/home/agent/workspace/files"));
+                () -> cli.makeDirectory(Location.LOCAL, "moby-local-abc-g0", "/home/agent/workspace/files"));
 
-        assertTrue(e.getMessage().startsWith("Creating /home/agent/workspace/files in moby-bank-abc-g0 failed: The sandbox no longer exists"),
+        assertTrue(e.getMessage().startsWith("Creating /home/agent/workspace/files in moby-local-abc-g0 failed: The sandbox no longer exists"),
                 e.getMessage());
-        assertTrue(e.getMessage().contains("(exit 1: error: sandbox 'moby-bank-abc-g0' not found"), e.getMessage());
+        assertTrue(e.getMessage().contains("(exit 1: error: sandbox 'moby-local-abc-g0' not found"), e.getMessage());
     }
 
     @Test
@@ -73,8 +74,8 @@ class SbxErrorsTest {
         SbxCli cli = new SbxCli(runner, "sbx", Duration.ofSeconds(30));
 
         SandboxFailureException e = assertThrows(SandboxFailureException.class,
-                () -> cli.create(Location.LOCAL, "moby-bank-abc-g0", "claude", null, null));
+                () -> cli.create(Location.LOCAL, "moby-local-abc-g0", "claude", null, null));
 
-        assertEquals("Creating sandbox moby-bank-abc-g0 failed (exit 2: kaboom)", e.getMessage());
+        assertEquals("Creating sandbox moby-local-abc-g0 failed (exit 2: kaboom)", e.getMessage());
     }
 }

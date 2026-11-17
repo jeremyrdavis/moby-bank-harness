@@ -62,11 +62,11 @@ class DemoUserSeederTest {
 
         new DemoUserSeeder(users, HASHER, true, "s3cret", "dev-s3cret").seed();
 
-        AppUser hermione = users.findByEmail("hermione.granger@mobybank.com").orElseThrow();
+        AppUser hermione = users.findByEmail("hermione.granger@mobycars.com").orElseThrow();
         assertEquals(UserId.DEMO, hermione.id());
         assertEquals("Hermione Granger", hermione.displayName());
         assertEquals("hash:s3cret", hermione.passwordHash().orElseThrow());
-        AppUser rana = users.findByEmail("rana.kapoor@mobybank.com").orElseThrow();
+        AppUser rana = users.findByEmail("rana.kapoor@mobycars.com").orElseThrow();
         assertEquals("Rana Kapoor", rana.displayName());
         assertEquals("hash:s3cret", rana.passwordHash().orElseThrow());
         AppUser jeremy = users.findByEmail("jeremy.davis@docker.com").orElseThrow();
@@ -78,13 +78,13 @@ class DemoUserSeederTest {
     @Test
     void addsOnlyTheMissingUsersToADatabaseThatAlreadyHasSome() {
         Users users = new Users();
-        users.persist(AppUser.withPassword(UserId.DEMO, "hermione.granger@mobybank.com", "Hermione Granger",
-                "Credit Research", "hash:changed-by-hand"));
+        users.persist(AppUser.withPassword(UserId.DEMO, "hermione.granger@mobycars.com", "Hermione Granger",
+                "Used-Vehicle Analytics", "hash:changed-by-hand"));
 
         new DemoUserSeeder(users, HASHER, true, "s3cret", "dev-s3cret").seed();
 
         assertEquals(3, users.stored.size());
-        assertEquals("hash:changed-by-hand", users.findByEmail("hermione.granger@mobybank.com").orElseThrow()
+        assertEquals("hash:changed-by-hand", users.findByEmail("hermione.granger@mobycars.com").orElseThrow()
                 .passwordHash().orElseThrow(), "an existing account is left alone");
         assertTrue(users.findByEmail("jeremy.davis@docker.com").isPresent());
     }

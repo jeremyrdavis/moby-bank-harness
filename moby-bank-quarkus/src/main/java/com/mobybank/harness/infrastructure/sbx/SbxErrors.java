@@ -32,8 +32,11 @@ final class SbxErrors {
             // seen: "error: sandbox 'no-such-sandbox' not found" + "try: sbx --cloud ls", exit 1
             rule("sandbox '[^']*' not found", where -> "The sandbox no longer exists (it was deleted, or removed when it "
                     + "timed out). Start a new one."),
-            // seen: the agent's result when the cloud secret was missing or stale: "Invalid API key · Fix external API key"
-            rule("invalid api key|fix external api key|authentication_error|status[: ]+401|http 401|\\(401\\)", where -> "The agent's credential was "
+            // seen: the agent's result when the cloud secret was missing or stale: "Invalid API key · Fix external API key",
+            // and after a move to the cloud with an expired OAuth secret:
+            // "Failed to authenticate. API Error: 401 OAuth access token is invalid."
+            rule("invalid api key|fix external api key|authentication_error|status[: ]+401|http 401|\\(401\\)"
+                    + "|api error:? 401|failed to authenticate|access token is (invalid|expired)", where -> "The agent's credential was "
                     + "rejected (401). Set it with `" + secretCommand(where) + "`, then start a new sandbox: a "
                     + "sandbox that is already running may keep the old one."),
             // from the docs and the harness's own earlier wording

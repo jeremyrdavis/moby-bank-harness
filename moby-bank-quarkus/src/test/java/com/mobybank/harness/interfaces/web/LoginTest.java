@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 class LoginTest {
 
     private static final String PASSWORD = "moby-demo";
-    private static final String HERMIONE = "hermione.granger@mobybank.com";
-    private static final String RANA = "rana.kapoor@mobybank.com";
+    private static final String HERMIONE = "hermione.granger@mobycars.com";
+    private static final String RANA = "rana.kapoor@mobycars.com";
 
     private static Response signIn(String email, String password) {
         return given().redirects().follow(false).contentType(ContentType.URLENC)
@@ -115,7 +115,7 @@ class LoginTest {
 
     @Test
     void theEmailMayBeTypedInAnyCase() {
-        assertEquals(303, signIn("  Hermione.Granger@MobyBank.com ", PASSWORD).statusCode());
+        assertEquals(303, signIn("  Hermione.Granger@MobyCars.com ", PASSWORD).statusCode());
     }
 
     @Test
@@ -126,7 +126,7 @@ class LoginTest {
                 .body(containsString("<meta name=\"api-base\" content=\"/ui\">"));
         given().cookie(AuthFilter.COOKIE, cookie).get("/api/me").then().statusCode(200)
                 .body("name", equalTo("Hermione Granger")).body("initials", equalTo("HG"))
-                .body("role", equalTo("Credit Research"));
+                .body("role", equalTo("Used-Vehicle Analytics"));
         given().cookie(AuthFilter.COOKIE, cookie).get("/ui/user").then().statusCode(200)
                 .body(containsString("Hermione Granger")).body(containsString("action=\"/auth/logout\""));
     }
@@ -141,13 +141,13 @@ class LoginTest {
 
     @Test
     void anUnknownEmailGetsTheSameAnswerAsAWrongPassword() {
-        signIn("nobody@mobybank.com", PASSWORD).then().statusCode(303)
+        signIn("nobody@mobycars.com", PASSWORD).then().statusCode(303)
                 .header("Location", containsString("/login.html?error=credentials"));
     }
 
     @Test
     void tooManyFailuresLockTheEmailOut() {
-        String email = "lockout.test@mobybank.com";
+        String email = "lockout.test@mobycars.com";
         for (int i = 0; i < 5; i++) {
             signIn(email, "wrong").then().header("Location", containsString("error=credentials"));
         }
@@ -176,7 +176,7 @@ class LoginTest {
 
         List<String> hermionesTitles = given().cookie(AuthFilter.COOKIE, hermione).get("/api/sessions").then()
                 .statusCode(200).extract().path("title");
-        assertTrue(hermionesTitles.contains("Fathom Industrial — Q2 2026 earnings"), hermionesTitles.toString());
+        assertTrue(hermionesTitles.contains("Used cars — Q2 2026 quarterly report"), hermionesTitles.toString());
         given().cookie(AuthFilter.COOKIE, rana).get("/api/sessions").then().statusCode(200).body("$", hasSize(0));
 
         String ranas = createSession(rana);

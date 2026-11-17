@@ -330,10 +330,10 @@ class PostgresRepositoriesTest {
         SessionId session = SessionId.fresh();
         assertTrue(sandboxes.find(session).isEmpty());
 
-        sandboxes.save(session, new SandboxRecord(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1-zz", 1),
+        sandboxes.save(session, new SandboxRecord(new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1-zz", 1),
                 "agent-7", true));
         SandboxRecord found = sandboxes.find(session).orElseThrow();
-        assertEquals(new Handle(Location.CLOUD, "moby-bank-0a1b2c3d4e5f-g1-zz", 1), found.handle());
+        assertEquals(new Handle(Location.CLOUD, "moby-cloud-0a1b2c3d4e5f-g1-zz", 1), found.handle());
         assertEquals("agent-7", found.agentSession());
         assertTrue(found.awaitingFiles());
 

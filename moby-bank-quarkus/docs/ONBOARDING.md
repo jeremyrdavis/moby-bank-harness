@@ -1,4 +1,4 @@
-# Onboarding: the Moby Bank harness backend
+# Onboarding: the moby-cars harness backend
 
 Welcome. This guide gets you from a fresh checkout to reviewing and changing this code with confidence. It is a
 working guide: follow it in order, and by the end you will have run the app, read every layer, and done a structured
@@ -20,7 +20,7 @@ review about four hours, the exercises the rest).
 
 ## 1. The 10-minute picture
 
-A bank credit analyst chats with an **agent**. The agent reads documents (uploaded, or from OneDrive), runs
+A used-vehicle analyst at moby-cars chats with an **agent**. The agent reads documents (uploaded, or from OneDrive), runs
 calculations, and answers with prose and sometimes a table. The agent runs in a **Docker Sandbox**, either on the
 analyst's own machine (**local**) or in Docker's hosted service (**cloud**), and a conversation can be **moved**
 between the two in either direction.
@@ -484,7 +484,9 @@ in your commit message.
 ./mvnw javadoc:javadoc                 # regenerate docs/apidocs
 ./mvnw package -DskipTests             # build target/quarkus-app/quarkus-run.jar
 java -Dquarkus.http.port=8090 -jar target/quarkus-app/quarkus-run.jar    # options go BEFORE -jar
-./mvnw quarkus:dev -Dharness.sandbox.mode=sbx -Dharness.documents.mode=graph   # real adapters
+./mvnw quarkus:dev                                          # real sandboxes, demo documents (the default)
+./mvnw quarkus:dev -Dharness.sandbox.mode=fake               # everything simulated
+./mvnw quarkus:dev -Dharness.documents.mode=graph           # real sandboxes and real OneDrive
 ```
 
 **The rules, on one screen**

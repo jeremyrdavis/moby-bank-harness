@@ -194,9 +194,9 @@ class WebTest {
     void aOneDriveFileIsAttachedByName() {
         String id = createSession();
 
-        given().multiPart("text", "From the cloud drive").multiPart("onedrive", "Fathom_Q2_2026_10-Q.pdf")
+        given().multiPart("text", "From the cloud drive").multiPart("onedrive", "Used_Vehicle_Sales_Q3_2026.csv")
                 .post("/ui/conversations/" + id + "/messages").then().statusCode(200)
-                .body(containsString("<span>Fathom_Q2_2026_10-Q.pdf</span><span class=\"muted\">OneDrive</span>"));
+                .body(containsString("<span>Used_Vehicle_Sales_Q3_2026.csv</span><span class=\"muted\">OneDrive</span>"));
     }
 
     @Test
@@ -363,7 +363,7 @@ class WebTest {
     void theAttachDialogListsFilesFromConnectedFolders() {
         given().get("/ui/onedrive/picker?mode=attach").then().statusCode(200)
                 .body(containsString("hx-post=\"/api/onedrive/attach\""))
-                .body(containsString("name=\"file\" value=\"Fathom_Q2_2026_10-Q.pdf\""));
+                .body(containsString("name=\"file\" value=\"Used_Vehicle_Sales_Q3_2026.csv\""));
     }
 
     @Test
@@ -380,7 +380,7 @@ class WebTest {
                 .header("HX-Trigger", containsString("folders-changed"))
                 .header("HX-Trigger", containsString("Folders connected"));
 
-        given().get("/ui/onedrive/folders").then().body(containsString("Covenant Models"));
+        given().get("/ui/onedrive/folders").then().body(containsString("Loan Performance"));
     }
 
     @Test
@@ -398,19 +398,19 @@ class WebTest {
 
     @Test
     void attachingFilesReturnsChipsWithHiddenInputsAndClosesTheDialog() {
-        given().contentType(ContentType.URLENC).formParam("file", "Fathom_Q2_2026_10-Q.pdf")
+        given().contentType(ContentType.URLENC).formParam("file", "Used_Vehicle_Sales_Q3_2026.csv")
                 .post("/ui/onedrive/attach").then().statusCode(200)
                 .header("HX-Trigger", containsString("close-dialog"))
-                .body(containsString("<input type=\"hidden\" name=\"onedrive\" value=\"Fathom_Q2_2026_10-Q.pdf\">"))
+                .body(containsString("<input type=\"hidden\" name=\"onedrive\" value=\"Used_Vehicle_Sales_Q3_2026.csv\">"))
                 .body(containsString("<button type=\"button\" aria-label=\"Remove\">"));
     }
 
     @Test
     void onlyFilesInConnectedFoldersCanBeAttached() {
         String body = given().contentType(ContentType.URLENC).formParam("file", "Not_In_Any_Folder.pdf")
-                .formParam("file", "Fathom_Q2_2026_10-Q.pdf").post("/ui/onedrive/attach").asString();
+                .formParam("file", "Used_Vehicle_Sales_Q3_2026.csv").post("/ui/onedrive/attach").asString();
 
-        assertTrue(body.contains("Fathom_Q2_2026_10-Q.pdf") && !body.contains("Not_In_Any_Folder.pdf"), body);
+        assertTrue(body.contains("Used_Vehicle_Sales_Q3_2026.csv") && !body.contains("Not_In_Any_Folder.pdf"), body);
     }
 
     @Test

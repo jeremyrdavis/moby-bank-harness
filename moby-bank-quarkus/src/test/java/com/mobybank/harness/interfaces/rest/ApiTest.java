@@ -66,34 +66,34 @@ class ApiTest {
     @Test
     void meDescribesTheAnalyst() {
         given().get("/api/me").then().statusCode(200)
-                .body("name", equalTo("Hermione Granger"), "role", equalTo("Credit Research"),
+                .body("name", equalTo("Hermione Granger"), "role", equalTo("Used-Vehicle Analytics"),
                         "initials", equalTo("HG"));
     }
 
     @Test
     void theSeededHistoryIsGroupedLikeThePrototype() {
         given().get("/api/sessions").then().statusCode(200)
-                .body("title", hasItems("Fathom Industrial — Q2 2026 earnings", "Kestrel Foods — earnings release review",
-                        "Segment revenue bridge FY25 → FY26"))
+                .body("title", hasItems("Used cars — Q2 2026 quarterly report", "Electric used-price softness",
+                        "Days-to-turn bridge Q1 → Q2"))
                 .body("group", hasItems("Today", "Previous 7 days", "Earlier"))
-                .body("find { it.title == 'Kestrel Foods — earnings release review' }.location", equalTo("cloud"));
+                .body("find { it.title == 'Electric used-price softness' }.location", equalTo("cloud"));
     }
 
     @Test
     void aSeededSessionOpensWithItsMessagesStepsAndTable() {
         String id = given().get("/api/sessions").then().extract()
-                .path("find { it.title == 'Fathom Industrial — Q2 2026 earnings' }.id");
+                .path("find { it.title == 'Used cars — Q2 2026 quarterly report' }.id");
 
         given().get("/api/sessions/" + id).then().statusCode(200)
                 .body("messages", hasSize(4))
                 .body("messages[0].role", equalTo("user"))
-                .body("messages[0].files.name", hasItem("Fathom_Q2_2026_10-Q.pdf"))
+                .body("messages[0].files.name", hasItem("Used_Vehicle_Sales_Q2_2026.csv"))
                 .body("messages[1].role", equalTo("assistant"))
                 .body("messages[1].steps", hasSize(5))
                 .body("messages[1].steps[0].kind", equalTo("read"))
-                .body("messages[1].table.cols", hasItems("Metric", "Q2 2026"))
+                .body("messages[1].table.cols", hasItems("Segment", "Units"))
                 .body("messages[3].table", nullValue())
-                .body("files.name", hasItem("Industrials_Peer_Comps_Q2.xlsx"));
+                .body("files.name", hasItem("Days_To_Turn_By_Segment_Q2_2026.csv"));
     }
 
     // --- create and open ---------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ class ApiTest {
         String id = createSession("local");
 
         given().contentType(ContentType.JSON)
-                .body(message("Summarize the filing", file("Fathom_Q2_2026_10-Q.pdf", "onedrive")))
+                .body(message("Summarize the filing", file("Used_Vehicle_Sales_Q3_2026.csv", "onedrive")))
                 .post("/api/sessions/" + id + "/messages").then().statusCode(202)
                 .body("role", equalTo("user"), "text", equalTo("Summarize the filing"),
                         "files[0].source", equalTo("onedrive"));
@@ -143,8 +143,8 @@ class ApiTest {
                 .body("messages", hasSize(2))
                 .body("messages[1].role", equalTo("assistant"))
                 .body("messages[1].steps.kind", equalTo(List.of("read", "compute")))
-                .body("messages[1].paragraphs[0]", containsString("Fathom_Q2_2026_10-Q.pdf"))
-                .body("messages[1].table.rows", hasSize(3));
+                .body("messages[1].paragraphs[0]", containsString("Used_Vehicle_Sales_Q3_2026.csv"))
+                .body("messages[1].table.rows", hasSize(4));
     }
 
     @Test
@@ -254,10 +254,10 @@ class ApiTest {
                 .body("find { it.id == 'f4' }.connected", equalTo(true));
 
         given().get("/api/folders/connected/files").then().statusCode(200)
-                .body("name", hasItems("Fathom_Q2_2026_10-Q.pdf", "Harborline_Covenant_Model_v3.xlsx"))
-                .body("find { it.name == 'Harborline_Covenant_Model_v3.xlsx' }.folderName", equalTo("Covenant Models"))
-                .body("find { it.name == 'Harborline_Covenant_Model_v3.xlsx' }.folderPath",
-                        equalTo("Risk / Credit / Covenant Models"));
+                .body("name", hasItems("Used_Vehicle_Sales_Q3_2026.csv", "Auto_Loan_Performance_Q3_2026.csv"))
+                .body("find { it.name == 'Auto_Loan_Performance_Q3_2026.csv' }.folderName", equalTo("Loan Performance"))
+                .body("find { it.name == 'Auto_Loan_Performance_Q3_2026.csv' }.folderPath",
+                        equalTo("Finance / Auto Lending / Performance"));
     }
 
     @Test
@@ -283,7 +283,7 @@ class ApiTest {
             assertEquals("ready", stream.next(Duration.ofSeconds(5)).name());
 
             given().contentType(ContentType.JSON)
-                    .body(message("Summarize", file("Fathom_Q2_2026_10-Q.pdf", "onedrive")))
+                    .body(message("Summarize", file("Used_Vehicle_Sales_Q3_2026.csv", "onedrive")))
                     .post("/api/sessions/" + id + "/messages").then().statusCode(202);
 
             List<SseReader.Event> seen = stream.readUntil(

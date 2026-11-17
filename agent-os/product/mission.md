@@ -6,7 +6,7 @@ Teams that want to give their employees an AI agent need a custom harness (a cha
 
 ## Target Users
 
-Engineering and platform teams building a custom agent harness for their organization, who will reuse this demo's pattern. (The demo frames this around a fictional bank credit analyst, but the audience evaluating it is the engineering team.)
+Engineering and platform teams building a custom agent harness for their organization, who will reuse this demo's pattern. (The demo frames this around a fictional used-vehicle analyst at moby-cars, but the audience evaluating it is the engineering team.)
 
 ## Solution
 

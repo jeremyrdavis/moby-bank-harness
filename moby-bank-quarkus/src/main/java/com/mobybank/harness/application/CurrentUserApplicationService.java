@@ -26,7 +26,7 @@ public class CurrentUserApplicationService {
     public CurrentUserApplicationService(
             CurrentUser current, UserRepository users,
             @ConfigProperty(name = "harness.user.name", defaultValue = "Hermione Granger") String fallbackName,
-            @ConfigProperty(name = "harness.user.role", defaultValue = "Credit Research") String fallbackRole) {
+            @ConfigProperty(name = "harness.user.role", defaultValue = "Used-Vehicle Analytics") String fallbackRole) {
         this.current = current;
         this.users = users;
         this.fallbackName = fallbackName;

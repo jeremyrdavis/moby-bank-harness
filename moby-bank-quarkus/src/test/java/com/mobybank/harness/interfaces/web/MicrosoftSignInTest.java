@@ -182,7 +182,7 @@ class MicrosoftSignInTest {
     @Test
     void anAnalystWhoSignedInWithAPasswordMustSignInWithMicrosoftToUseOneDrive() {
         Response login = given().redirects().follow(false).contentType(ContentType.URLENC)
-                .formParam("email", "hermione.granger@mobybank.com").formParam("password", "moby-demo")
+                .formParam("email", "hermione.granger@mobycars.com").formParam("password", "moby-demo")
                 .post("/auth/login");
         String session = login.cookie(AuthFilter.COOKIE);
 

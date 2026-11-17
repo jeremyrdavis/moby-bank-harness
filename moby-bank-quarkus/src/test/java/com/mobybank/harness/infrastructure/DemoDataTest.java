@@ -32,11 +32,11 @@ class DemoDataTest {
 
         List<Session> history = sessions.findAllByMostRecentlyUpdated();
         assertEquals(List.of(
-                "Fathom Industrial — Q2 2026 earnings",
-                "Kestrel Foods — earnings release review",
-                "Harborline Logistics — cash flow vs covenants",
-                "Regional banks — NIM trend comparison",
-                "Segment revenue bridge FY25 → FY26"), history.stream().map(s -> s.title().value()).toList());
+                "Used cars — Q2 2026 quarterly report",
+                "Electric used-price softness",
+                "Subprime auto delinquency watch",
+                "Wholesale-to-retail spread by segment",
+                "Days-to-turn bridge Q1 → Q2"), history.stream().map(s -> s.title().value()).toList());
         assertEquals(List.of(Location.LOCAL, Location.CLOUD, Location.LOCAL, Location.CLOUD, Location.LOCAL),
                 history.stream().map(Session::location).toList());
         assertTrue(history.stream().allMatch(s -> s.status() == SessionStatus.IDLE));

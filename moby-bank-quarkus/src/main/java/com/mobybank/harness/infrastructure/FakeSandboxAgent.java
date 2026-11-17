@@ -21,14 +21,16 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * A stand-in for the sandbox agent that answers with the same canned reply as the prototype: it "reads" each
- * attached file, "computes" one calculation, and returns a short summary plus a table when files were attached.
+ * A stand-in for the sandbox agent that answers with a canned reply: it "reads" each attached file, "computes" one
+ * calculation, and returns the Q3 2026 used-car quarterly report (a short summary plus a segment table) when files
+ * were attached. Its figures are the ones the demo files give ({@code data/onedrive/}), so a real agent should reach
+ * the same answer.
  * It lets the whole app run with no sandbox installed. It can also pretend a cloud sandbox was lost, to show the
  * analyst the notice that follows.
  */
 public final class FakeSandboxAgent implements SandboxAgent {
 
-    static final String COMPUTE_LABEL = "extract_financials(income_statement, balance_sheet, cash_flow)";
+    static final String COMPUTE_LABEL = "build_quarterly_report(used_sales, wholesale_prices, days_to_turn)";
 
     private final Duration delay;
     private final int cloudExpiryTurns;
@@ -93,17 +95,24 @@ public final class FakeSandboxAgent implements SandboxAgent {
 
     private static AgentReply answer(List<FileRef> files, List<Step> steps) {
         if (files.isEmpty()) {
-            return new AgentReply(steps, List.of("I can work from the filings in your connected OneDrive folders. "
-                    + "Tell me which company and period, or attach the documents directly."), Optional.empty());
+            return new AgentReply(steps, List.of("I can work from the used-vehicle files in your connected OneDrive "
+                    + "folders. Tell me which quarter, or attach the sales, wholesale price and days-to-turn files "
+                    + "directly."), Optional.empty());
         }
         String names = files.stream().map(FileRef::name).collect(Collectors.joining(", "));
         return new AgentReply(steps,
-                List.of("I read " + names + " and extracted the income statement, balance sheet and cash flow "
-                        + "figures. Revenue, margin and leverage are summarized below; I can compare them against "
-                        + "consensus or the peer set next."),
-                Optional.of(new ResultTable(List.of("Metric", "Current", "Prior year", "Change"), List.of(
-                        List.of("Revenue", "$2.46B", "$2.31B", "+6.5%"),
-                        List.of("EBITDA margin", "15.8%", "16.3%", "−50 bps"),
-                        List.of("Net leverage", "2.2x", "2.0x", "+0.2x")))));
+                List.of("I read " + names + " and put together the Q3 2026 used-car quarterly report. Sales rose "
+                                + "2.1% on Q2 to 625,000 units, while the average retail price slipped 0.5% to $28,792 "
+                                + "as the composite wholesale index fell 0.8%.",
+                        "Turn time improved: the average vehicle took 42.5 days to sell, down from 43.7, and the "
+                                + "share of electric stock older than 60 days fell to 16% from 19%. Electric vehicles "
+                                + "are still the slowest segment at 56 days, and their wholesale index is 11.9% below a "
+                                + "year ago. I can compare this with the Q2 report or add loan performance next."),
+                Optional.of(new ResultTable(List.of("Segment", "Units", "Avg retail price", "Wholesale QoQ",
+                        "Days to turn"), List.of(
+                        List.of("SUV", "237,000", "$30,310", "−0.5%", "38.0"),
+                        List.of("Truck", "171,000", "$34,090", "−0.2%", "36.0"),
+                        List.of("Sedan", "144,000", "$19,820", "−1.4%", "51.0"),
+                        List.of("Electric", "73,000", "$29,150", "−3.1%", "56.0")))));
     }
 }
